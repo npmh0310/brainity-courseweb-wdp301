@@ -1,0 +1,45 @@
+/* styles.css */
+/* Define transition for elements with class 'custom-nav-mobile' */
+.custom-nav-mobile {
+    transition: top 0.5s ease-in-out, bottom 0.5s ease-in-out;
+  }
+  
+  /* Effects when 'custom-nav-mobile' is opened */
+  .custom-nav-mobile.open {
+    top: 88px; /* Or the desired top position when the element is opened */
+    bottom: auto; /* Remove bottom property to avoid conflicts */
+  }
+  
+.nav-link {
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  background-color: #000;
+  bottom: 0;
+  left: 50%;
+  transition: width 0.6s ease, left 0.6s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.custom-circle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;  /* Adjust size as needed */
+  height: 50px; /* Adjust size as needed */
+  background-color: #4CAF50; /* Customize color */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;  /* Ensures the circle is behind the content */
+}
