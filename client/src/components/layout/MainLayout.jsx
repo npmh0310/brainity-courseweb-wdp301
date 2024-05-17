@@ -4,6 +4,7 @@ import GlobalLoading from "../common/GlobalLoading/GlobalLoading";
 import Header from "../common/Header/Header";
 import { Logo } from "../common/Logo";
 import Footer from "../common/Footer/Footer";
+import Item from "../common/Item";
 
 const MainLayout = () => {
   return (
