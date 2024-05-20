@@ -9,10 +9,14 @@ import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
+import { GlobalStyles } from "@mui/material";
 
 function App() {
   return (
     <>
+      <GlobalStyles styles={{ body: { paddingRight: '0 !important', overflow: 'auto !important' } }} />
       {/* config toastify */}
       <ToastContainer
         position="bottom-left"
@@ -23,10 +27,11 @@ function App() {
         pauseOnFocusLoss
         pauseOnHover
       />
-  
 
       <BrowserRouter>
         <Routes>
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/" element={<MainLayout />}>
             {routes.map((route, index) =>
               route.index ? (

@@ -76,9 +76,9 @@ const Header = () => {
             </button>
           </div>
 
-          <HeaderUser />
+          {/* <HeaderUser /> */}
 
-          {/* <Link
+          <Link
             to="/signin"
             className={`${
               btnColor
@@ -89,7 +89,7 @@ const Header = () => {
                                       rounded-full  backdrop-blur-md transition  transform hover:scale-105 hidden md:flex`}
           >
             Login
-          </Link> */}
+          </Link>
         </div>
 
         {/* MOBILE */}
