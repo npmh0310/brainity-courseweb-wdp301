@@ -33,9 +33,8 @@ const Header = () => {
   }, []);
   return (
     <header
-      className={`${
-        bg ? "bg-[white] shadow-md  shadow-bottom  py-3 lg:py-2" : "bg-none"
-      }  fixed left-0 w-full py-3 lg:py-2 z-10 transition-all duration-200`}
+      className={`${bg ? "bg-[white] shadow-md  shadow-bottom  py-3 lg:py-2" : "bg-none"
+        }  fixed left-0 w-full py-3 lg:py-2 z-10 transition-all duration-200`}
     >
       <div className=" flex items-center justify-around">
         <div className="flex items-center justify-between gap-x-10 ">
@@ -80,11 +79,10 @@ const Header = () => {
 
           <Link
             to="/signin"
-            className={`${
-              btnColor
-                ? "bg-primary hover:bg-[#03ecbe] text-white "
-                : "bg-grey-5 hover:bg-grey-1 text-second"
-            }  
+            className={`${btnColor
+              ? "bg-primary hover:bg-[#03ecbe] text-white "
+              : "bg-grey-5 hover:bg-grey-1 text-second"
+              }  
                                       px-[40px] py-[9px] my-1 hover:transform-[scale3d(1.05,1.05,1.05)] text-sm font-semibold  
                                       rounded-full  backdrop-blur-md transition  transform hover:scale-105 hidden md:flex`}
           >
@@ -94,9 +92,8 @@ const Header = () => {
 
         {/* MOBILE */}
         <div
-          className={`${
-            mobileNav ? " top-[64px]" : "bottom-full"
-          } md:hidden h-[550px] fixed left-0 w-full max-w-full backdrop-blur-lg bg-white/60 transition-all shadow-lg border-t-[1px] custom-nav-mobile `}
+          className={`${mobileNav ? " top-[64px]" : "bottom-full"
+            } md:hidden h-[550px] fixed left-0 w-full max-w-full backdrop-blur-lg bg-white/60 transition-all shadow-lg border-t-[1px] custom-nav-mobile `}
         >
           <HeaderMobile />
         </div>

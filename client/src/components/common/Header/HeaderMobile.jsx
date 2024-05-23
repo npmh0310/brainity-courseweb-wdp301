@@ -6,20 +6,20 @@ function HeaderMobile() {
   return (
     <div className=" w-full h-[80%] shadow-2xl flex justify-center items-center flex-col gap-y-12">
       <div className="container">
-          <div className="items-center flex w-full ">
-            <input
-              type="text"
-              className="w-full h-[42px] border-2 border-gray-200 px-8  py-3 text-xs rounded-l-full  focus:outline-none"
-              placeholder="search anything..."
-            />
-            <button className="w-12 h-[42px] border-2 border-gray-200 border-l-0 rounded-r-full relative">
-              <FontAwesomeIcon
-                className="text-third w-4 transition-transform duration-700
+        <div className="items-center flex w-full ">
+          <input
+            type="text"
+            className="w-full h-[42px] border-2 border-gray-200 px-8  py-3 text-xs rounded-l-full  focus:outline-none"
+            placeholder="search anything..."
+          />
+          <button className="w-12 h-[42px] border-2 border-gray-200 border-l-0 rounded-r-full relative">
+            <FontAwesomeIcon
+              className="text-third w-4 transition-transform duration-700
                     00 ease-in-out hover:scale-125"
-                icon={faSearch}
-              />
-            </button>
-          </div>
+              icon={faSearch}
+            />
+          </button>
+        </div>
       </div>
       <div className="container ">
         <ul className="text-center h-full flex justify-center items-start flex-col gap-y-10">

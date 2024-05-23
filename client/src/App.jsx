@@ -12,6 +12,8 @@ import "swiper/css/pagination";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import { GlobalStyles } from "@mui/material";
+import LayoutTeacher from "./pages/Teacher/LayoutTeacher";
+import Analytics from "./pages/Teacher/_components/Analytics";
 
 function App() {
   return (
@@ -56,6 +58,11 @@ function App() {
                 />
               )
             )}
+          </Route>
+
+          {/* Teacher Route */}
+          <Route path="/teacher" element={<LayoutTeacher />} >
+            <Route path="/teacher/analys" element={<Analytics />} />
           </Route>
         </Routes>
       </BrowserRouter>
