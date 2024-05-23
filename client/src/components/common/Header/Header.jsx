@@ -9,6 +9,7 @@ import { CgMenuRight, CgClose } from "react-icons/cg";
 import HeaderMobile from "./HeaderMobile.jsx";
 import HeaderUser from "./HeaderUser.jsx";
 
+
 const Header = () => {
   const [bg, setBg] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
@@ -35,7 +36,7 @@ const Header = () => {
     <header
       className={`${
         bg ? "bg-[white] shadow-md  shadow-bottom  py-3 lg:py-2" : "bg-none"
-      }  fixed left-0 w-full py-3 lg:py-2 z-10 transition-all duration-200`}
+      }  fixed left-0 w-full py-3 lg:py-2 z-20 transition-all duration-200`}
     >
       <div className=" flex items-center justify-around">
         <div className="flex items-center justify-between gap-x-10 ">
@@ -76,9 +77,9 @@ const Header = () => {
             </button>
           </div>
 
-          {/* <HeaderUser /> */}
+          <HeaderUser />
 
-          <Link
+          {/* <Link
             to="/signin"
             className={`${
               btnColor
@@ -89,7 +90,7 @@ const Header = () => {
                                       rounded-full  backdrop-blur-md transition  transform hover:scale-105 hidden md:flex`}
           >
             Login
-          </Link>
+          </Link> */}
         </div>
 
         {/* MOBILE */}
