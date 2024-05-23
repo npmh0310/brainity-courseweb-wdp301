@@ -4,7 +4,8 @@ import Avatar from "../../../assets/images/6298053d43cd1.jpg";
 import { HiOutlineShoppingCart, HiOutlineBell } from "react-icons/hi";
 import Popover from "@mui/material/Popover";
 import { Link, useNavigate } from "react-router-dom";
-// import UserMenu from "./UserMenu";
+import { Bell, ShoppingCart } from "lucide-react";
+
 function HeaderUser() {
   const [showUserItem, setShowUserItem] = useState(false);
 
@@ -35,7 +36,7 @@ function HeaderUser() {
           className="cursor-pointer w-8 h-8 flex justify-center items-center "
           onClick={handleBellClick}
         >
-          <HiOutlineBell className="text-xl " />
+          <Bell size={20}/>
         </div>
         <Popover
           style={{ marginTop: "12px", marginLeft: "22px" }}
@@ -52,12 +53,10 @@ function HeaderUser() {
           }}
         >
           {/* Content for the bell icon popover */}
-          <div className="p-4">
-         Từ từ chưa biết phần ni
-          </div>
+          <div className="p-4">Từ từ chưa biết phần ni</div>
         </Popover>
         <div className="cursor-pointer w-8 h-8 flex items-center">
-          <HiOutlineShoppingCart className="text-xl" />
+          <ShoppingCart size={20}/>
         </div>
       </div>
 
@@ -89,8 +88,21 @@ function HeaderUser() {
           <div className="text-gray-600">
             <ul className="text-sm">
               <li className="hover:text-black mb-2">
-                <Link className="block py-2" to="/profile">
+                <Link
+                  className="block py-2"
+                  to={"/profile/informationuser"}
+                  onClick={() => handleUserClose()}
+                >
                   Profile
+                </Link>
+              </li>
+              <li className="hover:text-black mb-2">
+                <Link
+                  className="block py-2"
+                  to={"/mylearningcourse"}
+                  onClick={() => handleUserClose()}
+                >
+                  My learning course
                 </Link>
               </li>
             </ul>
@@ -98,12 +110,20 @@ function HeaderUser() {
 
             <ul className="text-sm">
               <li className="hover:text-black mb-4">
-                <Link to="/" className="block py-2">
+                <Link
+                  to="/"
+                  className="block py-2"
+                  onClick={() => handleUserClose()}
+                >
                   Write Blog
                 </Link>
               </li>
               <li className="hover:text-black mb-4">
-                <Link to="/" className="block py-2">
+                <Link
+                  to="/"
+                  className="block py-2"
+                  onClick={() => handleUserClose()}
+                >
                   My Blog
                 </Link>
               </li>
@@ -111,7 +131,11 @@ function HeaderUser() {
             <hr className="my-2" />
             <ul className="text-sm">
               <li className="hover:text-black mb-2">
-                <Link to="/" className="block py-2">
+                <Link
+                  to="/"
+                  className="block py-2"
+                  onClick={() => handleUserClose()}
+                >
                   Saved Blogs
                 </Link>
               </li>
@@ -119,7 +143,11 @@ function HeaderUser() {
             <hr className="my-2" />
             <ul className="text-sm">
               <li className="hover:text-black mb-2">
-                <Link to="/logout" className="block py-2">
+                <Link
+                  to="/logout"
+                  className="block py-2"
+                  onClick={() => handleUserClose()}
+                >
                   Log Out
                 </Link>
               </li>

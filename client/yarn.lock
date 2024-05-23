@@ -6997,6 +6997,16 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+lucide-react@^0.379.0:
+  version "0.379.0"
+  resolved "https://registry.npmjs.org/lucide-react/-/lucide-react-0.379.0.tgz"
+  integrity sha512-KcdeVPqmhRldldAAgptb8FjIunM2x2Zy26ZBh1RsEUcdLIvsEmbcw7KpzFYUy5BbpGeWhPu9Z9J5YXfStiXwhg==
+
+lucide@^0.379.0:
+  version "0.379.0"
+  resolved "https://registry.npmjs.org/lucide/-/lucide-0.379.0.tgz"
+  integrity sha512-2F7ycF+CAZCLusl4iuhhd0nlS5pTMHwdgY4qehZy5qN14tR+db2GX9nhNzhW3mg73wiDlkrue1khgG1BxVNAZg==
+
 lz-string@^1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/lz-string/-/lz-string-1.5.0.tgz"
