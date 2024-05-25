@@ -8,7 +8,7 @@ const SidebarItem = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    console.log(location.pathname)
+    // console.log(location.pathname)
 
     const isActive =
         (location.pathname === "/teacher" && href === "/teacher") ||
