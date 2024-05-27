@@ -9,6 +9,12 @@ import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import LearningPage from "./pages/LearningPage";
+import CourseContent from "./components/LearningPage/CourseContent/CourseContent";
+import OverView from "./components/LearningPage/OverView/OverView";
+import Search from "./components/LearningPage/Search/Search";
+import Exercise from "./components/LearningPage/Exercise/Exercise";
+
 
 function App() {
   return (
@@ -51,6 +57,12 @@ function App() {
                 />
               )
             )}
+          </Route>
+          <Route path="learning/*" element = {<LearningPage/>}>
+            <Route path="courseContent" element={<CourseContent/>} />
+            <Route path="overView" element={<OverView/>} />
+            <Route path="search" element={<Search/>}/>
+            <Route path="exercise" element={<Exercise/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
