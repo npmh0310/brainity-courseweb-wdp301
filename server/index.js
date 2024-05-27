@@ -4,12 +4,17 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');
 
+const passport = require('passport');
+const cookieSession = require('cookie-session');
+
 const authRoute = require('./routes/auth');
 const courseRoute = require('./routes/course');
 const sectionRouter = require('./routes/section');
 const lessonRoute = require('./routes/lesson');
 const categoryRoute = require('./routes/category');
 const userChapterProgressRoute = require('./routes/userChapterProgress');
+const keys = require('./utils/auth/key');
+require('./utils/auth/passport');
 
 
 
@@ -37,6 +42,27 @@ const connect = async () => {
 app.get("/", (req, res) => {
     res.send("api is working")
 })
+
+// Oauth cookie
+app.use(
+    cookieSession({
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      keys: [keys.cookieKey]
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+app.get('/auth/google',
+    passport.authenticate('google',
+        {
+            scope: ['profile', 'email']
+        })
+);
+
+app.get('/auth/google/callback', passport.authenticate('google'));
 
 /// middleware
 app.use(express.json())
