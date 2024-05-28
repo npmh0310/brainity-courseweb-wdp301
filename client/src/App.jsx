@@ -18,6 +18,10 @@ import Dashboard from "./components/common/Admin/default/Dashboard";
 import ConfirmTeacherTable from "./components/common/Admin/confirmTeacher/confirmTeacher";
 import ConfirmCourseTable from "./components/common/Admin/confirmCourse/confirmCourse";
 import ConfirmBlogTable from "./components/common/Admin/confirmBlog/confirmBlog";
+import ProfileUserPage from "./pages/ProfileUserPage";
+import InformationProfile from "./components/ProfileUser/InformationProfile";
+import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
+import Security from "./components/ProfileUser/Security";
 
 function App() {
   return (
@@ -42,6 +46,7 @@ function App() {
         <Routes>
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+
           <Route path="/" element={<MainLayout />}>
             {routes.map((route, index) =>
               route.index ? (
@@ -54,6 +59,28 @@ function App() {
                     </PageWrapper>
                   }
                 />
+              ) : route.children ? (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <PageWrapper state={route.state}>
+                      {route.element}
+                    </PageWrapper>
+                  }
+                >
+                  {route.children.map((childRoute, childIndex) => (
+                    <Route
+                      key={childIndex}
+                      path={childRoute.path}
+                      element={
+                        <PageWrapper state={childRoute.state}>
+                          {childRoute.element}
+                        </PageWrapper>
+                      }
+                    />
+                  ))}
+                </Route>
               ) : (
                 <Route
                   path={route.path}
@@ -80,3 +107,16 @@ function App() {
 }
 
 export default App;
+
+{/* <Route path="/" element={<MainLayout />}>
+  <Route index element={<HomePage />} />
+  <Route path="signin" element={<SignInPage />} />
+  <Route path="signup" element={<SignUpPage />} />
+  <Route path="path" element={<PathPage />} />
+  <Route path="categories" element={<Categories />} />
+  <Route path="mylearningcourse" element={<MyLearningCourse />} />
+  <Route path="profile" element={<ProfileUserPage />}>
+    <Route path="favoritecourses" element={<FavoriteCourses />} />
+    <Route path="security" element={<Security />} />
+  </Route>
+</Route>; */}
