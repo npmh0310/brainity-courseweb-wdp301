@@ -10,6 +10,11 @@ import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import LearningPage from "./pages/LearningPage";
+import CourseContent from "./components/LearningPage/CourseContent/CourseContent";
+import OverView from "./components/LearningPage/OverView/OverView";
+import Search from "./components/LearningPage/Search/Search";
+import Exercise from "./components/LearningPage/Exercise/Exercise";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 // import Market from "./components/common/Admin/marketplace/index"
@@ -22,6 +27,7 @@ import ProfileUserPage from "./pages/ProfileUserPage";
 import InformationProfile from "./components/ProfileUser/InformationProfile";
 import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
 import Security from "./components/ProfileUser/Security";
+
 
 function App() {
   return (
@@ -94,11 +100,19 @@ function App() {
               )
             )}
           </Route>
+
+          <Route path="learning/*" element = {<LearningPage/>}>
+            <Route path="courseContent" element={<CourseContent/>} />
+            <Route path="overView" element={<OverView/>} />
+            <Route path="search" element={<Search/>}/>
+            <Route path="exercise" element={<Exercise/>}/>
+          </Route>
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
             <Route path="confirmCourse" element={<ConfirmCourseTable />} />
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
+
           </Route>
         </Routes>
       </BrowserRouter>
