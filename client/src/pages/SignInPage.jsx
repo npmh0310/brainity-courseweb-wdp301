@@ -7,8 +7,13 @@ import IconFacebook from "..//assets/svgicon/icons8-google.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "../components/common/Logo";
+import { useDispatch } from "react-redux"
+import { onLogin } from "../fetchData/User";
+import { loginSuccess } from "../redux/features/authSlice";
+
+
 function SignInPage() {
   const [displayText, setDisplayText] = useState("");
   const name =
@@ -58,6 +63,34 @@ function SignInPage() {
   };
 
   const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [credentials, setCredentials] = useState({
+    email: undefined,
+    password: undefined
+  })
+
+  const handleChange = (e) => {
+    setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }))
+  };
+
+  const handleClick = async (e) => {
+    e.preventDefault()
+    let res = await onLogin(credentials);
+    console.log(res)
+    if (res && res.status === 200) {
+      dispatch(loginSuccess({
+        user: res.data.data,
+        isLogin: true
+      }));
+      navigate('/')
+    }
+
+  }
+
+  const handleLoginGoogle = () => {
+    window.open("http://localhost:4000/auth/google/", "_self")
+  }
 
   return (
     <div className="w-full m-auto bg-white relative">
@@ -109,6 +142,7 @@ function SignInPage() {
                   type="text"
                   placeholder={signInData.userName.placeholder}
                   id="username"
+                  onChange={handleChange}
                 />
               </div>
               <div>
@@ -134,7 +168,8 @@ function SignInPage() {
                   placeholder={signInData.password.placeholder}
                   id="password"
                   class="bg-gray-50 border h-12 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  required=""
+                  required
+                  onChange={handleChange}
                 />
               </div>
               <div className="flex flex-row justify-between items-center h-6">
@@ -143,14 +178,20 @@ function SignInPage() {
                 <hr className="w-[50%]"></hr>
               </div>
               <div className="flex flex-col justify-center w-full gap-y-3 xl:flex-col items-center xl:gap-x-4">
-                <button className="text-center border border-gray-300   w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center">
+                <button
+                  type="button"
+                  className="text-center border border-gray-300   w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center">
                   <img src={IconGoolge} className="w-6 mx-2" alt="" />
-                  <p className="text-[13px]"> Sign in with Google</p>
+                  <p className="text-[13px]"> Sign in with Facebook</p>
                 </button>
 
-                <button className="text-center border border-gray-300 w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center">
+                <button
+                  onClick={handleLoginGoogle}
+                  type="button"
+                  className="text-center border border-gray-300 w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center"
+                >
                   <img src={IconFacebook} className="w-6 mx-2" alt="" />
-                  <p className="text-[13px]"> Sign in with Facebook</p>
+                  <p className="text-[13px]"> Sign in with Google</p>
                 </button>
               </div>
               <div className="flex items-center justify-between h-[40px]">
@@ -181,7 +222,9 @@ function SignInPage() {
                 </a>
               </div>
               <div className="button-login text-center ">
-                <button className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]">
+                <button
+                  onClick={handleClick}
+                  className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]">
                   {signInData.buttonLogin}
                 </button>
               </div>

@@ -13,9 +13,9 @@ const sectionRouter = require('./routes/section');
 const lessonRoute = require('./routes/lesson');
 const categoryRoute = require('./routes/category');
 const userChapterProgressRoute = require('./routes/userChapterProgress');
-const keys = require('./utils/auth/key');
 const oauth2Route = require('./routes/oauth2');
 require('./utils/auth/passport');
+var jwt = require('jsonwebtoken');
 
 
 
@@ -47,8 +47,8 @@ app.get("/", (req, res) => {
 // Oauth cookie
 app.use(
     cookieSession({
-      maxAge: 15 * 24 * 60 * 60 * 1000,
-      keys: [keys.cookieKey]
+        maxAge: 15 * 24 * 60 * 60 * 1000,
+        keys: [process.env.COOKIE_KEY]
     })
 );
 
@@ -64,32 +64,47 @@ app.get('/auth/google',
 );
 
 app.get('/auth/google/callback',
-(req,res,next)=> {
-    passport.authenticate(
+    (req, res, next) => {
+        passport.authenticate(
 
-        'google',
+            'google',
 
-        { failureRedirect: '/login', failureMessage: true }, 
-        
-        async (error, user , info) => {
-        if (error){
-            return res.send({ message:error.message });
-        }
-        if (user){
-            try {
-                console.warn("hihi")
-            // your success code
-                return res.status(200).send({
-                    user: user,
-                    message:'Login Successful' 
-                });
-            } catch (error) {
-            // error msg 
-                return res.send({ message: error.message });
-            }
-        }
-        })(req,res,next);
-  });
+            { successRedirect: 'http://localhost:3000/', failureRedirect: '/login', failureMessage: true },
+
+            async (error, user, info) => {
+                if (error) {
+                    return res.send({ message: error.message });
+                }
+                console.log(user)
+                if (user) {
+                    try {
+                        const token = jwt.sign(
+                            { id: user._id, role: user.role },
+                            process.env.JWT_SECRET_KEY,
+                            { expiresIn: "15d" }
+                        )
+
+                        console.warn("hihi")
+                        // your success code
+                        return res
+                            .cookie('accessToken', token, {
+                                httpOnly: true,
+                                expires: token.expiresIn
+                            })
+                            .status(200)
+                            // .send({
+                            //     user: user,
+                            //     message: 'Login Successful'
+                            // })
+                            .redirect("http://localhost:3000/")
+                            ;
+                    } catch (error) {
+                        // error msg 
+                        return res.send({ message: error.message });
+                    }
+                }
+            })(req, res, next);
+    });
 
 /// middleware
 app.use(express.json())

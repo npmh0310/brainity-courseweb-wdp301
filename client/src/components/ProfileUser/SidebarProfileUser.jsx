@@ -3,6 +3,7 @@ import Avatar from "../../assets/images/6298053d43cd1.jpg";
 import { Link, useLocation } from "react-router-dom";
 import { User, Shield, FolderHeart } from "lucide-react";
 import { Link as Link2 } from "lucide-react";
+import { useSelector } from "react-redux";
 const SidebarProfileUser = () => {
   const [activeItem, setActiveItem] = useState("");
   const location = useLocation(); //save location hiện tại
@@ -40,6 +41,7 @@ const SidebarProfileUser = () => {
       setActiveItem(currentItem.key);
     }
   }, [location.pathname, profileItem]);
+  const user = useSelector((state) => state.auth.user)
 
   return (
     <div className=" w-full md:w-[30%] h-[560px] bg-white mt-8 border pb-10 border-gray-200 rounded-md">
@@ -48,9 +50,9 @@ const SidebarProfileUser = () => {
           My profile
         </h1>
         <div className="flex flex-col items-center gap-y-4 mt-8">
-          <img className="rounded-full" src={Avatar} alt="" />
+          <img className="rounded-full w-[140px] h-[140px]" src={user.avatar} alt="" />
           <h2 className="text-lg font-medium text-center">
-            Nguyen Phuoc Minh Hieu
+            {user.username}
           </h2>
           <button className="border flex items-center gap-x-3  border-third px-5 py-3 rounded-md text-third text-[13px]">
             {" "}
@@ -62,9 +64,8 @@ const SidebarProfileUser = () => {
         {profileItem.map((item, index) => (
           <li
             key={index}
-            className={` text-third font-medium  ${
-              activeItem === item.key ? "bg-third bg-opacity-10" : ""
-            } hover:bg-third hover:bg-opacity-10 `}
+            className={` text-third font-medium  ${activeItem === item.key ? "bg-third bg-opacity-10" : ""
+              } hover:bg-third hover:bg-opacity-10 `}
             onClick={() => handleActiveItem(item.key)}
           >
             <Link
