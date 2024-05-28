@@ -27,9 +27,18 @@ import ProfileUserPage from "./pages/ProfileUserPage";
 import InformationProfile from "./components/ProfileUser/InformationProfile";
 import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
 import Security from "./components/ProfileUser/Security";
+import { useEffect } from "react";
+import { validateToken } from "./redux/features/authSlice";
 
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(validateToken());
+  }, [dispatch]);
+
   return (
     <>
       <GlobalStyles
@@ -101,11 +110,11 @@ function App() {
             )}
           </Route>
 
-          <Route path="learning/*" element = {<LearningPage/>}>
-            <Route path="courseContent" element={<CourseContent/>} />
-            <Route path="overView" element={<OverView/>} />
-            <Route path="search" element={<Search/>}/>
-            <Route path="exercise" element={<Exercise/>}/>
+          <Route path="learning/*" element={<LearningPage />}>
+            <Route path="courseContent" element={<CourseContent />} />
+            <Route path="overView" element={<OverView />} />
+            <Route path="search" element={<Search />} />
+            <Route path="exercise" element={<Exercise />} />
           </Route>
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />

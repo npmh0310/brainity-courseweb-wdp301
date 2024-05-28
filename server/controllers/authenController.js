@@ -5,15 +5,14 @@ const Course = require('../models/course');
 const { addProgress } = require('./userChapterProgressController')
 const register = async (req, res) => {
     try {
-
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
 
         const newUser = new User({
             username: req.body.username,
             email: req.body.email,
-            phoneNumber: req.body.phoneNumber,
-            password: hash
+            password: hash,
+            avatar: "https://upanh.tv/image/23qwLT"
         })
 
         await newUser.save()
@@ -25,7 +24,7 @@ const register = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: 'Failed to create. Try again'
+            message: err.message
         })
 
     }
@@ -235,6 +234,34 @@ const updateUserFreeCourse = async (req, res) => {
     }
 };
 
+const getProfile = async (req, res) => {
+
+    const id = req.user.id
+
+    try {
+        const getProfile = await User.findById(id);
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully get profile",
+            data: getProfile,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to get profile. Try again",
+        });
+    }
+};
+
+const logout = async (req, res) => {
+    res.clearCookie('accessToken');
+    res.status(200).json({
+        success: true,
+        message: 'Logout successful'
+    });
+}
+
 module.exports = {
     register,
     login,
@@ -243,5 +270,7 @@ module.exports = {
     getAllUser,
     getUserById,
     updateUserFreeCourse,
-    updateUser
+    updateUser,
+    getProfile,
+    logout
 }
