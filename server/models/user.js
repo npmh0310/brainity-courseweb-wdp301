@@ -10,12 +10,12 @@ const userSchema = new mongoose.Schema(
         },
         username: {
             type: String,
-            required: true,
-            unique: true,
+            // required: true,
+            // unique: true,
         },
         password: {
             type: String,
-            required: true,
+            // required: true,
         },
         email: {
             type: String,
@@ -31,11 +31,11 @@ const userSchema = new mongoose.Schema(
         },
         address: {
             type: String,
-            required: true            
+            // required: true            
         },
         gender: {
             type: Boolean,
-            required: true
+            // required: true
         },
         phoneNumber: {
             type: String,
@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema(
         },
         bio: {
             type: String,
-            required: true
+            // required: true
         },
         coursesEnrolled: [{
             type: mongoose.Schema.Types.ObjectId,

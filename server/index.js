@@ -14,6 +14,7 @@ const lessonRoute = require('./routes/lesson');
 const categoryRoute = require('./routes/category');
 const userChapterProgressRoute = require('./routes/userChapterProgress');
 const keys = require('./utils/auth/key');
+const oauth2Route = require('./routes/oauth2');
 require('./utils/auth/passport');
 
 
@@ -46,7 +47,7 @@ app.get("/", (req, res) => {
 // Oauth cookie
 app.use(
     cookieSession({
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: 15 * 24 * 60 * 60 * 1000,
       keys: [keys.cookieKey]
     })
 );
@@ -62,7 +63,33 @@ app.get('/auth/google',
         })
 );
 
-app.get('/auth/google/callback', passport.authenticate('google'));
+app.get('/auth/google/callback',
+(req,res,next)=> {
+    passport.authenticate(
+
+        'google',
+
+        { failureRedirect: '/login', failureMessage: true }, 
+        
+        async (error, user , info) => {
+        if (error){
+            return res.send({ message:error.message });
+        }
+        if (user){
+            try {
+                console.warn("hihi")
+            // your success code
+                return res.status(200).send({
+                    user: user,
+                    message:'Login Successful' 
+                });
+            } catch (error) {
+            // error msg 
+                return res.send({ message: error.message });
+            }
+        }
+        })(req,res,next);
+  });
 
 /// middleware
 app.use(express.json())
@@ -76,6 +103,8 @@ app.use('/api/v1/section', sectionRouter)
 app.use('/api/v1/lesson', lessonRoute)
 app.use('/api/v1/userChapterProgress', userChapterProgressRoute)
 
+//Oauth2
+app.use('/auth', oauth2Route)
 
 
 

@@ -18,36 +18,32 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use(
-    new GoogleStrategy({
+    new GoogleStrategy(
+      {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: '/auth/google/callback'
-    }, (accessToken, done, mailInfo) => {
-  
-        console.log("come")
-        console.log("profile: " + accessToken)
-        console.log("done: " + done)
-        console.log(mailInfo)
+      }, 
+      (accessToken, refreshToken, mailInfo, done) => {
+      console.log("accessToken: " + accessToken);
 
       // Check if google profile exist.
-      // if (profile.id) {
-  
-      //   User.findOne({googleId: profile.id})
-      //     .then((existingUser) => {
-      //       if (existingUser) {
-      //           console.log("existing user!")
-      //         done(null, existingUser);
-      //       } else {
-      //           console.log("new user created! ", profile.name.familyName + " " + profile.name.givenName)
-      //         new User({
-      //           googleId: profile.id,
-      //           email: profile.emails[0].value,
-      //           name: profile.name.familyName + ' ' + profile.name.givenName
-      //         })
-      //           .save()
-      //           .then(user => done(null, user));
-      //       }
-      //     })
-      // }
+      if (mailInfo.id) {
+        User.findOne({googleId: mailInfo.id})
+          .then((existingUser) => {
+            if (existingUser) {
+                done(null, existingUser);
+            } else {
+              new User({
+                googleId: mailInfo.id,
+                email: mailInfo.emails[0].value,
+                name: mailInfo.name.familyName + ' ' + mailInfo.name.givenName,
+                username: mailInfo.emails[0].value
+              })
+                .save()
+                .then(user => done(null, user));
+            }
+          })
+      }
     })
   );

@@ -22,7 +22,7 @@
     "mongodb": "^6.4.0",
     "mongoose": "^8.2.0",
     "nodemon": "^3.1.0",
-    "passport": "^0.7.0",
+    "passport": "^0.5.3",
     "passport-google-oauth20": "^2.0.0",
     "passport-strategy": "^1.0.0"
   }
