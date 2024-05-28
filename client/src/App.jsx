@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
+import AdminLayout from "./components/layout/AdminLayout";
 import routes from "./routes/routes";
 import PageWrapper from "./components/common/PageWrapper";
 
@@ -11,7 +12,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+// import Market from "./components/common/Admin/marketplace/index"
 import { GlobalStyles } from "@mui/material";
+import Dashboard from "./components/common/Admin/default/Dashboard";
+import ConfirmTeacherTable from "./components/common/Admin/confirmTeacher/confirmTeacher";
+import ConfirmCourseTable from "./components/common/Admin/confirmCourse/confirmCourse";
+import ConfirmBlogTable from "./components/common/Admin/confirmBlog/confirmBlog";
 import ProfileUserPage from "./pages/ProfileUserPage";
 import InformationProfile from "./components/ProfileUser/InformationProfile";
 import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
@@ -87,6 +93,12 @@ function App() {
                 />
               )
             )}
+          </Route>
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
+            <Route path="confirmCourse" element={<ConfirmCourseTable />} />
+            <Route path="confirmBlog" element={<ConfirmBlogTable />} />
+            <Route path="default" element={<Dashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>
