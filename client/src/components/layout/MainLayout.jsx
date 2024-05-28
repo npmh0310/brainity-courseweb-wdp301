@@ -17,7 +17,7 @@ const MainLayout = () => {
         <GlobalLoading />
         {/* global loading */}
         {/* Main */}
-        <div className="pt-[86px]">
+        <div className="pt-[76px]">
           {" "}
           <Outlet />
         </div>
