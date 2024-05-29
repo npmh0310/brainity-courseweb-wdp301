@@ -30,9 +30,7 @@ import Security from "./components/ProfileUser/Security";
 import { useEffect } from "react";
 import { validateToken } from "./redux/features/authSlice";
 
-
 function App() {
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -117,11 +115,11 @@ function App() {
             <Route path="exercise" element={<Exercise />} />
           </Route>
           <Route path="/admin/*" element={<AdminLayout />}>
+            <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
             <Route path="confirmCourse" element={<ConfirmCourseTable />} />
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
-
           </Route>
         </Routes>
       </BrowserRouter>
@@ -131,7 +129,8 @@ function App() {
 
 export default App;
 
-{/* <Route path="/" element={<MainLayout />}>
+{
+  /* <Route path="/" element={<MainLayout />}>
   <Route index element={<HomePage />} />
   <Route path="signin" element={<SignInPage />} />
   <Route path="signup" element={<SignUpPage />} />
@@ -142,4 +141,5 @@ export default App;
     <Route path="favoritecourses" element={<FavoriteCourses />} />
     <Route path="security" element={<Security />} />
   </Route>
-</Route>; */}
+</Route>; */
+}
