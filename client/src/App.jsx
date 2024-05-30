@@ -4,6 +4,8 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import AdminLayout from "./components/layout/AdminLayout";
 import routes from "./routes/routes";
+import teacherRoutes from "./routes/teacher.routes";
+
 import PageWrapper from "./components/common/PageWrapper";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -24,11 +26,14 @@ import ConfirmTeacherTable from "./components/common/Admin/confirmTeacher/confir
 import ConfirmCourseTable from "./components/common/Admin/confirmCourse/confirmCourse";
 import ConfirmBlogTable from "./components/common/Admin/confirmBlog/confirmBlog";
 import ProfileUserPage from "./pages/ProfileUserPage";
+import TeacherPage from "./pages/Teacher/TeacherPage";
+import CourseDetail from "./components/Teacher/ManageCourses/CourseDetail";
 import InformationProfile from "./components/ProfileUser/InformationProfile";
 import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
 import Security from "./components/ProfileUser/Security";
 import { useEffect } from "react";
 import { validateToken } from "./redux/features/authSlice";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -59,7 +64,20 @@ function App() {
         <Routes>
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-
+          <Route path="/teacher" element={<TeacherPage />}>
+            {teacherRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element}>
+                {route.children &&
+                  route.children.map((child, childIndex) => (
+                    <Route
+                      key={childIndex}
+                      path={child.path}
+                      element={child.element}
+                    />
+                  ))}
+              </Route>
+            ))}
+          </Route>
           <Route path="/" element={<MainLayout />}>
             {routes.map((route, index) =>
               route.index ? (
