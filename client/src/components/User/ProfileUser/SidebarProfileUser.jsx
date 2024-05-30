@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Avatar from "../../assets/images/6298053d43cd1.jpg";
+import Avatar from "../../../assets/images/6298053d43cd1.jpg";
 import { Link, useLocation } from "react-router-dom";
 import { User, Shield, FolderHeart } from "lucide-react";
 import { Link as Link2 } from "lucide-react";
