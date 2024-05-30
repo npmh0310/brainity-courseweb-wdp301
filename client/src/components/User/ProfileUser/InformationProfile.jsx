@@ -1,9 +1,14 @@
 import React from "react";
-import IconFacebook from "../../../assets/svgicon/icons8-facebook.svg";
-import IconLinkedin from "../../../assets/svgicon/icons8-linkedin.svg";
-import IconGithub from "../../../assets/svgicon/iconmonstr-github-1.svg";
+import IconFacebook from "../../assets/svgicon/icons8-facebook.svg";
+import IconLinkedin from "../../assets/svgicon/icons8-linkedin.svg";
+import IconGithub from "../../assets/svgicon/iconmonstr-github-1.svg";
+import { useSelector } from "react-redux";
 
 const InformationProfile = () => {
+
+  const user = useSelector((state) => state.auth.user)
+
+
   return (
     <div className="w-full md:w-[65%]  bg-white mt-8  border py-8 px-8 border-gray-200 rounded-md">
       <h1 className="text-2xl uppercase font-bold border-b-[1px] border-b-gray-200 pb-6 text-third text-center italic">
@@ -25,7 +30,7 @@ const InformationProfile = () => {
                   className=" h-10 text-gray-900 sm:text-sm  block w-full px-5 border border-gray-200 rounded-lg  focus:outline-none focus:border-primary focus:ring-1 focus:ring-sky-300 hover:border-gray-700 "
                   name="fullname"
                   type="text"
-                  placeholder="Nguyen Phuoc Minh Hieu"
+                  placeholder={user.username}
                   id="fullname"
                 />
               </div>
@@ -40,7 +45,7 @@ const InformationProfile = () => {
                   className=" h-10 text-gray-900 sm:text-sm  block w-full px-5 border border-gray-200 rounded-lg  focus:outline-none focus:border-primary focus:ring-1 focus:ring-sky-300 hover:border-gray-700 "
                   name="email"
                   type="email"
-                  placeholder="nguyenphuocminhhieu310@gmail.com"
+                  placeholder={user.email}
                   id="email"
                 />
               </div>
