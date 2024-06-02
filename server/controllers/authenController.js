@@ -12,7 +12,7 @@ const register = async (req, res) => {
             username: req.body.username,
             email: req.body.email,
             password: hash,
-            avatar: "https://upanh.tv/image/23qwLT"
+            avatar: "https://img.upanh.tv/2024/05/29/imagec044add25318cd59.png"
         })
 
         await newUser.save()
