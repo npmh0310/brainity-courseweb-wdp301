@@ -8,6 +8,7 @@ import MyLearningCourse from "../pages/MyLearningCourse";
 import FavoriteCourses from "../components/ProfileUser/FavoriteCourses";
 import Security from "../components/ProfileUser/Security";
 import InformationProfile from "./../components/ProfileUser/InformationProfile";
+import CourseDetail from "../pages/CourseDetail";
 
 const routes = [
   { index: true, element: <HomePage />, state: "home" },
@@ -44,6 +45,10 @@ const routes = [
       },
     ],
   },
+  {
+    path : "course/:id",
+    element: <CourseDetail/>
+  }
 ];
 
 export default routes;

@@ -1,5 +1,5 @@
 import { Checkbox } from 'flowbite-react'
-import { ChevronDown, File, Play, Video } from 'lucide-react'
+import { ChevronDown, File, MonitorPlay, Play, Video } from 'lucide-react'
 import React from 'react'
 
 function Chapter() {
@@ -10,9 +10,9 @@ function Chapter() {
         </div>
         <div className=' w-full'>
             <p className=' text-sm px-2 pb-1 '>What is React js</p>
-            <div className=' flex justify-between items-center'>
+            <div className=' px-2 flex justify-between items-center'>
                 <div className=' flex gap-1 items-center '>
-                    <Play size={14}/>
+                    <MonitorPlay size={14}/>
                     <span className='text-sm text-[#b0b0b0] '>2min</span>
                 </div>
                 <div className=' p-2 border-black border flex gap-2 items-center '>

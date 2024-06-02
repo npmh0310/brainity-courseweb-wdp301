@@ -6,7 +6,7 @@ import logoTest from '../../../assets/images/logoBrain.svg'
 const GlobalLoading = () => {
   const { globalLoading } = useSelector((state) => state.globalLoading);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (globalLoading) {

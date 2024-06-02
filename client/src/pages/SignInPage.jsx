@@ -77,6 +77,7 @@ function SignInPage() {
   const handleClick = async (e) => {
     e.preventDefault()
     let res = await onLogin(credentials);
+    
     console.log(res)
     if (res && res.status === 200) {
       dispatch(loginSuccess({
