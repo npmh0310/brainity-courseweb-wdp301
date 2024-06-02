@@ -2,17 +2,20 @@ var User = require('../models/user');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const Course = require('../models/course');
-const { addProgress } = require('./userChapterProgressController')
+const { addProgress } = require('./userChapterProgressController');
+
 const register = async (req, res) => {
     try {
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
+        const { avatar, password, ...otherFields } = req.body;
 
         const newUser = new User({
-            username: req.body.username,
-            email: req.body.email,
+            // username: req.body.username,
+            // email: req.body.email,
             password: hash,
-            avatar: "https://upanh.tv/image/23qwLT"
+            avatar: "https://upanh.tv/image/23qwLT",
+            ...otherFields
         })
 
         await newUser.save()
@@ -62,6 +65,7 @@ const login = async (req, res) => {
         )
 
         // set token in cookies
+        console.log("token: " + token)
         res.cookie('accessToken', token, {
             httpOnly: true,
             expires: token.expiresIn
