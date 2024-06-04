@@ -17,6 +17,7 @@ const teacherRequestRoute = require('./routes/teacherRequest');
 const oauth2Route = require('./routes/oauth2');
 require('./utils/auth/passport');
 var jwt = require('jsonwebtoken');
+const cartRoute = require('./routes/cart');
 
 
 
@@ -119,6 +120,7 @@ app.use('/api/v1/section', sectionRouter)
 app.use('/api/v1/lesson', lessonRoute)
 app.use('/api/v1/userChapterProgress', userChapterProgressRoute)
 app.use('/api/v1/teacherRequest', teacherRequestRoute)
+app.use('/api/v1/cart', cartRoute)
 
 //Oauth2
 app.use('/auth', oauth2Route)
