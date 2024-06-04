@@ -6,6 +6,11 @@ import SignUpPage from "../pages/SignUpPage";
 import BlogPage from "../pages/BlogPage";
 import BlogDetail from "../components/BlogPage/BlogDetail";
 import DraftEditor from "../components/BlogPage/WritingBlogForm";
+import ProfileUserPage from "../pages/ProfileUserPage";
+import MyLearningCourse from "../pages/MyLearningCourse";
+import FavoriteCourses from "../components/User/ProfileUser/FavoriteCourses";
+import Security from "../components/User/ProfileUser/Security";
+import InformationProfile from "./../components/User/ProfileUser/InformationProfile";
 
 const routes = [
   { index: true, element: <HomePage />, state: "home" },
@@ -17,15 +22,30 @@ const routes = [
   {
     path: "categories",
     element: <Categories />,
-    state: "path",
+    state: "categories",
+  },
+
+  {
+    path: "mylearningcourse",
+    element: <MyLearningCourse />,
   },
   {
-    path: "signin",
-    element: <SignInPage />,
-  },
-  {
-    path: "signup",
-    element: <SignUpPage />,
+    path: "profile",
+    element: <ProfileUserPage />,
+    children: [
+      {
+        path: "informationuser",
+        element: <InformationProfile />,
+      },
+      {
+        path: "favoritecourses",
+        element: <FavoriteCourses />,
+      },
+      {
+        path: "security",
+        element: <Security />,
+      },
+    ],
   },
   {
     path: "blogpage",

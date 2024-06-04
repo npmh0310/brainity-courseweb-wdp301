@@ -1,3 +1,5 @@
+const { keyframes } = require("@emotion/react");
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
@@ -42,6 +44,21 @@ module.exports = {
       dropShadow: {
         primary: "0px 4px 10px rgba(15, 27, 51, 0.05);",
       },
+      keyframes: {
+        'transCourse' : {
+          '0%' : {
+            transform: 'translateX(20px)',
+            opacity: 0.25
+          },
+          '100%' : {
+            transform: 'translateX(0)',
+            opacity: 1
+          }
+        }
+      },
+      animation: {
+        'transCourse' : 'transCourse 0.25s ease-in-out'
+      }
     },
   },
   plugins: [],

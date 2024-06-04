@@ -8,6 +8,7 @@ import IconFacebook from "../assets/svgicon/icons8-facebook.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { onRegister } from "../fetchData/User";
 
 const SignUpPage = () => {
   const signUpData = {
@@ -50,6 +51,32 @@ const SignUpPage = () => {
   };
   const [show, setShow] = useState(false);
 
+  const [credentials, setCredentials] = useState({
+    username: undefined,
+    email: undefined,
+    password: undefined
+  })
+
+  const navigate = useNavigate();
+
+  const handleChange = e => {
+    setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }))
+  };
+
+  const handleClick = async e => {
+    e.preventDefault()
+
+    let res = await onRegister(credentials);
+    console.log(res && res.status === 200)
+    if (res) {
+      navigate('/signin')
+    }
+  }
+
+  const handleLoginGoogle = () => {
+    window.open("http://localhost:4000/auth/google/", "_self")
+  }
+
   return (
     <div className="flex w-full  relative bg-white">
       <div>
@@ -79,7 +106,7 @@ const SignUpPage = () => {
                     className="text-[13px]  text-primary font-medium"
                     to="/signin"
                   >
-                  Sign in
+                    Sign in
                   </Link>
                 </div>
               </div>
@@ -89,6 +116,7 @@ const SignUpPage = () => {
                 type="text"
                 placeholder={signUpData.userName.placeholder}
                 id="username"
+                onChange={handleChange}
               />
             </div>
             <div className="">
@@ -103,7 +131,8 @@ const SignUpPage = () => {
                 id="email"
                 placeholder={signUpData.email.placeholder}
                 class="bg-gray-50 border h-12 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                required=""
+                required
+                onChange={handleChange}
               />
             </div>
             <div className="">
@@ -126,7 +155,8 @@ const SignUpPage = () => {
                 name="password"
                 placeholder={signUpData.password.placeholder}
                 class="bg-gray-50 border h-12 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                required=""
+                required
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -139,7 +169,9 @@ const SignUpPage = () => {
           </div>
 
           <div className="button-login text-center ">
-            <button className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]">
+            <button
+              onClick={handleClick}
+              className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]">
               {signUpData.buttonLogin}
             </button>
           </div>
@@ -149,7 +181,10 @@ const SignUpPage = () => {
             <hr className="w-[50%]"></hr>
           </div>
           <div className="flex flex-col justify-center w-full gap-y-3 xl:flex-col items-center xl:gap-x-4">
-            <button className="text-center border border-gray-300   w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center">
+            <button
+              onClick={handleLoginGoogle}
+              type="button"
+              className="text-center border border-gray-300   w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center">
               <img src={IconGoolge} className="w-6 mx-2" alt="" />
               <p className="text-[13px]"> Sign in with Google</p>{" "}
             </button>
