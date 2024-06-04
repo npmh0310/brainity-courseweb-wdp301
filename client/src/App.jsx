@@ -21,6 +21,8 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 // import Market from "./components/common/Admin/marketplace/index"
 import { GlobalStyles } from "@mui/material";
+import BlogPage from "./pages/BlogPage";
+import BlogDetail from "./components/BlogPage/BlogDetail";
 import Dashboard from "./components/common/Admin/default/Dashboard";
 import ConfirmTeacherTable from "./components/common/Admin/confirmTeacher/confirmTeacher";
 import ConfirmCourseTable from "./components/common/Admin/confirmCourse/confirmCourse";

@@ -3,6 +3,9 @@ import HomePage from "../pages/HomePage";
 import SignInPage from "../pages/SignInPage";
 import PathPage from "../pages/PathPage";
 import SignUpPage from "../pages/SignUpPage";
+import BlogPage from "../pages/BlogPage";
+import BlogDetail from "../components/BlogPage/BlogDetail";
+import DraftEditor from "../components/BlogPage/WritingBlogForm";
 import ProfileUserPage from "../pages/ProfileUserPage";
 import MyLearningCourse from "../pages/MyLearningCourse";
 import FavoriteCourses from "../components/User/ProfileUser/FavoriteCourses";
@@ -43,6 +46,18 @@ const routes = [
         element: <Security />,
       },
     ],
+  },
+  {
+    path: "blogpage",
+    element: <BlogPage />,
+  },
+  {
+    path: "/blogdetail/:id",
+    element: <BlogDetail />,
+  },
+  {
+    path: "/blogform",
+    element: <DraftEditor />,
   },
 ];
 
