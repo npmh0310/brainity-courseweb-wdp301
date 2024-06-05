@@ -54,10 +54,41 @@ module.exports = {
             transform: 'translateX(0)',
             opacity: 1
           }
+        },
+        'expand': {
+          '0%': {
+            height: 0,
+            opacity: 0.5
+          },
+          '100%': {
+            height: '100%',
+            opacity: 1
+          },
+        },
+        'collapse': {
+          '0%': {
+            height: '100%',
+            opacity: 1
+          },
+          '100%': {
+            height: '0',
+            opacity: 0
+          },
+        },
+        'open': {
+          '0%': {
+            opacity: 0,
+          },
+          '100%' : {
+            opacity: 1
+          }
         }
       },
       animation: {
-        'transCourse' : 'transCourse 0.25s ease-in-out'
+        'transCourse' : 'transCourse 0.25s ease-in-out',
+        'expand' : 'expand ease-in-out 2s  ',
+        'collapse' :'collapse ease-in-out 2s ',
+        'open' : 'open ease-in-out 0.5s'
       }
     },
   },
