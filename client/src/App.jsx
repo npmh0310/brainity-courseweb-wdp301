@@ -19,20 +19,19 @@ import Search from "./components/LearningPage/Search/Search";
 import Exercise from "./components/LearningPage/Exercise/Exercise";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
-// import Market from "./components/common/Admin/marketplace/index"
 import { GlobalStyles } from "@mui/material";
 import BlogPage from "./pages/BlogPage";
 import BlogDetail from "./components/BlogPage/BlogDetail";
-import Dashboard from "./components/common/Admin/default/Dashboard";
-import ConfirmTeacherTable from "./components/common/Admin/confirmTeacher/confirmTeacher";
-import ConfirmCourseTable from "./components/common/Admin/confirmCourse/confirmCourse";
-import ConfirmBlogTable from "./components/common/Admin/confirmBlog/confirmBlog";
+import Dashboard from "./components/Admin/default/Dashboard";
+import ConfirmTeacherTable from "./components/Admin/confirmTeacher/confirmTeacher";
+import ConfirmCourseTable from "./components/Admin/confirmCourse/confirmCourse";
+import ConfirmBlogTable from "./components/Admin/confirmBlog/confirmBlog";
 import ProfileUserPage from "./pages/ProfileUserPage";
 import TeacherPage from "./pages/Teacher/TeacherPage";
 import CourseDetail from "./components/Teacher/ManageCourses/CourseDetail";
-import InformationProfile from "./components/ProfileUser/InformationProfile";
-import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
-import Security from "./components/ProfileUser/Security";
+import InformationProfile from "./components/User/ProfileUser/InformationProfile";
+import FavoriteCourses from "./components/User/ProfileUser/FavoriteCourses";
+import Security from "./components/User/ProfileUser/Security";
 import { useEffect } from "react";
 import { validateToken } from "./redux/features/authSlice";
 

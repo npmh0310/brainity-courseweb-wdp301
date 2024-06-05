@@ -3,8 +3,8 @@
 import { HiX } from "react-icons/hi";
 import AdminLinks from "./AdminLinks";
 import { Link } from "react-router-dom";
-import routes from "../../../routes/admin.routes";
-import Logo from "../../../assets/images/logo.png";
+import routes from "../../routes/admin.routes";
+import Logo from "../../assets/images/logo.png";
 
 const AdminSidebar = ({ open, onClose }) => {
   return (

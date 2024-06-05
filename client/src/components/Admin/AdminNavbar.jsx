@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FiAlignJustify } from "react-icons/fi";
-import avatar from "../../../assets/images/Avatar/0_Mikel-Arteta.jpg";
+import avatar from "../../assets/images/Avatar/0_Mikel-Arteta.jpg";
 
 // Hàm hook để xử lý việc nhấn ra ngoài dropdown
 function useOutsideClick(ref, onClose) {

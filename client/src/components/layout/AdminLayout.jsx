@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useLocation, Outlet } from "react-router-dom";
-import Navbar from "../../components/common/Admin/AdminNavbar";
-import Sidebar from "../../components/common/Admin/AdminSidebar";
+import Navbar from "../../components/Admin/AdminNavbar";
+import Sidebar from "../../components/Admin/AdminSidebar";
 import routes from "../../routes/admin.routes";
 
 export default function AdminLayout(props) {
