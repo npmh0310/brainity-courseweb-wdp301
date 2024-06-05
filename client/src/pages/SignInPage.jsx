@@ -80,7 +80,6 @@ function SignInPage() {
     e.preventDefault()
     let res = await onLogin(credentials);
     dispatch(setGlobalLoading(true))
-    // console.log(res)
     if (res && res.status === 200) {
       dispatch(loginSuccess({
         user: res.data.data,

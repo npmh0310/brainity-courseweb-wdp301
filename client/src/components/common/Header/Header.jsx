@@ -18,7 +18,7 @@ const Header = () => {
   const [loginSuccess, setLogginSuccess] = useState(true);
 
   const user = useSelector((state) => state.auth.isLogin)
-  // console.log(user)
+  console.log(user)
 
   useEffect(() => {
     const handleScroll = () => {
