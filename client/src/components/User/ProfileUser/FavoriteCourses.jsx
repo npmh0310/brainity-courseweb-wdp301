@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import html from "../../assets/images/Product/html-css.jpg";
-import javascript from "../../assets/images/Product/js.jpg";
+import html from "../../../assets/images/Product/html-css.jpg";
+import javascript from "../../../assets/images/Product/js.jpg";
 
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -42,11 +42,11 @@ const Dashboard = () => {
   </div>
   <div className="my-8 grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="relative flex flex-col rounded-[20px]
-        bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-navy-800 dark:text-white dark:shadow-none p-3">
+        bg-white bg-clip-border shadow-3xl shadow-shadow-500 p-3">
         <PieChart />
       </div>
       <div className="relative flex flex-col rounded-[20px]
-        bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-navy-800 dark:text-white dark:shadow-none p-3">
+        bg-white bg-clip-border shadow-3xl shadow-shadow-500 p-3">
         <LineChart />
       </div>
     </div>
