@@ -2,7 +2,7 @@
 import React from 'react'
 import Star from '../assets/images/star.png'
 import { Check, Dot, Heart, Infinity, MonitorPlay, MonitorSmartphone, Trophy } from 'lucide-react'
-import Section from '../components/CourseDetail/Section/Section'
+import Section from '../components/User/CourseDetail/Section/Section'
 import { useState, useEffect, useRef } from 'react'
 
 function CourseDetail() {

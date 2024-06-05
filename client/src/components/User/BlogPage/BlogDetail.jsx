@@ -10,7 +10,7 @@ import {
   Twitter,
   Link2,
 } from "lucide-react";
-import BlogBg from "../../assets/images/Blog/blogbg2.jpg";
+import BlogBg from "../../../assets/images/Blog/blogbg2.jpg";
 import { BlogData } from "./BlogData";
 
 function BlogDetail() {

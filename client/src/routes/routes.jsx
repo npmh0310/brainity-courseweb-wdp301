@@ -4,13 +4,13 @@ import SignInPage from "../pages/SignInPage";
 import PathPage from "../pages/PathPage";
 import SignUpPage from "../pages/SignUpPage";
 import BlogPage from "../pages/BlogPage";
-import BlogDetail from "../components/BlogPage/BlogDetail";
-import DraftEditor from "../components/BlogPage/WritingBlogForm";
+import BlogDetail from "../components/User/BlogPage/BlogDetail";
+import DraftEditor from "../components/User/BlogPage/WritingBlogForm";
 import ProfileUserPage from "../pages/ProfileUserPage";
 import MyLearningCourse from "../pages/MyLearningCourse";
-import FavoriteCourses from "../components/ProfileUser/FavoriteCourses";
-import Security from "../components/ProfileUser/Security";
-import InformationProfile from "./../components/ProfileUser/InformationProfile";
+import FavoriteCourses from "../components/User/ProfileUser/FavoriteCourses";
+import Security from "../components/User/ProfileUser/Security";
+import InformationProfile from "./../components/User/ProfileUser/InformationProfile";
 import CourseDetail from "../pages/CourseDetail";
 
 
@@ -52,7 +52,8 @@ const routes = [
   {
     path : "course/:id",
     element: <CourseDetail/>
-  }
+  },
+  {
     path: "blogpage",
     element: <BlogPage />,
   },
