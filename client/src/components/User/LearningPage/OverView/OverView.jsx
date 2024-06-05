@@ -1,6 +1,6 @@
 
 import React from 'react'
-import Star from '../../../assets/images/star.png'
+import Star from '../../../../assets/images/star.png'
 import { Flag } from 'lucide-react'
 function OverView() {
     return (

@@ -13,28 +13,20 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import LearningPage from "./pages/LearningPage";
-import CourseContent from "./components/LearningPage/CourseContent/CourseContent";
-import OverView from "./components/LearningPage/OverView/OverView";
-import Search from "./components/LearningPage/Search/Search";
-import Exercise from "./components/LearningPage/Exercise/Exercise";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 // import Market from "./components/common/Admin/marketplace/index"
 import { GlobalStyles } from "@mui/material";
-import BlogPage from "./pages/BlogPage";
-import BlogDetail from "./components/BlogPage/BlogDetail";
 import Dashboard from "./components/common/Admin/default/Dashboard";
 import ConfirmTeacherTable from "./components/common/Admin/confirmTeacher/confirmTeacher";
 import ConfirmCourseTable from "./components/common/Admin/confirmCourse/confirmCourse";
 import ConfirmBlogTable from "./components/common/Admin/confirmBlog/confirmBlog";
-import ProfileUserPage from "./pages/ProfileUserPage";
+
 import TeacherPage from "./pages/Teacher/TeacherPage";
-import CourseDetail from "./components/Teacher/ManageCourses/CourseDetail";
-import InformationProfile from "./components/ProfileUser/InformationProfile";
-import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
-import Security from "./components/ProfileUser/Security";
+
 import { useEffect } from "react";
 import { validateToken } from "./redux/features/authSlice";
+import { routesLearningPage } from "./routes/learningPage.routes";
 
 
 function App() {
@@ -128,12 +120,17 @@ function App() {
             )}
           </Route>
 
+          {/* Route Learning Page */}
           <Route path="learning/*" element={<LearningPage />}>
-            <Route path="courseContent" element={<CourseContent />} />
-            <Route path="overView" element={<OverView />} />
-            <Route path="search" element={<Search />} />
-            <Route path="exercise" element={<Exercise />} />
+            {routesLearningPage.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                element= {route.element}/>
+            ))}
           </Route>
+
+
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
