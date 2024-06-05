@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import Chapter from '../../Chapter/Chapter'
+import Chapter from '../Chapter/Chapter'
 function Section() {
     const [show, setShow] = useState(false)
 

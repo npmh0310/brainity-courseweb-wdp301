@@ -2,7 +2,7 @@ import React from "react";
 import { Share2 } from "lucide-react";
 import { CgProfile } from "react-icons/cg";
 import BlogBg from "../assets/images/Blog/blogbg2.jpg";
-import { BlogData } from "../components/BlogPage/BlogData";
+import { BlogData } from "../components/User/BlogPage/BlogData";
 
 import { Link } from "react-router-dom";
 

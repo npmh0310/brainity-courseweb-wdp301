@@ -3,7 +3,7 @@ import { Logo } from '../components/common/Logo';
 import { ChevronDown, ChevronLeft, Forward, Search, SettingsIcon, Sparkle, X } from 'lucide-react';
 import { Box, Popover } from '@mui/material';
 import CircularProgress from '@mui/joy/CircularProgress';
-import Section from '../components/LearningPage/Section/Section';
+import Section from '../components/User/LearningPage/Section/Section';
 import Footer from '../components/common/Footer/Footer';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 
