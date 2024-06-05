@@ -11,15 +11,15 @@ export const routesLearningPage = [
     },
     {
         path: "overView",
-        elements: <OverView/>,
+        element: <OverView/>,
     },
     {
         path: "search",
-        elements: <Search/>,
+        element: <Search/>,
     },
     {
         path: "exercise",
-        elements: <Exercise/>,
+        element: <Exercise/>,
     }
 ]
 
