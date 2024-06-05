@@ -29,6 +29,7 @@ import FavoriteCourses from "./components/ProfileUser/FavoriteCourses";
 import Security from "./components/ProfileUser/Security";
 import { useEffect } from "react";
 import { validateToken } from "./redux/features/authSlice";
+import { Toaster } from 'react-hot-toast';
 
 
 function App() {
@@ -41,13 +42,17 @@ function App() {
 
   return (
     <>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
       <GlobalStyles
         styles={{
           body: { paddingRight: "0 !important", overflow: "auto !important" },
         }}
       />
       {/* config toastify */}
-      <ToastContainer
+      {/* <ToastContainer
         position="bottom-left"
         autoClose={5000}
         hideProgressBar={false}
@@ -55,7 +60,7 @@ function App() {
         closeOnClick
         pauseOnFocusLoss
         pauseOnHover
-      />
+      /> */}
 
       <BrowserRouter>
         <Routes>

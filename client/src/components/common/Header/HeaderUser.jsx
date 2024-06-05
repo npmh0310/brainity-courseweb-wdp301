@@ -14,7 +14,7 @@ function HeaderUser() {
   const user = useSelector((state) => state.auth.user)
   const isLogin = useSelector((state) => state.auth.isLogin)
 
-  console.log(user)
+  // console.log(user)
 
   const [showUserItem, setShowUserItem] = useState(false);
 

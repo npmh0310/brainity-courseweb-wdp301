@@ -4,17 +4,18 @@ import "./GlobalLoading.css";
 import logoTest from '../../../assets/images/logoBrain.svg'
 
 const GlobalLoading = () => {
-  const { globalLoading } = useSelector((state) => state.globalLoading);
+  const globalLoading = useSelector((state) => state.globalLoading.globalLoading);
+  console.log(globalLoading)
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (globalLoading) {
-      setIsLoading(true);
+      setIsLoading(globalLoading);
     } else {
       setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 1500);
     }
   }, [globalLoading]);
 
@@ -33,10 +34,10 @@ const GlobalLoading = () => {
         }}
       >
         {/* <section className="loading"> */}
-          {/* <div className="one"></div> */}
+        {/* <div className="one"></div> */}
         <section className="loading2">
-           <img className="w-[340px]" src={logoTest} alt="" />
-  
+          <img className="w-[340px]" src={logoTest} alt="" />
+
         </section>
         {/* </section> */}
       </div>
