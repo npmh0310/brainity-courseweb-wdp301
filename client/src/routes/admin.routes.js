@@ -1,14 +1,14 @@
 import React from "react";
 
 // Admin Imports
-import MainDashboard from "../components/common/Admin/default/Dashboard";
-import ConfirmTeacherTable from "../components/common/Admin/confirmTeacher/confirmTeacher";
+import MainDashboard from "../components/Admin/default/Dashboard";
+import ConfirmTeacherTable from "../components/Admin/confirmTeacher/confirmTeacher";
 
 import { MdHome } from "react-icons/md";
 import { FaChalkboardTeacher, FaBook } from "react-icons/fa";
 import { LuPencilLine } from "react-icons/lu";
-import ConfirmCourseTable from "../components/common/Admin/confirmCourse/confirmCourse";
-import ConfirmBlogTable from "../components/common/Admin/confirmBlog/confirmBlog";
+import ConfirmCourseTable from "../components/Admin/confirmCourse/confirmCourse";
+import ConfirmBlogTable from "../components/Admin/confirmBlog/confirmBlog";
 
 const routes = [
   {
