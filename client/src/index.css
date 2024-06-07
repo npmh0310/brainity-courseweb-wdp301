@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-      @apply bg-grey-3 font-primary text-base leading-relaxed;
-    }
-    .section {
-      @apply py-[50px] lg:py-[70px];
-    }
-    .title {
-      @apply text-2xl lg:text-[34px] leading-tight font-semibold mb-4;
-    }
-    .subtitle {
-      @apply text-[18px] lg:text-[20px] leading-relaxed mb-5 lg:mb-9;
-    }
+  body {
+    @apply bg-grey-3 font-primary text-base leading-relaxed;
   }
+  .section {
+    @apply py-[50px] lg:py-[70px];
+  }
+  .title {
+    @apply text-2xl lg:text-[34px] leading-tight font-semibold mb-4;
+  }
+  .subtitle {
+    @apply text-[18px] lg:text-[20px] leading-relaxed mb-5 lg:mb-9;
+  }
+}
+

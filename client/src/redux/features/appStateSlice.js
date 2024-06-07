@@ -9,7 +9,7 @@ export const appStateSlice = createSlice({
   },
   reducers: {
     setAppState: (state, action) => {
-      state.appState = action.payload;
+      state.appState = action.payload ;
     },
   },
 });

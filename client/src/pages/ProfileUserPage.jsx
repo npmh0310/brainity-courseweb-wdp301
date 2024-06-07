@@ -1,5 +1,5 @@
 import * as React from "react";
-import SidebarProfileUser from "../components/ProfileUser/SidebarProfileUser";
+import SidebarProfileUser from "../components/User/ProfileUser/SidebarProfileUser";
 
 import { Outlet } from "react-router-dom";
 
