@@ -2,17 +2,20 @@ var User = require('../models/user');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const Course = require('../models/course');
-const { addProgress } = require('./userChapterProgressController')
+const { addProgress } = require('./userChapterProgressController');
+
 const register = async (req, res) => {
     try {
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
+        const { avatar, password, ...otherFields } = req.body;
 
         const newUser = new User({
-            username: req.body.username,
-            email: req.body.email,
+            // username: req.body.username,
+            // email: req.body.email,
             password: hash,
-            avatar: "https://img.upanh.tv/2024/05/29/imagec044add25318cd59.png"
+            avatar: "https://img.upanh.tv/2024/05/29/imagec044add25318cd59.png",
+            ...otherFields
         })
 
         await newUser.save()
@@ -62,6 +65,7 @@ const login = async (req, res) => {
         )
 
         // set token in cookies
+        console.log("token: " + token)
         res.cookie('accessToken', token, {
             httpOnly: true,
             expires: token.expiresIn
@@ -122,12 +126,20 @@ const getUserById = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const getUserById = await User.findById(id).populate('coursesEnrolled')
+        const user = await User.findById(id)
+        .populate('coursesEnrolled')
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            })
+        }
 
         res.status(200).json({
             success: true,
             message: "Successfully get User",
-            data: getUserById
+            data: user
         })
     } catch (err) {
         res.status(500).json({
