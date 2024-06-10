@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Ellipsis } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -7,14 +7,25 @@ import ButtonAdd from "../common/ButtonAdd";
 
 import Modal from "@mui/material/Modal";
 import ModalCourse from "./ModalCourse";
+import { getCourseOfTeacher } from "../../../fetchData/TeacherCourse";
 
-const TableCourses = ({ courses }) => {
+const TableCourses = () => {
   const navigate = useNavigate();
 
   const headers = ["Course name", "Price", "Created", "Published", ""];
+  const [courses, setCourses] = useState([])
+
+  const [status, setStatus] = useState(false)
+
+  useEffect(() => {
+    getCourseOfTeacher().then(res => { console.log(res); setCourses(res.data.data) })
+    setStatus(false)
+  }, [status])
+
+
 
   const handleRowClick = (course) => {
-    navigate(`/teacher/managecourses/${course.urlLink}`);
+    navigate(`/teacher/managecourses/${course.courseName}`);
   };
 
   const [open, setOpen] = React.useState(false);
@@ -38,7 +49,7 @@ const TableCourses = ({ courses }) => {
             aria-describedby="modal-modal-description"
           >
             <>
-              <ModalCourse handleClose={handleClose} />
+              <ModalCourse handleClose={handleClose} setStatus={setStatus} />
             </>
           </Modal>
         </div>
@@ -59,17 +70,16 @@ const TableCourses = ({ courses }) => {
             </thead>
             <tbody>
               {/* {courses.length > 0 ? ( */}
-              {courses.map((course, index) => (
+              {courses?.map((course, index) => (
                 <tr
-                  key={course.id}
-                  className={`hover:bg-gray-100 cursor-pointer text-sm ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  }`}
+                  key={index + 1}
+                  className={`hover:bg-gray-100 cursor-pointer text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    }`}
                   onClick={() => handleRowClick(course)}
                 >
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     <p className="text-gray-900 whitespace-no-wrap">
-                      {course.name}
+                      {course.courseName}
                     </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -78,17 +88,16 @@ const TableCourses = ({ courses }) => {
                     </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    <span className="relative">{course.created}</span>
+                    <span className="relative">{course.createdAt}</span>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     <h1
-                      className={`${
-                        course.published === "published"
-                          ? "bg-green-400"
-                          : course.published === "pending"
+                      className={`${course.isPublic
+                        ? "bg-green-400"
+                        : !course.isPublic
                           ? "bg-gray-300"
                           : "bg-red-400"
-                      }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
+                        }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >
                       {course.published}
                     </h1>

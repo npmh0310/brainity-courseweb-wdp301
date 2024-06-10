@@ -145,7 +145,7 @@ const ManageCourses = () => {
     ? courses.find((course) => course.urlLink === urlLink)
     : null;
   const showCreateNewChapter = sectionId && selectedCourse;
-  
+
   const selectedSection = sectionId
     ? selectedCourse?.sections.find((section) => section.sectionId === parseInt(sectionId))
     : null;
@@ -184,11 +184,11 @@ const ManageCourses = () => {
           </div>
           {/* header */}
           {showTableCourses ? (
-            <TableCourses courses={courses} />
+            <TableCourses />
           ) : showCreateNewChapter ? (
-            <ManageSection section={selectedSection} />
+            <ManageSection />
           ) : (
-            <CourseDetail course={selectedCourse} />
+            <CourseDetail />
           )}
         </div>
       </div>

@@ -2,6 +2,31 @@
 var Section = require('../models/section')
 const Course = require('../models/course')
 
+// teacher
+const createChapterInCourse = async (req, res) => {
+    const courseId = req.params.courseId;
+    const newChapter = new Section({ ...req.body })
+
+    try {
+        const savedChapter = await newChapter.save()
+
+        await Course.findByIdAndUpdate(courseId, {
+            $push: { sections: savedChapter._id }
+        })
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully Section submitted",
+            data: savedChapter
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to submit. Try again"
+        })
+    }
+}
+
 
 const createChapter = async (req, res) => {
     const newChapter = new Section(req.body)
@@ -22,29 +47,7 @@ const createChapter = async (req, res) => {
     }
 }
 
-const createChapterInCourse = async (req, res) => {
-    const courseId = req.params.courseId;
-    const newChapter = new Section({ ...req.body })
 
-    try {
-        const savedChapter = await newChapter.save()
-
-        await Course.findByIdAndUpdate(courseId, {
-            $push: { chapters: savedChapter._id }
-        })
-
-        res.status(200).json({
-            success: true,
-            message: "Successfully Section submitted",
-            data: savedChapter
-        })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to submit. Try again"
-        })
-    }
-}
 
 const getAllChapter = async (req, res) => {
 
