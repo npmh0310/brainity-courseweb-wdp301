@@ -14,12 +14,12 @@ const lessonRoute = require('./routes/lesson');
 const categoryRoute = require('./routes/category');
 const userChapterProgressRoute = require('./routes/userChapterProgress');
 const teacherRequestRoute = require('./routes/teacherRequest');
-const oauth2Route = require('./routes/oauth2');
+const oauth2Route = require('./routes/configs/oauth2');
 require('./utils/auth/passport');
 var jwt = require('jsonwebtoken');
 const cartRoute = require('./routes/cart');
-
-
+// const favouriteRoute = require('./routes/favourite');
+const cloudinaryRoute = require('./routes/configs/cloudinary');
 
 dotenv.config();
 const app = express();
@@ -121,6 +121,8 @@ app.use('/api/v1/lesson', lessonRoute)
 app.use('/api/v1/userChapterProgress', userChapterProgressRoute)
 app.use('/api/v1/teacherRequest', teacherRequestRoute)
 app.use('/api/v1/cart', cartRoute)
+app.use('/api/v1/favourite', favouriteRoute)
+app.use('/api/v1/cloudinary', cloudinaryRoute)
 
 //Oauth2
 app.use('/auth', oauth2Route)
