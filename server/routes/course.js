@@ -13,7 +13,7 @@ courseRoute.get("/search/getCourseCount", getCourseCount);
 courseRoute.get("/getCourseFree", getFreeCourse);
 courseRoute.get("/getCoursePro", getProCourse);
 courseRoute.get("/:id", getCourseById);
-courseRoute.post("/", verifyTeacher, verifyAdmin, createCourse);
+courseRoute.post("/", verifyTeacher, createCourse);
 courseRoute.put("/:id", updateCourse);
 courseRoute.delete("/:id", deleteCourseById);
 

@@ -18,7 +18,7 @@ const oauth2Route = require('./routes/configs/oauth2');
 require('./utils/auth/passport');
 var jwt = require('jsonwebtoken');
 const cartRoute = require('./routes/cart');
-// const favouriteRoute = require('./routes/favourite');
+const favouriteRoute = require('./routes/favourite');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
 
 dotenv.config();

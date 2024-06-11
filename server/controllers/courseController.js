@@ -1,13 +1,17 @@
 
+const e = require('express')
 var Course = require('../models/course')
+const User = require('../models/user')
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 
 const createCourse = async (req, res) => {
-    const newCourse = new Course(req.body)
-
+    const newCourse = new Course({instructor: req.user.id, ...req.body})
+    console.log(newCourse)
     try {
         const savedCourse = await newCourse.save()
-
+        console.log(savedCourse)
         res.status(200).json({
             success: true,
             message: "Successfully created",
@@ -16,7 +20,7 @@ const createCourse = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: "Failed to create. Try again"
+            message: "Failed to create. Try again" + err
         })
     }
 }
@@ -27,13 +31,13 @@ const getAllCourse = async (req, res) => {
 
     try {
         const getAllCourse = await Course.find({})
-            .populate({
-                path: 'chapters',
-                populate: {
-                    path: 'lessons',
-                    model: 'Lesson' // Tên của mô hình Lesson
-                }
-            })
+            // .populate({
+            //     path: 'section',
+            //     populate: {
+            //         path: 'sections',
+            //         model: 'Section' // Tên của mô hình Lesson
+            //     }
+            // })
             .populate('categories')
             .skip(page * 8)
             .limit(8);
@@ -47,7 +51,7 @@ const getAllCourse = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: "Failed to get all. Try again"
+            message: "Failed to get all. Try again. Details:  " + err.message
         })
     }
 }
@@ -214,6 +218,23 @@ const getCourseCount = async (req, res) => {
     }
 }
 
+const getCourseNumOfEnrolled = async (courseId) => {
+        const course = new mongoose.Types.ObjectId(courseId);
+
+        const result = await User.aggregate([
+            {
+                $match: { coursesEnrolled: { $in: [course] } }
+            },
+            {
+                $group: {
+                    _id: null,  
+                    count: { $sum: 1 }
+                }
+            }
+        ]).exec();
+        return result[0] ? result[0].count : 1
+};
+
 module.exports = {
     createCourse,
     deleteCourseById,
@@ -224,5 +245,6 @@ module.exports = {
     getCourseBySearch,
     getCourseCount,
     getFreeCourse,
-    getProCourse
+    getProCourse,
+    getCourseNumOfEnrolled
 }
