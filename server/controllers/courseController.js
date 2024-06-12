@@ -235,6 +235,30 @@ const getCourseNumOfEnrolled = async (courseId) => {
         return result[0] ? result[0].count : 1
 };
 
+const enrollCourse = async (req, res) => {
+    const userId = req.user.id;
+    const courseId = req.body.courseId;
+
+    try {
+        const user = await User.findById(userId);
+
+        // Check if the course is already enrolled
+        if (user.coursesEnrolled.includes(courseId)) {
+        return res.status(400).json({ message: "Course already enrolled" });
+        }
+
+        user.coursesEnrolled.push(courseId);
+
+        // Save the updated user
+        await user.save();
+
+        res.status(200).json({ message: "Enrolled in the course successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 module.exports = {
     createCourse,
     deleteCourseById,
@@ -246,5 +270,6 @@ module.exports = {
     getCourseCount,
     getFreeCourse,
     getProCourse,
-    getCourseNumOfEnrolled
+    getCourseNumOfEnrolled,
+    enrollCourse
 }
