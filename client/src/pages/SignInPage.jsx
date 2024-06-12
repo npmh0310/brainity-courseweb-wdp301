@@ -12,30 +12,29 @@ import { Logo } from "../components/common/Logo";
 import { useDispatch } from "react-redux"
 import { onLogin } from "../fetchData/User";
 import { loginSuccess } from "../redux/features/authSlice";
-
+import Typewriter from 'typewriter-effect';
 
 function SignInPage() {
-  const [displayText, setDisplayText] = useState("");
-  const name =
-    '"Explore the World of Knowledge with Brainity - Your Premier Platform for Personal Growth! 🚀"';
+  // const [displayText, setDisplayText] = useState("");
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      let i = 0;
-      const typingEffect = setInterval(() => {
-        if (i < name.length) {
-          i++;
-          setDisplayText((prevText) => prevText + name.charAt(i - 1));
-        } else {
-          clearInterval(typingEffect);
-        }
-      }, 100);
 
-      return () => clearInterval(typingEffect);
-    }, 900); // Chờ 3 giây trước khi bắt đầu hiệu ứng ghi ra từng chữ
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     let i = 0;
+  //     const typingEffect = setInterval(() => {
+  //       if (i < name.length) {
+  //         i++;
+  //         setDisplayText((prevText) => prevText + name.charAt(i - 1));
+  //       } else {
+  //         clearInterval(typingEffect);
+  //       }
+  //     }, 100);
 
-    return () => clearTimeout(timer); // Xóa timer nếu component unmount
-  }, [name]);
+  //     return () => clearInterval(typingEffect);
+  //   }, 900); // Chờ 3 giây trước khi bắt đầu hiệu ứng ghi ra từng chữ
+
+  //   return () => clearTimeout(timer); // Xóa timer nếu component unmount
+  // }, [name]);
 
   const signInData = {
     name: "Sign In",
@@ -101,7 +100,16 @@ function SignInPage() {
           {/* <img className="w-[100%] blur-[10px]" src={ImgLogin} alt="" /> */}
           <div className="image-container mb-[56px] w-[548px] text-[#00457c]">
             <img src={ImgLogin} className="w-[16%]" alt="" />
-            <p className="text-2xl font-medium min-h-8">{displayText}</p>
+            <p className="text-2xl font-medium min-h-8">
+            <Typewriter
+          options={{
+    strings: ["Explore the World of Knowledge with Brainity - Your Premier Platform for Personal Growth! 🚀"],
+    autoStart: true,
+    loop: true,
+  }}
+            />
+
+            </p>
             <h1 className="title mt-3 font-logoTitle">- Brainity</h1>
           </div>
         </div>

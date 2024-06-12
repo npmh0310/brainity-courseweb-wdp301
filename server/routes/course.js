@@ -6,7 +6,7 @@ const { verifyAdmin, verifyTeacher, verifyUser } = require('../utils/verifyToken
 
 const courseRoute = express.Router();
 
-courseRoute.get("/", verifyUser, getAllCourse);
+courseRoute.get("/", getAllCourse);
 courseRoute.get("/search/getFeaturedCourse", getFeaturedCourse);
 courseRoute.get("/search/getCourseBySearch", getCourseBySearch);
 courseRoute.get("/search/getCourseCount", getCourseCount);

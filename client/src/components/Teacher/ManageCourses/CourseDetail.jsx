@@ -7,6 +7,8 @@ import {
   CirclePlus,
   List,
   Upload,
+  Check,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ButtonAdd from "../common/ButtonAdd";
@@ -14,12 +16,9 @@ import ButtonAdd from "../common/ButtonAdd";
 import Modal from "@mui/material/Modal";
 import ModalChapter from "./ModalChapter";
 import InputCustom from "../common/InputCustom";
-
+import EditSection from "./EditSection";
 const CourseDetail = ({ course }) => {
   const navigate = useNavigate();
-  const handleAddNewChapter = (sectionId) => {
-    navigate(`/teacher/managecourses/${course.urlLink}/${sectionId}`);
-  };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -29,6 +28,9 @@ const CourseDetail = ({ course }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
+  const handleAddNewChapter = (sectionId) => {
+    navigate(`/teacher/managecourses/${course.urlLink}/${sectionId}`);
+  };
   const handleFileInputClick = () => {
     fileInputRef.current.click();
   };
@@ -62,29 +64,17 @@ const CourseDetail = ({ course }) => {
           {/* part 1 */}
           <div className="flex items-center justify-between gap-x-10">
             <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
-              <div className="flex items-center justify-between w-full  ">
-                <label className="font-medium" htmlFor="">
-                  Course name:{" "}
-                </label>
-                <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                  <Pen size={14} /> add name
-                </span>
-              </div>
-
-              <InputCustom id="courseName" display={course.name} />
+              <EditSection
+                label="Course name"
+                value={course.name}
+                inputId="courseName"
+              />
             </div>
             <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
-              <div className="flex items-center justify-between w-full  ">
-                <label className="font-medium" htmlFor="">
-                  Course description:{" "}
-                </label>
-                <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                  <Pen size={14} /> add description
-                </span>
-              </div>
-              <InputCustom
-                id="courseDescription"
-                display={course.description}
+              <EditSection
+                label="Course description"
+                value={course.description}
+                inputId="courseDescription"
               />
             </div>
           </div>
@@ -140,28 +130,18 @@ const CourseDetail = ({ course }) => {
             </div>{" "}
             <div className="flex flex-col justify-start w-6/12 gap-y-4 h-full">
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <div className="flex items-center justify-between w-full  ">
-                  <label className="font-medium" htmlFor="">
-                    Course categories:{" "}
-                  </label>
-                  <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                    <Pen size={14} /> add categories
-                  </span>
-                </div>
-
-                <InputCustom id="courseCategories" display="input categories" />
+                <EditSection
+                  label="Course categories"
+                  value={course.categories}
+                  inputId="courseCategories"
+                />
               </div>
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <div className="flex items-center justify-between w-full  ">
-                  <label className="font-medium" htmlFor="">
-                    Course price:{" "}
-                  </label>
-                  <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                    <Pen size={14} /> add price
-                  </span>
-                </div>
-
-                <InputCustom id="coursePrice" display="input price" />
+                <EditSection
+                  label="Course price"
+                  value={course.price}
+                  inputId="coursePrice"
+                />
               </div>
             </div>
           </div>

@@ -1,46 +1,51 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const courseSchema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema(
+  {
     instructor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        // required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      // required: true
     },
     courseName: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     imageUrl: {
-        type: String
+      type: String,
     },
     isPublic: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     price: {
-        type: Number,
-        min: 0
+      type: Number,
+      min: 0,
     },
-    categories: [{
+    categories: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
-    }],
+        ref: "Category",
+      },
+    ],
     isDelete: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     isConfirm: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-    sections: [{
+    sections: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Section'
-    }],
+        ref: "Section",
+      },
+    ],
     // isFree: {
     //     type: Boolean,
     //     default: false
@@ -49,17 +54,19 @@ const courseSchema = new mongoose.Schema({
     //     type: Boolean,
     //     default: false
     // },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-courseSchema.pre('remove', async function (next) {
-    try {
-        await Section.deleteMany({ _id: { $in: this.chapters } });
-        next();
-    } catch (error) {
-        next(error);
-    }
+courseSchema.pre("remove", async function (next) {
+  try {
+    await Section.deleteMany({ _id: { $in: this.section } });
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
-const Course = mongoose.model('Course', courseSchema);
+const Course = mongoose.model("Course", courseSchema);
 
 module.exports = Course;

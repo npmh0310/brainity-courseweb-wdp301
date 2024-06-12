@@ -8,16 +8,16 @@ import Item from "../common/Item";
 
 const MainLayout = () => {
   return (
-    <div className="bg-white">
+    <div className="mx-auto">
       {/* Header */}
       <Header />
       {/* Header */}
-      <div className="w-full  mx-auto bg-white">
+      <div className="w-full bg-white">
         {/* global loading */}
         <GlobalLoading />
         {/* global loading */}
         {/* Main */}
-        <div className="pt-[76px]">
+        <div className="pt-[76px] mx-auto">
           {" "}
           <Outlet />
         </div>

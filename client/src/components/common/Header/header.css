@@ -43,3 +43,17 @@
   transform: translate(-50%, -50%);
   z-index: -1;  /* Ensures the circle is behind the content */
 }
+
+
+.header {
+  transition: transform .3s linear,
+}
+
+
+.hidden-header {
+  transform: translateY(-100%);
+}
+
+.show-header {
+  transform: translateY(0);
+}
