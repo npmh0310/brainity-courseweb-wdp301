@@ -6,7 +6,6 @@ const { ObjectId } = mongoose.Types;
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
-    const newCourse = new Course({instructor: req.user.id, ...req.body})
     const userId = req.user.id;
     const newCourse = new Course(req.body)
     newCourse.instructor = userId;
