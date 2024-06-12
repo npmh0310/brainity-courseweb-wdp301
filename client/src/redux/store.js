@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import appStateSlice from "./features/appStateSlice";
 import authModalSlice from "./features/authModalSlice";
 import globalLoadingSlice from "./features/globalLoadingSlice";
-import courseSlice from "./features/coursesSlice";
+// import teacherSlice from "./features/teacherSlice";
 import authSlice from "./features/authSlice";
 
 const store = configureStore({
@@ -11,7 +11,7 @@ const store = configureStore({
     authModal: authModalSlice,
     globalLoading: globalLoadingSlice,
     appState: appStateSlice,
-    courses: courseSlice,
+    // teacherCRUD: teacherSlice,
   },
 });
 

@@ -1,14 +1,15 @@
-
 const e = require('express')
 var Course = require('../models/course')
 const User = require('../models/user')
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
-
+/// teacher CRUD
 const createCourse = async (req, res) => {
     const newCourse = new Course({instructor: req.user.id, ...req.body})
-    console.log(newCourse)
+    const userId = req.user.id;
+    const newCourse = new Course(req.body)
+    newCourse.instructor = userId;
     try {
         const savedCourse = await newCourse.save()
         console.log(savedCourse)
@@ -25,9 +26,9 @@ const createCourse = async (req, res) => {
     }
 }
 
-const getAllCourse = async (req, res) => {
-
-    const page = parseInt(req.query.page)
+const getCourseByName = async (req, res) => {
+    const name = req.body
+    // console.log(name)
 
     try {
         const getAllCourse = await Course.find({})
@@ -38,7 +39,126 @@ const getAllCourse = async (req, res) => {
             //         model: 'Section' // Tên của mô hình Lesson
             //     }
             // })
+        const savedCourse = await Course.findOne({ courseName: name.courseName })
+            .populate({
+                path: 'sections',
+                populate: {
+                    path: 'lessons',
+                    model: 'Lesson' // Tên của mô hình Lesson
+                }
+            })
             .populate('categories')
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully get",
+            data: savedCourse
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to get. Try again"
+        })
+    }
+}
+
+const getCourseOfTeacher = async (req, res) => {
+    const userId = req.user.id;
+    // console.log(userId)
+    const page = parseInt(req.query.page);
+
+    try {
+        const getAllCourseOfTeacher = await Course.find({ instructor: userId })
+            // .populate({
+            //     path: 'sections',
+            //     populate: {
+            //         path: 'lessons',
+            //         model: 'Lesson' // Tên của mô hình Lesson
+            //     }
+            // })
+            // .populate('categories')
+            .skip(page * 8)
+            .limit(8);
+
+        res.status(200).json({
+            success: true,
+            count: getAllCourseOfTeacher.length,
+            message: "Successfully get all of Teacher",
+            data: getAllCourseOfTeacher
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to get all course of teacher. Try again",
+        })
+    }
+}
+
+const updateCourse = async (req, res) => {
+    const userId = req.user.id;
+    const id = req.params.id;
+
+    try {
+        const updateCourse = await Course.findOneAndUpdate(
+            {
+                _id: id,
+                instructor: userId
+            },
+            { $set: req.body },
+            { new: true }
+        )
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully updated",
+            data: updateCourse
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update. Try again"
+        })
+    }
+}
+
+const deleteCourseById = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const deleteCourseById = await Course.findOneAndDelete({
+            _id: id,
+            instructor: userId
+        })
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully deleted",
+            data: deleteCourseById
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete. Try again"
+        })
+    }
+}
+
+/// end teacher course CRUD
+
+const getAllCourse = async (req, res) => {
+
+    const page = parseInt(req.query.page)
+
+    try {
+        const getAllCourse = await Course.find({})
+            // .populate({
+            //     path: 'sections',
+            //     populate: {
+            //         path: 'lessons',
+            //         model: 'Lesson' // Tên của mô hình Lesson
+            //     }
+            // })
+            // .populate('categories')
             .skip(page * 8)
             .limit(8);
 
@@ -58,11 +178,12 @@ const getAllCourse = async (req, res) => {
 
 const getCourseById = async (req, res) => {
     const id = req.params.id;
+    // console.log(id)
 
     try {
         const getCourseById = await Course.findById(id)
             .populate({
-                path: 'chapters',
+                path: 'sections',
                 populate: {
                     path: 'lessons',
                     model: 'Lesson' // Tên của mô hình Lesson
@@ -76,6 +197,7 @@ const getCourseById = async (req, res) => {
             data: getCourseById
         })
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             success: false,
             message: "Failed to get Course. Try again"
@@ -162,46 +284,6 @@ const getCourseBySearch = async (req, res) => {
     }
 }
 
-const updateCourse = async (req, res) => {
-    const id = req.params.id;
-
-    try {
-        const updateCourse = await Course.findByIdAndUpdate(id, {
-            $set: req.body
-        }, { new: true })
-
-        res.status(200).json({
-            success: true,
-            message: "Successfully updated",
-            data: updateCourse
-        })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to update. Try again"
-        })
-    }
-}
-
-const deleteCourseById = async (req, res) => {
-    const id = req.params.id;
-
-    try {
-        const deleteCourseById = await Course.findByIdAndDelete(id)
-
-        res.status(200).json({
-            success: true,
-            message: "Successfully deleted",
-            data: deleteCourseById
-        })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete. Try again"
-        })
-    }
-}
-
 const getCourseCount = async (req, res) => {
     try {
         const CourseCount = await Course.estimatedDocumentCount()
@@ -246,5 +328,7 @@ module.exports = {
     getCourseCount,
     getFreeCourse,
     getProCourse,
-    getCourseNumOfEnrolled
+    getCourseNumOfEnrolled,
+    getCourseOfTeacher,
+    getCourseByName
 }
