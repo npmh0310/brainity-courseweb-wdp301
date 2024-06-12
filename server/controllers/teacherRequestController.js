@@ -73,10 +73,10 @@ const getTeacherRequestByUserId = async (req, res) => {
 }
 
 const deleteTeacherRequestById = async (req, res) => {
-    const blogId = req.params.blogId;
+    const requestId = req.params.requestId;
 
     try {
-        const deleteTeacherRequestById = await TeacherRequest.findByIdAndDelete(blogId)
+        const deleteTeacherRequestById = await TeacherRequest.findByIdAndDelete(requestId)
 
         res.status(200).json({
             success: true,
@@ -188,6 +188,7 @@ const getAllTeacherRequest = async (req, res) => {
 }
 
 module.exports = {
+    getAllTeacherRequest,
     createTeacherRequest,
     deleteTeacherRequestById,
     getTeacherRequestByUserId,
