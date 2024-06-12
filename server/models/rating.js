@@ -7,11 +7,19 @@ const ratingSchema = new mongoose.Schema(
             ref: 'User',
             // required: true
         },
-        courses: [{
+        course: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course'
-        }],
-        rate: Number 
+        },
+        rate: {
+            type: Number,
+            min: 1,
+            max: 5,
+            validate: {
+                validator: Number.isInteger,
+                message: '{VALUE} is not an integer value'
+            } 
+        }
     }
 );
 

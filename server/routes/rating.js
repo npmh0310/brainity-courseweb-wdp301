@@ -1,7 +1,11 @@
 var express = require('express');
-const { createRating } = require('../controllers/ratingController');
+const { createRating, getAvgRatingByCourseId } = require('../controllers/ratingController');
 const { verify } = require('jsonwebtoken');
 const { verifyAdmin, verifyTeacher, verifyUser } = require('../utils/verifyToken');
 
+const ratingRoute = express.Router();
 
-lessonRoute.post("/", verifyUser ,createRating);
+ratingRoute.post("/", verifyUser ,createRating);
+ratingRoute.get("/averageRating" ,getAvgRatingByCourseId);
+
+module.exports = ratingRoute

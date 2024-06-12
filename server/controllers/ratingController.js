@@ -1,41 +1,59 @@
 const Rating = require('../models/rating')
 const User = require('../models/user')
 const Course = require('../models/course')
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 const createRating = async (req, res) => {
     try {
         const userId = req.user.id;
-        const {  coursesId, rate } = req.body;
+        const { courseId, rating: newRatingValue } = req.body;
+
+        const existCourse = await Course.findOne({ _id: courseId });
+
+        if (!existCourse) {
+            return res.status(400).json({ error: 'Course does not exist' });
+        }
 
         // Check if the user is enrolled in the course
-        const isEnrolled = await User.findOne({ _id: userId, coursesEnrolled: { $in: coursesId } });
+        const isEnrolled = await User.findOne({ _id: userId, coursesEnrolled: { $in: courseId } });
 
         if (!isEnrolled) {
             return res.status(400).json({ error: 'User is not enrolled in the course' });
         }
 
-        // Create a new rating instance
-        const newRating = new Rating({
-            userId,
-            coursesId,
-            rate
-        });
+        // Check if a rating already exists for the user and course
+        const existingRating = await Rating.findOne({ user: userId, course: courseId });
 
-        // Save the new rating to the database
-        await newRating.save();
+        if (existingRating) {
+            // Update the existing rating
+            existingRating.rate = newRatingValue;
+            await existingRating.save();
+            return res.status(200).json({ message: 'Rating updated successfully', data: existingRating });
+        } else {
+            // Create a new rating instance
+            const newRating = new Rating({
+                user: userId,
+                course: courseId,
+                rate: newRatingValue
+            });
 
-        return res.status(201).json({ message: 'Rating created successfully' }, {data: newRating});
+            // Save the new rating to the database
+            await newRating.save();
+
+            // Send the response with correct structure
+            return res.status(201).json({ message: 'Rating created successfully', data: newRating });
+        }
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: error.message });
     }
 };
 
 
-const getAvgRatingByCourseId = async (courseId) => {
+const getAvgRatingByCourseId = async (req, res) => {
     try {
         // Find all ratings for the specified course
-        const ratings = await Rating.find({ courses: courseId });
+        const ratings = await Rating.find({ course: req.body.courseId });
 
         if (ratings.length === 0) return 0; 
         
@@ -44,9 +62,11 @@ const getAvgRatingByCourseId = async (courseId) => {
         // Calculate the average rating
         const avgRating = totalRating / ratings.length;
 
-        return avgRating;
+        res.status(200).json({
+            data: avgRating, numOfRates: ratings.length
+        })
     } catch (error) {
-        console.error(error);
+        res.status(500).json({message: error.message});
         return -1; // Return -1 if an error occurs
     }
 };
