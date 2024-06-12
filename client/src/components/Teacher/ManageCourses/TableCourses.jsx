@@ -18,14 +18,14 @@ const TableCourses = () => {
   const [status, setStatus] = useState(false)
 
   useEffect(() => {
-    getCourseOfTeacher().then(res => { console.log(res); setCourses(res.data.data) })
+    getCourseOfTeacher().then(res => { setCourses(res.data.data) })
     setStatus(false)
   }, [status])
 
 
 
-  const handleRowClick = (course) => {
-    navigate(`/teacher/managecourses/${course.courseName}`);
+  const handleRowClick = (id) => {
+    navigate(`/teacher/managecourses/${id}`);
   };
 
   const [open, setOpen] = React.useState(false);
@@ -75,7 +75,7 @@ const TableCourses = () => {
                   key={index + 1}
                   className={`hover:bg-gray-100 cursor-pointer text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
-                  onClick={() => handleRowClick(course)}
+                  onClick={() => handleRowClick(course._id)}
                 >
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     <p className="text-gray-900 whitespace-no-wrap">
@@ -94,12 +94,11 @@ const TableCourses = () => {
                     <h1
                       className={`${course.isPublic
                         ? "bg-green-400"
-                        : !course.isPublic
-                          ? "bg-gray-300"
-                          : "bg-red-400"
+
+                        : "bg-red-400"
                         }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >
-                      {course.published}
+                      {course.isPublic ? "Public" : "Private"}
                     </h1>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">

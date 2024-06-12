@@ -166,7 +166,7 @@ const getAllCourse = async (req, res) => {
 
 const getCourseById = async (req, res) => {
     const id = req.params.id;
-    console.log(id)
+    // console.log(id)
 
     try {
         const getCourseById = await Course.findById(id)

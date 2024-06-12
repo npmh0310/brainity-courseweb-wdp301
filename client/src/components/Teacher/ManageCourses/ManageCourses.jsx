@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
@@ -8,7 +8,7 @@ import TableCourses from "./TableCourses";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import CourseDetail from "./CourseDetail";
 import { useDispatch } from "react-redux";
-import { setCourses } from "../../../redux/features/coursesSlice";
+import { setCourses } from "../../../redux/features/teacherSlice";
 import CreateNewChapter from "./CreateNewChapter";
 import ManageSection from "./SectionDetail";
 const ManageCourses = () => {
@@ -141,14 +141,14 @@ const ManageCourses = () => {
   //   ? courses.find((course) => course.urlLink === id)
   //   : null;
 
+  // const [showSectionDetail, setShowSectionDetail] = useState(false);
+
   const selectedCourse = urlLink
     ? courses.find((course) => course.urlLink === urlLink)
     : null;
   const showCreateNewChapter = sectionId && selectedCourse;
+  // console.log(showTableCourses + " //// " + sectionId + " //// " + showCreateNewChapter)
 
-  const selectedSection = sectionId
-    ? selectedCourse?.sections.find((section) => section.sectionId === parseInt(sectionId))
-    : null;
 
   return (
     <div className="bg-gray-100 w-full pb-20">
@@ -185,7 +185,7 @@ const ManageCourses = () => {
           {/* header */}
           {showTableCourses ? (
             <TableCourses />
-          ) : showCreateNewChapter ? (
+          ) : sectionId ? (
             <ManageSection />
           ) : (
             <CourseDetail />

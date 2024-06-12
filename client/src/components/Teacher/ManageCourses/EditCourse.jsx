@@ -4,7 +4,7 @@ import InputCustom from "../common/InputCustom";
 import { updateCourse } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
 
-const EditSection = ({ label, value, inputId, idCourse, setStatus }) => {
+const EditCourse = ({ label, value, inputId, idCourse, setStatus }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState({
         courseName: undefined,
@@ -96,4 +96,4 @@ const EditSection = ({ label, value, inputId, idCourse, setStatus }) => {
     );
 };
 
-export default EditSection;
+export default EditCourse;

@@ -15,24 +15,24 @@ import Modal from "@mui/material/Modal";
 import ModalChapter from "./ModalChapter";
 import InputCustom from "../common/InputCustom";
 import { getCourseById, getCourseByName } from "../../../fetchData/TeacherCourse";
-import EditSection from "./EditSection";
+import EditCourse from "./EditCourse";
 
 const CourseDetail = () => {
   const [status, setStatus] = useState(false)
   const navigate = useNavigate();
   const [course, setCourse] = useState({})
   const { urlLink } = useParams();
-  const [data, setData] = useState({
-    courseName: urlLink
-  })
+  // const [data, setData] = useState({
+  //   courseName: urlLink
+  // })
   // console.log(urlLink)
   useEffect(() => {
-    getCourseByName(data).then((res) => setCourse(res.data.data))
+    getCourseById(urlLink).then((res) => setCourse(res.data.data)).catch(err => console.log(err))
     setStatus(false)
-  }, [data, status])
+  }, [status, urlLink])
 
   const handleAddNewChapter = (sectionId) => {
-    navigate(`/teacher/managecourses/${course.courseName}/${sectionId}`);
+    navigate(`/teacher/managecourses/${course._id}/${sectionId}`);
   };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -59,7 +59,7 @@ const CourseDetail = () => {
     reader.readAsDataURL(file);
   };
 
-  console.log(course.sections)
+  // console.log(course.sections)
 
   if (!course) {
     return <div>Course not found</div>;
@@ -78,7 +78,7 @@ const CourseDetail = () => {
           {/* part 1 */}
           <div className="flex items-center justify-between gap-x-10">
             <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
-              <EditSection
+              <EditCourse
                 idCourse={course._id}
                 label="Course name"
                 value={course.courseName}
@@ -87,7 +87,7 @@ const CourseDetail = () => {
               />
             </div>
             <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
-              <EditSection
+              <EditCourse
                 idCourse={course._id}
                 label="Course description"
                 value={course.description}
@@ -148,7 +148,7 @@ const CourseDetail = () => {
             </div>{" "}
             <div className="flex flex-col justify-start w-6/12 gap-y-4 h-full">
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <EditSection
+                <EditCourse
                   idCourse={course._id}
                   label="Course categories"
                   value="hi"
@@ -157,7 +157,7 @@ const CourseDetail = () => {
                 />
               </div>
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <EditSection
+                <EditCourse
                   idCourse={course._id}
                   label="Course price"
                   value={course.price}
@@ -190,7 +190,10 @@ const CourseDetail = () => {
               aria-describedby="modal-modal-description"
             >
               <>
-                <ModalChapter handleClose={handleClose} />
+                <ModalChapter
+                  courseId={course._id}
+                  handleClose={handleClose}
+                  setStatus={setStatus} />
               </>
             </Modal>
           </div>
@@ -207,7 +210,7 @@ const CourseDetail = () => {
                 </div>
                 <div>
                   <span
-                    onClick={() => handleAddNewChapter(section.sectionName)}
+                    onClick={() => handleAddNewChapter(section._id)}
                     className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium"
                   >
                     <Pen size={15} /> edit section

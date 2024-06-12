@@ -73,8 +73,7 @@ const getChapterById = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const getChapterById = await Section.findById(id).populate()
-            .populate()
+        const getChapterById = await Section.findById(id).populate("lessons")
 
         res.status(200).json({
             success: true,
