@@ -312,7 +312,7 @@ const getCourseNumOfEnrolled = async (courseId) => {
                 }
             }
         ]).exec();
-        return result[0] ? result[0].count : 1
+        return result[0] ? result[0].count : 0
 };
 
 const enrollCourse = async (req, res) => {
@@ -337,6 +337,12 @@ const enrollCourse = async (req, res) => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
     }
+}
+
+const checkCourseStatus = async (req, res) => {
+    // get course enrolled number
+
+
 }
 
 module.exports = {

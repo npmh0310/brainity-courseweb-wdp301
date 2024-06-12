@@ -50,23 +50,24 @@ const createRating = async (req, res) => {
 };
 
 
-const getAvgRatingByCourseId = async (req, res) => {
+const getAvgRatingByCourseId = async (courseId) => {
     try {
         // Find all ratings for the specified course
-        const ratings = await Rating.find({ course: req.body.courseId });
+        const ratings = await Rating.find({ course: courseId });
 
-        if (ratings.length === 0) return 0; 
+        if (ratings.length === 0) return {
+            avgRating : 0, numOfRates: ratings.length
+        }; 
         
         const totalRating = ratings.reduce((acc, curr) => acc + curr.rate, 0);
 
         // Calculate the average rating
         const avgRating = totalRating / ratings.length;
-
-        res.status(200).json({
-            data: avgRating, numOfRates: ratings.length
-        })
+        console.log(avgRating, ratings.length)
+        return {
+            avgRating, numOfRates: ratings.length
+        }
     } catch (error) {
-        res.status(500).json({message: error.message});
         return -1; // Return -1 if an error occurs
     }
 };

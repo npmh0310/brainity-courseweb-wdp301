@@ -103,7 +103,7 @@ const FavoriteCourses = () => {
                   <Rating
                     className="mb-[1px]"
                     name="half-rating-read"
-                    defaultValue={item.rating}
+                    defaultValue={item.ratingInfo.avgRating} 
                     precision={0.5}
                     readOnly
                     size="small"
