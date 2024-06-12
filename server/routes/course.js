@@ -14,6 +14,10 @@ courseRoute.get("/search/getCourseBySearch", getCourseBySearch);
 courseRoute.get("/search/getCourseCount", getCourseCount);
 courseRoute.get("/getCourseFree", getFreeCourse);
 courseRoute.get("/getCoursePro", getProCourse);
+courseRoute.get("/:id", getCourseById);
+courseRoute.post("/", verifyTeacher, createCourse);
+courseRoute.put("/:id", updateCourse);
+courseRoute.delete("/:id", deleteCourseById);
 courseRoute.get("/getCourseById/:id", getCourseById);
 // teacher
 courseRoute.get("/teacher/getCourse", verifyTeacher, getCourseOfTeacher);

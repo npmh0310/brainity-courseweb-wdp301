@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema(
         coursesEnrolled: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course'
+        }],
+        favouriteCourses: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course'
         }]
     },
     { timestamps: true }
