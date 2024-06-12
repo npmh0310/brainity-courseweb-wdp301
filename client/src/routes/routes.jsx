@@ -12,6 +12,7 @@ import FavoriteCourses from "../components/User/ProfileUser/FavoriteCourses";
 import Security from "../components/User/ProfileUser/Security";
 import InformationProfile from "./../components/User/ProfileUser/InformationProfile";
 import CourseDetail from "../pages/CourseDetail";
+import CartPage from "../pages/CartPage";
 
 
 const routes = [
@@ -65,6 +66,10 @@ const routes = [
     path: "/blogform",
     element: <DraftEditor />,
   },
+  {
+    path: "cart",
+    element: <CartPage/>
+  }
 ];
 
 export default routes;

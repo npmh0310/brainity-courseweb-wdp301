@@ -1,10 +1,24 @@
 import React, { useState } from "react";
 import { Pen, Upload } from "lucide-react";
 import InputCustom from "../common/InputCustom";
-const ModalCourse = ({ handleClose }) => {
+import { CreateCourse } from "../../../fetchData/TeacherCourse";
+import toast from "react-hot-toast";
+const ModalCourse = ({ handleClose, setStatus }) => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [data, setData] = useState({
+    courseName: undefined,
+    description: undefined,
+    imageUrl: undefined,
+    categories: undefined,
+    price: undefined
+  })
+
+  const handleChange = e => {
+    setData(prev => ({ ...prev, [e.target.id]: e.target.value }))
+    // console.log(data)
+  };
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
@@ -27,6 +41,20 @@ const ModalCourse = ({ handleClose }) => {
     handleClose()
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let res = await CreateCourse(data);
+    console.log(res)
+    if (res && res.status === 200) {
+      toast.success("Successfully created")
+      setStatus(true)
+      handleClose()
+    } else {
+      toast.error("Failed to create")
+    }
+  }
+
   return (
     <div className="w-[70%] max-w-[1100px] h-[650px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white">
       <form className="container mx-auto my-8" onSubmit={handleCancelSubmit}>
@@ -47,7 +75,7 @@ const ModalCourse = ({ handleClose }) => {
                 </span>
               </div>
 
-              <InputCustom id="courseName" display="input name" />
+              <InputCustom id="courseName" display="input name" onChange={handleChange} />
             </div>
             <div className="flex items-center flex-col bg-white justify-between px-6 py-4 w-6/12 gap-y-4 rounded-lg border border-spacing-1   ">
               <div className="flex items-center justify-between w-full  ">
@@ -60,8 +88,9 @@ const ModalCourse = ({ handleClose }) => {
               </div>
 
               <InputCustom
-                id="courseDescription"
+                id="description"
                 display="input description "
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -94,9 +123,8 @@ const ModalCourse = ({ handleClose }) => {
 
               <div className="flex items-center justify-center w-full">
                 <div
-                  className={`flex flex-col items-center justify-center w-full h-[231px] max-h-[291px] ${
-                    !imagePreview && "border-2 border-gray-300 border-dashed"
-                  } rounded-lg  bg-gray-50`}
+                  className={`flex flex-col items-center justify-center w-full h-[231px] max-h-[291px] ${!imagePreview && "border-2 border-gray-300 border-dashed"
+                    } rounded-lg  bg-gray-50`}
                 >
                   {imagePreview ? (
                     <div className="p-2 w-full h-[231px]  overflow-hidden">
@@ -147,7 +175,7 @@ const ModalCourse = ({ handleClose }) => {
                   </span>
                 </div>
 
-                <InputCustom id="courseCategories" display="input categories" />
+                <InputCustom id="categories" display="input categories" onChange={handleChange} />
               </div>
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
                 <div className="flex items-center justify-between w-full  ">
@@ -159,19 +187,22 @@ const ModalCourse = ({ handleClose }) => {
                   </span>
                 </div>
 
-                <InputCustom id="coursePrice" display="input price" />
+                <InputCustom id="price" display="input price" onChange={handleChange} />
               </div>
             </div>
           </div>
           {/* part 2 */}
         </div>
         <div className="flex flex-row items-center justify-center gap-x-8 mt-7">
-          <button className="px-12  py-2 text-sm text-white font-medium  bg-primary rounded-full transition duration-300 ease-in-out transform hover:translate-y-1 ">
+          <button
+            className="px-12  py-2 text-sm text-white font-medium  bg-primary rounded-full transition duration-300 ease-in-out transform hover:translate-y-1 "
+            onClick={handleSubmit}
+          >
             Create
           </button>
           <button
             className="px-12 py-2 text-sm text-white font-medium  bg-red-600 rounded-full  transition duration-300 ease-in-out transform hover:translate-y-1"
-            onClick={handleClose}
+            onClick={handleCancelSubmit}
           >
             Cancel
           </button>
