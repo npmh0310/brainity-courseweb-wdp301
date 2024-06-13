@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   Pen,
@@ -8,17 +8,31 @@ import {
   List,
   Upload,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ButtonAdd from "../common/ButtonAdd";
 
 import Modal from "@mui/material/Modal";
 import ModalChapter from "./ModalChapter";
 import InputCustom from "../common/InputCustom";
+import { getCourseById, getCourseByName } from "../../../fetchData/TeacherCourse";
+import EditCourse from "./EditCourse";
 
-const CourseDetail = ({ course }) => {
+const CourseDetail = () => {
+  const [status, setStatus] = useState(false)
   const navigate = useNavigate();
+  const [course, setCourse] = useState({})
+  const { urlLink } = useParams();
+  // const [data, setData] = useState({
+  //   courseName: urlLink
+  // })
+  // console.log(urlLink)
+  useEffect(() => {
+    getCourseById(urlLink).then((res) => setCourse(res.data.data)).catch(err => console.log(err))
+    setStatus(false)
+  }, [status, urlLink])
+
   const handleAddNewChapter = (sectionId) => {
-    navigate(`/teacher/managecourses/${course.urlLink}/${sectionId}`);
+    navigate(`/teacher/managecourses/${course._id}/${sectionId}`);
   };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -45,6 +59,8 @@ const CourseDetail = ({ course }) => {
     reader.readAsDataURL(file);
   };
 
+  // console.log(course.sections)
+
   if (!course) {
     return <div>Course not found</div>;
   }
@@ -62,29 +78,21 @@ const CourseDetail = ({ course }) => {
           {/* part 1 */}
           <div className="flex items-center justify-between gap-x-10">
             <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
-              <div className="flex items-center justify-between w-full  ">
-                <label className="font-medium" htmlFor="">
-                  Course name:{" "}
-                </label>
-                <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                  <Pen size={14} /> add name
-                </span>
-              </div>
-
-              <InputCustom id="courseName" display={course.name} />
+              <EditCourse
+                idCourse={course._id}
+                label="Course name"
+                value={course.courseName}
+                inputId="courseName"
+                setStatus={setStatus}
+              />
             </div>
             <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
-              <div className="flex items-center justify-between w-full  ">
-                <label className="font-medium" htmlFor="">
-                  Course description:{" "}
-                </label>
-                <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                  <Pen size={14} /> add description
-                </span>
-              </div>
-              <InputCustom
-                id="courseDescription"
-                display={course.description}
+              <EditCourse
+                idCourse={course._id}
+                label="Course description"
+                value={course.description}
+                inputId="description"
+                setStatus={setStatus}
               />
             </div>
           </div>
@@ -132,7 +140,7 @@ const CourseDetail = ({ course }) => {
                     <img
                       className="w-full h-full object-cover rounded-lg "
                       src="https://img-c.udemycdn.com/course/480x270/4993276_3452.jpg"
-                      alt={course.name}
+                      alt={course.courseName}
                     />
                   )}
                 </div>
@@ -140,28 +148,22 @@ const CourseDetail = ({ course }) => {
             </div>{" "}
             <div className="flex flex-col justify-start w-6/12 gap-y-4 h-full">
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <div className="flex items-center justify-between w-full  ">
-                  <label className="font-medium" htmlFor="">
-                    Course categories:{" "}
-                  </label>
-                  <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                    <Pen size={14} /> add categories
-                  </span>
-                </div>
-
-                <InputCustom id="courseCategories" display="input categories" />
+                <EditCourse
+                  idCourse={course._id}
+                  label="Course categories"
+                  value="hi"
+                  inputId="categories"
+                  setStatus={setStatus}
+                />
               </div>
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <div className="flex items-center justify-between w-full  ">
-                  <label className="font-medium" htmlFor="">
-                    Course price:{" "}
-                  </label>
-                  <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
-                    <Pen size={14} /> add price
-                  </span>
-                </div>
-
-                <InputCustom id="coursePrice" display="input price" />
+                <EditCourse
+                  idCourse={course._id}
+                  label="Course price"
+                  value={course.price}
+                  inputId="price"
+                  setStatus={setStatus}
+                />
               </div>
             </div>
           </div>
@@ -188,15 +190,18 @@ const CourseDetail = ({ course }) => {
               aria-describedby="modal-modal-description"
             >
               <>
-                <ModalChapter handleClose={handleClose} />
+                <ModalChapter
+                  courseId={course._id}
+                  handleClose={handleClose}
+                  setStatus={setStatus} />
               </>
             </Modal>
           </div>
           <div className="flex items-center flex-col w-full gap-y-4 ">
-            {course.sections.map((section) => (
+            {course.sections?.map((section, index) => (
               <div
                 className="flex items-center justify-between w-full px-4 py-3 border rounded-lg bg-slate-200"
-                key={section.sectionId}
+                key={index}
               >
                 <div>
                   <span className="flex items-center gap-x-4 text-sm font-medium">
@@ -205,7 +210,7 @@ const CourseDetail = ({ course }) => {
                 </div>
                 <div>
                   <span
-                    onClick={() => handleAddNewChapter(section.sectionId)}
+                    onClick={() => handleAddNewChapter(section._id)}
                     className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium"
                   >
                     <Pen size={15} /> edit section

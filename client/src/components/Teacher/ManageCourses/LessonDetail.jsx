@@ -8,11 +8,12 @@ import Button from "@mui/material/Button";
 import videoTest from "../../../assets/videos/ADBE925D-45A7-437E-A735-415F7A4625E4.mp4";
 const LessonDetail = ({ section }) => {
   // const firstSection = course.sections[0];
+  // console.log(section.lessons)
 
   return (
     <>
-      {section.lesson.map((lesson, lessonIndex) => (
-        <div className="mb-3" key={lesson.idLesson}>
+      {section.lessons?.map((lesson, lessonIndex) => (
+        <div className="mb-3" key={lessonIndex}>
           <Accordion className=" py-2">
             <AccordionSummary
               expandIcon={<ChevronDown />}
