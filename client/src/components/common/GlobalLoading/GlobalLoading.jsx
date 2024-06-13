@@ -7,7 +7,7 @@ const GlobalLoading = () => {
   const globalLoading = useSelector((state) => state.globalLoading.globalLoading);
   console.log(globalLoading)
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (globalLoading) {

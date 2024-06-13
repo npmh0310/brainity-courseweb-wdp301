@@ -17,7 +17,6 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import { GlobalStyles } from "@mui/material";
 
-
 import Dashboard from "./components/Admin/default/Dashboard";
 import ConfirmTeacherTable from "./components/Admin/confirmTeacher/confirmTeacher";
 import ConfirmCourseTable from "./components/Admin/confirmCourse/confirmCourse";
@@ -33,7 +32,7 @@ import { useEffect } from "react";
 import { validateToken } from "./redux/features/authSlice";
 import { Toaster } from 'react-hot-toast';
 import { routesLearningPage } from "./routes/learningPage.routes";
-
+import PaymentSuccess from "./components/User/Payment/PaymentSuccess";
 
 function App() {
   const dispatch = useDispatch();
@@ -133,20 +132,21 @@ function App() {
           {/* Route Learning Page */}
           <Route path="learning/*" element={<LearningPage />}>
             {routesLearningPage.map((route, index) => (
-              <Route
-                key={index}
-                path={route.path}
-                element= {route.element}/>
+              <Route key={index} path={route.path} element={route.element} />
             ))}
           </Route>
 
-
+          {/* Route Admin*/}
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
             <Route path="confirmCourse" element={<ConfirmCourseTable />} />
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
+          </Route>
+
+          {/* Route Payment Success*/}
+          <Route path="/paymentSuccess" element={<PaymentSuccess />}>     
           </Route>
         </Routes>
       </BrowserRouter>
