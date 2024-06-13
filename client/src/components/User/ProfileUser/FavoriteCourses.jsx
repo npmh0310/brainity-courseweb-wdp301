@@ -109,7 +109,7 @@ const FavoriteCourses = () => {
                     size="small"
                   />
                   <span className="text-sm text-gray-500">
-                    ({item.numOfEnrolled})
+                    ({item.ratingInfo.numOfRates})
                   </span>
                 </div>
                 <div className="flex flex-row gap-x-2 items-center">
