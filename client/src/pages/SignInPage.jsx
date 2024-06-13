@@ -12,6 +12,8 @@ import { Logo } from "../components/common/Logo";
 import { useDispatch } from "react-redux"
 import { onLogin } from "../fetchData/User";
 import { loginSuccess } from "../redux/features/authSlice";
+import toast from "react-hot-toast";
+import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 
 
 function SignInPage() {
@@ -77,14 +79,18 @@ function SignInPage() {
   const handleClick = async (e) => {
     e.preventDefault()
     let res = await onLogin(credentials);
-    
-    console.log(res)
+    dispatch(setGlobalLoading(true))
     if (res && res.status === 200) {
       dispatch(loginSuccess({
         user: res.data.data,
         isLogin: true
       }));
+      toast.success("Login successfully")
       navigate('/')
+    } else if (res.status === 401) {
+      toast.error("Username or password is wrong")
+    } else {
+      toast.error("Username is invalid")
     }
 
   }

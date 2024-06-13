@@ -2,10 +2,34 @@ import { Pen, Upload } from "lucide-react";
 import React, { useState } from "react";
 import InputCustom from "../common/InputCustom";
 import videoTest from "../../../assets/videos/ADBE925D-45A7-437E-A735-415F7A4625E4.mp4";
-const ModalLesson = ({ handleClose }) => {
+import { createLesson } from "../../../fetchData/TeacherCourse";
+import toast from "react-hot-toast";
+const ModalLesson = ({ handleClose, sectionId, setStatus }) => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
+  const [data, setData] = useState({
+    lessonName: undefined,
+    description: undefined,
+    videoUrl: undefined
+  })
+
+  const handleChange = e => {
+    setData(prev => ({ ...prev, [e.target.id]: e.target.value }))
+  }
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    const res = await createLesson(data, sectionId)
+    if (res && res.status === 200) {
+      toast.success("Successfully created")
+      setStatus(true)
+      handleClose()
+    } else {
+      toast.error("Failed to create")
+    }
+  }
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
@@ -49,7 +73,7 @@ const ModalLesson = ({ handleClose }) => {
                 </span>
               </div>
               <div className="w-full">
-                <InputCustom id="lessonName" display="input name" />
+                <InputCustom id="lessonName" value="input name" onChange={handleChange} />
               </div>
             </div>
             <div className="flex items-center flex-col bg-white justify-between px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
@@ -63,8 +87,9 @@ const ModalLesson = ({ handleClose }) => {
               </div>
 
               <InputCustom
-                id="lessonDescription"
-                display="input description "
+                id="description"
+                value="input description"
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -96,9 +121,8 @@ const ModalLesson = ({ handleClose }) => {
             </div>
             <div className="flex items-center flex-col bg-white justify-between px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1   ">
               <div
-                className={`flex flex-col items-center justify-center w-full h-[231px] max-h-[291px] ${
-                  !videoPreview && "border-2 border-gray-300 border-dashed"
-                } rounded-lg  bg-gray-50`}
+                className={`flex flex-col items-center justify-center w-full h-[231px] max-h-[291px] ${!videoPreview && "border-2 border-gray-300 border-dashed"
+                  } rounded-lg  bg-gray-50`}
               >
                 {videoPreview ? (
                   <div className="p-2 w-full h-[231px]  overflow-hidden">
@@ -140,7 +164,9 @@ const ModalLesson = ({ handleClose }) => {
           </div>
         </div>
         <div className="flex flex-row items-center justify-center gap-x-8 mt-10">
-          <button className="px-12  py-2 text-sm text-white font-medium  bg-primary rounded-full transition duration-300 ease-in-out transform hover:translate-y-1 ">
+          <button
+            onClick={handleClick}
+            className="px-12  py-2 text-sm text-white font-medium  bg-primary rounded-full transition duration-300 ease-in-out transform hover:translate-y-1 ">
             Create
           </button>
           <button

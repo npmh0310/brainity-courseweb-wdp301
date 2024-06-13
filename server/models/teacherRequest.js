@@ -9,7 +9,7 @@ const teacherRequestSchema = new mongoose.Schema(
         },
         isApproved: {
             type: Boolean,
-            default: False
+            default: false
         }
     }
 );
