@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const lessonSchema = new mongoose.Schema({
     videoUrl: {
         type: String,
-        required: true
+        // required: true
     },
     lessonName: {
         type: String,
@@ -19,7 +19,7 @@ const lessonSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        // required: true
     },
 }, { timestamps: true });
 

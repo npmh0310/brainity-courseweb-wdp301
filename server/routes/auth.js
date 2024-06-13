@@ -6,9 +6,9 @@ const authRoute = express.Router();
 
 authRoute.post("/login", login);
 authRoute.post("/register", register);
-authRoute.get("/", verifyAdmin, getAllUser);
 authRoute.get("/profile", verifyUser, getProfile);
 authRoute.get("/logout", logout);
+authRoute.get("/", verifyAdmin, getAllUser);
 authRoute.get("/:id", getUserById);
 authRoute.put("/:id", updateUser);
 authRoute.put("/:id/course/:idCourse", verifyUser, updateUserFreeCourse);

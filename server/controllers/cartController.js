@@ -4,14 +4,14 @@ const Course = require('../models/course')
 
 
 const createCart = async (req, res) => {
-    const newCart = new Cart(req.body)
+    const newCart = new Cart({"user" : req.user.id, ...req.body})
 
     try {
         const savedCart = await newCart.save()
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
-            message: "Successfully created",
+            message: "Successfully created cart",
             data: savedCart
         })
     } catch (err) {
@@ -23,12 +23,12 @@ const createCart = async (req, res) => {
 }
 
 const getCartById = async (req, res) => {
-    const cart = req.params.cartId;
+    const cartId = req.body.cartId;
 
     try {
         const getCartById = await Cart.findById(cartId)
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Successfully get Cart",
             data: getCartById
@@ -41,51 +41,92 @@ const getCartById = async (req, res) => {
     }
 }
 
-const addCourseToCart = async (req, res) => {
-    const courseId = req.params.courseId;
-    const userId = req.params.userId;
+const addCourseToCart = async (req, res, next) => {
+    if(!req.body.action) 
+        return res.status(400).json({
+        success: false,
+        message: "Please provide an action: add or remove in req body"
+    });
+
+    if(req.body.action == "remove") {
+        return next();
+    }
+
+    const cartId = req.body.cartId;
+    const courseId = req.body.courseId;
+    const userId = req.user.id;
+
     try {
-        const cart = await Cart.findOne({ user: userId });
-        
+        let cart;
+        let modifyMessage;
+
+        if (cartId) {
+          cart = await Cart.findById(cartId);
+          modifyMessage = "Exist cart id in req. "
+        } else {
+          cart = await Cart.findOne({user: userId});
+          modifyMessage = "Cart id find by user id. "
+        }
         if (!cart) {
             cart = new Cart({ user: userId, courses: [] });
+            modifyMessage = "New cart created. "
         }
         
         // Check if the course already exists in the cart
         if (cart.courses.includes(courseId)) {
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
-                message: "Course already exists in the cart",
-            })
+                message: modifyMessage+ "Course already exists in the cart",
+                data: {
+                    cart: {
+                        id: cart._id,
+                        courses: cart.courses
+                    }
+                }
+            });
         }
-        
+
         // Add the course to the cart
         cart.courses.push(courseId);
         await cart.save();
-        res.status(200).json({
+        
+        return res.status(200).json({
             success: true,
-            message: "Course already exists in the cart",
-        })
+            message: modifyMessage + "Course added to cart successfully",
+            data: {
+                cart: {
+                    id: cart._id,
+                    courses: cart.courses
+                }
+            }
+        });
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Failed to add course. Try again"
-        })
-    }
-    
+        });
+    } 
 }
 
 const removeCourseFromCart = async (req, res) => {
-    const courseId = req.params.courseId;
-    const userId = req.params.userId;
+    const courseId = req.body.courseId;
+    const cartId = req.body.cartId;
+    const userId = req.user.id;
     try {
-        // Find the user's cart
-        const cart = await Cart.findOne({ user: userId });
-
+        let cart = await Cart.findById(cartId);
+        
+        if (cartId) {
+            cart = await Cart.findById(cartId);
+            modifyMessage = "Exist cart id in req. "
+        } else {
+            cart = await Cart.findOne({user: userId});
+            modifyMessage = "Cart id find by user id. "
+        }
+      
         if (!cart) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
-                message: "Cart not found for the user ID provided no"
+                message: "Cart not found ID provided "
             })
         }
 
@@ -94,32 +135,40 @@ const removeCourseFromCart = async (req, res) => {
         if (index !== -1) {
             cart.courses.splice(index, 1);
             await cart.save();
-            res.status(200).json({
-                success: false,
-                message: "Course remove successfully"
+            return res.status(200).json({
+                success: true,
+                message: modifyMessage + "Course remove successfully",
+                data: {
+                    cart: {
+                        id: cart._id,
+                        courses: cart.courses
+                    }
+                }
             })
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 success: false,
                 message: "Course not found in the cart"
             })
         }
     } catch (error) {
-        console.error(error);
         return { message: 'Failed to remove course from cart' };
     }
 } 
 
 const getCartByUserId = async (req, res) => {
-    const userId = req.params.userId;
-
+    const userId = req.user.id;
     try {
-        const user = await Cart.findOne({user: userId})
+        const cart = await Cart.findOne({user: userId})
 
-        res.status(200).json({
+        if(!cart) {
+            createCart(req, res);
+        }
+
+        return res.status(200).json({
             success: true,
             message: "Successfully get Cart",
-            data: user.cart
+            data: cart
         })
     } catch (err) {
         res.status(500).json({
@@ -130,15 +179,14 @@ const getCartByUserId = async (req, res) => {
 }
 
 const deleteCartById = async (req, res) => {
-    const cartId = req.params.cartId;
+    const cartId = req.body.cartId;
 
     try {
         const deleteCartById = await Cart.findByIdAndDelete(cartId)
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Successfully deleted",
-            data: deleteCartById
         })
     } catch (err) {
         res.status(500).json({
@@ -148,7 +196,6 @@ const deleteCartById = async (req, res) => {
     }
 }
 
-
 const updateCart = async (req, res) => {
     const cartId = req.params.cartId;
 
@@ -157,7 +204,7 @@ const updateCart = async (req, res) => {
             $set: req.body
         }, { new: true })
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Successfully updated cart",
             data: updateCart

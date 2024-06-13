@@ -40,7 +40,7 @@ function Features() {
     window.addEventListener("load", AOS.refresh);
   }, []);
   return (
-    <section className="pb-12 text-center">
+    <section className="pb-20 text-center">
       <div className="container mx-auto">
         <div
           className="mb-8 flex flex-col gap-y-8"

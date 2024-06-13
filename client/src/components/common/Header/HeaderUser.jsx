@@ -10,8 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
 
 function HeaderUser() {
+
   const user = useSelector((state) => state.auth.user);
   const isLogin = useSelector((state) => state.auth.isLogin);
+
 
   const [showUserItem, setShowUserItem] = useState(false);
 

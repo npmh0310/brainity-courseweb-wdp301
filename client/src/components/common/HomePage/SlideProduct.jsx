@@ -52,7 +52,7 @@ const SlideProduct = () => {
     AOS.init({ duration: 1400, once: true });
   }, []);
   return (
-    <section className="py-28 my-auto ">
+    <section className="py-20 my-auto ">
       <div className="my-8 flex flex-col gap-y-8">
         <h1
           className="block text-center text-7xl uppercase font-bold font-third text-primary "

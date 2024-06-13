@@ -9,14 +9,14 @@ function Item(props) {
     navigate(`/course/${id}`);
   };
 
-  const data = props.data;
-  const [loading, setLoading] = useState(true);
+  const { data, loading } = props;
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 10000);
+  // }, []);
 
   return (
     <div className="py-7 px-6 bg-white w-[98%] rounded-md  relative border-2 border-transparent hover:border-primary  hover:-translate-y-2 transition-all ease-in-out duration-500">
@@ -28,7 +28,11 @@ function Item(props) {
         {loading ? (
           <Skeleton variant="rectangular" width="100%" height={192} />
         ) : (
-          <img className="w-full h-48 object-cover" src={data.image} alt={data.courseName} />
+          <img
+            className="w-full h-48 object-cover"
+            src={data.imageUrl}
+            alt={data.courseName}
+          />
         )}
       </div>
       <div className="flex flex-col mx-1 gap-y-2 text-left">
@@ -43,7 +47,11 @@ function Item(props) {
         ) : (
           <>
             <h1 className="font-medium text-lg">{data.courseName}</h1>
-            <h2 className="text-gray-700 text-sm">{data.teacher}</h2>
+            {data.instructor && (
+              <h2 className="text-gray-700 text-sm">
+                {data.instructor.username}
+              </h2>
+            )}
             <div className="flex flex-row items-center gap-x-1">
               <span className="text-sm">{data.rating}</span>
               <Rating
@@ -54,7 +62,9 @@ function Item(props) {
                 readOnly
                 size="small"
               />
-              <span className="text-sm text-gray-500">({data.student})</span>
+              <span className="text-sm text-gray-500">
+                ({data.numOfEnrolledUsers})
+              </span>
             </div>
             <div className="flex flex-row gap-x-2 items-center">
               <span className="font-medium">{data.price} VND</span>
@@ -62,9 +72,11 @@ function Item(props) {
                 120000 VND
               </span>
             </div>
-            <div className="py-[6px] w-28 bg-[#eceb98]">
-              <h1 className="text-center text-sm">Best seller</h1>
-            </div>
+            {data.numOfEnrolledUsers >= 2 && (
+              <div className="py-[6px] w-28 bg-[#eceb98]">
+                <h1 className="text-center text-sm">Best seller</h1>
+              </div>
+            )}
           </>
         )}
       </div>

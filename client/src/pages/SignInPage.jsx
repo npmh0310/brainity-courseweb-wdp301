@@ -9,14 +9,15 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "../components/common/Logo";
-import { useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
 import { onLogin } from "../fetchData/User";
 import { loginSuccess } from "../redux/features/authSlice";
-import Typewriter from 'typewriter-effect';
+import Typewriter from "typewriter-effect";
+import toast from "react-hot-toast";
+import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 
 function SignInPage() {
   // const [displayText, setDisplayText] = useState("");
-
 
   // useEffect(() => {
   //   const timer = setTimeout(() => {
@@ -66,31 +67,36 @@ function SignInPage() {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: undefined,
-    password: undefined
-  })
+    password: undefined,
+  });
 
   const handleChange = (e) => {
-    setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }))
+    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   const handleClick = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     let res = await onLogin(credentials);
-    
-    console.log(res)
+    dispatch(setGlobalLoading(true));
     if (res && res.status === 200) {
-      dispatch(loginSuccess({
-        user: res.data.data,
-        isLogin: true
-      }));
-      navigate('/')
+      dispatch(
+        loginSuccess({
+          user: res.data.data,
+          isLogin: true,
+        })
+      );
+      toast.success("Login successfully");
+      navigate("/");
+    } else if (res.status === 401) {
+      toast.error("Username or password is wrong");
+    } else {
+      toast.error("Username is invalid");
     }
-
-  }
+  };
 
   const handleLoginGoogle = () => {
-    window.open("http://localhost:4000/auth/google/", "_self")
-  }
+    window.open("http://localhost:4000/auth/google/", "_self");
+  };
 
   return (
     <div className="w-full m-auto bg-white relative">
@@ -101,14 +107,15 @@ function SignInPage() {
           <div className="image-container mb-[56px] w-[548px] text-[#00457c]">
             <img src={ImgLogin} className="w-[16%]" alt="" />
             <p className="text-2xl font-medium min-h-8">
-            <Typewriter
-          options={{
-    strings: ["Explore the World of Knowledge with Brainity - Your Premier Platform for Personal Growth! 🚀"],
-    autoStart: true,
-    loop: true,
-  }}
-            />
-
+              <Typewriter
+                options={{
+                  strings: [
+                    "Explore the World of Knowledge with Brainity - Your Premier Platform for Personal Growth! 🚀",
+                  ],
+                  autoStart: true,
+                  loop: true,
+                }}
+              />
             </p>
             <h1 className="title mt-3 font-logoTitle">- Brainity</h1>
           </div>
@@ -189,7 +196,8 @@ function SignInPage() {
               <div className="flex flex-col justify-center w-full gap-y-3 xl:flex-col items-center xl:gap-x-4">
                 <button
                   type="button"
-                  className="text-center border border-gray-300   w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center">
+                  className="text-center border border-gray-300   w-full py-3 px-3 rounded-full hover:bg-slate-200 flex justify-center items-center"
+                >
                   <img src={IconGoolge} className="w-6 mx-2" alt="" />
                   <p className="text-[13px]"> Sign in with Facebook</p>
                 </button>
@@ -233,7 +241,8 @@ function SignInPage() {
               <div className="button-login text-center ">
                 <button
                   onClick={handleClick}
-                  className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]">
+                  className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]"
+                >
                   {signInData.buttonLogin}
                 </button>
               </div>

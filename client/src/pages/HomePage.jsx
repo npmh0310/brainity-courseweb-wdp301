@@ -13,8 +13,8 @@ const HomePage = () => {
       <Hero />
       <Introduce />
       <Features />
-      <SlideProduct />
       <Course />
+      <SlideProduct />
     </div>
   );
 };
