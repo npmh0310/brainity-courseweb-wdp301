@@ -3,6 +3,7 @@ import { Pen, Upload } from "lucide-react";
 import InputCustom from "../common/InputCustom";
 import { CreateCourse } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
+import axios from "axios";
 const ModalCourse = ({ handleClose, setStatus }) => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -25,16 +26,37 @@ const ModalCourse = ({ handleClose, setStatus }) => {
   };
 
   //  chuyen file text name thanh img
-  const handleSelectedFile = (e) => {
+  const handleSelectedFile = async (e) => {
     const file = e.target.files[0];
-    setSelectedFile(file);
+    const preset_key = "hbmfnkks"
+    // setSelectedFile(file);
+    const formData = new FormData();
+    formData.append('file', file)
+    formData.append("upload_preset", preset_key);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+    const res = await axios.post("https://api.cloudinary.com/v1_1/doydh7dtj/image/upload", formData)
+    if (res && res.status === 200) {
+      setData(prev => ({ ...prev, imageUrl: res.data.secure_url }))
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      toast.error("Please select the image file")
+    }
+
   };
+  // const handleSelectedFile = (e) => {
+  //   const file = e.target.files[0];
+  //   setSelectedFile(file);
+
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setImagePreview(reader.result);
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
 
   const handleCancelSubmit = (e) => {
     e.preventDefault();
