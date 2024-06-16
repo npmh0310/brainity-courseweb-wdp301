@@ -1,13 +1,12 @@
-/* styles.css */
-/* Define transition for elements with class 'custom-nav-mobile' */
+/* styles.css */  
 .custom-nav-mobile {
     transition: top 0.5s ease-in-out, bottom 0.5s ease-in-out;
   }
   
-  /* Effects when 'custom-nav-mobile' is opened */
+  /*  custom-nav-mobile is opened */
   .custom-nav-mobile.open {
-    top: 88px; /* Or the desired top position when the element is opened */
-    bottom: auto; /* Remove bottom property to avoid conflicts */
+    top: 88px; 
+    bottom: auto; 
   }
   
 .nav-link {

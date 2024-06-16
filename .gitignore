@@ -3,4 +3,6 @@
 /server/utils/auth/key.js
 /server/package-lock.json
 /client/package-lock.json
-/client/yarn.lo
+/client/yarn.lock
+/server/.env
+

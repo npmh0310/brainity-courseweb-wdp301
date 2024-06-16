@@ -44,9 +44,9 @@ const LessonDetail = ({ section }) => {
                     Lesson video:
                   </span>
                   <div className="flex flex-col gap-y-5">
-                    <span className="text-sm">{lesson.videoUrl}</span>
+                    {/* <span className="text-sm">{lesson.videoUrl}</span> */}
                     <video width="50%" className="rounded-lg" controls>
-                      <source src={videoTest} type="video/mp4" />
+                      <source src={lesson.videoUrl} type="video/mp4" />
                     </video>
                   </div>
                 </div>

@@ -6,12 +6,14 @@ import { getCourseInHomePage } from "../../../fetchData/Course";
 import { useInView } from "react-intersection-observer";
 import { MoveRight } from "lucide-react";
 import "./course.css";
+import { useNavigate } from "react-router-dom";
 const Course = () => {
   const [courseList, setCourseList] = useState([]);
   const { ref: courseRef, inView: courseView } = useInView({
     triggerOnce: true,
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (courseView) {
@@ -20,7 +22,7 @@ const Course = () => {
         setCourseList(res.data.data);
         setTimeout(() => {
           setLoading(false);
-        }, 500);
+        }, 1000);
       });
     }
   }, [courseView]);
@@ -49,13 +51,16 @@ const Course = () => {
         </div>
         <div className="container mb-12">
           <div className="grid justify-items-center grid-cols-1 gap-y-10 sm:grid-cols-2  lg:grid-cols-3 ">
-            {courseList.map((item) => (
+            {courseList?.map((item) => (
               <Item key={item.id} data={item} loading={loading} />
             ))}
           </div>
         </div>
         <div className="flex  justify-center items-center">
-          <button className="cta flex flex-row  items-center">
+          <button
+            className="cta flex flex-row  items-center"
+            onClick={() => navigate("/categories")}
+          >
             <span>See all course</span>
             <svg width="15px" height="10px" viewBox="0 0 13 10">
               <path d="M1,5 L11,5"></path>

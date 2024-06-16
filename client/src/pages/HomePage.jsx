@@ -14,7 +14,7 @@ const HomePage = () => {
       <Introduce />
       <Features />
       <Course />
-      <SlideProduct />
+      {/* <SlideProduct /> */}
     </div>
   );
 };

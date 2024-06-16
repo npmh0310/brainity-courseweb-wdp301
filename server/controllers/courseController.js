@@ -1,8 +1,8 @@
-const e = require("express");
 var Course = require("../models/course");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
+const { getAvgRatingByCourseId } = require('./ratingController');
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
@@ -146,16 +146,16 @@ const deleteCourseById = async (req, res) => {
 
 const getCourseInHomePage = async (req, res) => {
   try {
-   
-    const courses = await Course.find({}).limit(9).populate('instructor', 'username');
+    const courses = await Course.find({})
+      .limit(9)
+      .populate("instructor", "username");
 
-  
     const promises = courses.map(async (course) => {
       const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
-      return { ...course.toObject(), numOfEnrolledUsers };
+      const ratingInfo = await getAvgRatingByCourseId(course._id);
+      return { ...course.toObject(), numOfEnrolledUsers, ratingInfo };
     });
 
-  
     const coursesWithEnrolledNumbers = await Promise.all(promises);
 
     // Send response
@@ -174,7 +174,7 @@ const getCourseInHomePage = async (req, res) => {
 };
 
 const getAllCourse = async (req, res) => {
-  const page = parseInt(req.query.page) || 0; 
+  const page = parseInt(req.query.page) || 0;
 
   try {
     //  limiting to 9 courses per page
@@ -183,10 +183,11 @@ const getAllCourse = async (req, res) => {
       .limit(9);
     const promises = courses.map(async (course) => {
       const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
-      return { ...course.toObject(), numOfEnrolledUsers };
+      const ratingInfo = await getAvgRatingByCourseId(course._id);
+      return { ...course.toObject(), numOfEnrolledUsers, ratingInfo };
     });
-    const coursesWithEnrolledNumbers = await Promise.all(promises); 
-    
+    const coursesWithEnrolledNumbers = await Promise.all(promises);
+
     res.status(200).json({
       success: true,
       count: coursesWithEnrolledNumbers.length,
@@ -336,7 +337,35 @@ const getCourseNumOfEnrolled = async (courseId) => {
       },
     },
   ]).exec();
-  return result[0] ? result[0].count : 1;
+  return result[0] ? result[0].count : 0;
+};
+
+const enrollCourse = async (req, res) => {
+  const userId = req.user.id;
+  const courseId = req.body.courseId;
+
+  try {
+    const user = await User.findById(userId);
+
+    // Check if the course is already enrolled
+    if (user.coursesEnrolled.includes(courseId)) {
+      return res.status(400).json({ message: "Course already enrolled" });
+    }
+
+    user.coursesEnrolled.push(courseId);
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({ message: "Enrolled in the course successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const checkCourseStatus = async (req, res) => {
+  // get course enrolled number
 };
 
 module.exports = {
@@ -351,6 +380,7 @@ module.exports = {
   getCourseCount,
   getFreeCourse,
   getProCourse,
+  enrollCourse,
   getCourseNumOfEnrolled,
   getCourseOfTeacher,
   getCourseByName,

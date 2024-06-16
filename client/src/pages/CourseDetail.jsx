@@ -201,7 +201,7 @@ function CourseDetail() {
                 </div>
 
                 <div className=' relative w-0 lg:w-4/12'>
-                    <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg ${isScrolled? '  sticky top-0 animate-open pt-[85px]' : ''}`}>
+                    <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg ${isScrolled? ' sticky top-0  pt-[85px]' : ''}`}>
                         <div className=' w-full'>
                             <div className=' flex justify-center items-center mb-2'>
                                 <iframe src="https://www.youtube.com/watch?v=SXmpbDBbJCw" frameborder="0"></iframe>

@@ -10,27 +10,22 @@ function Item(props) {
   };
 
   const { data, loading } = props;
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 10000);
-  // }, []);
 
   return (
-    <div className="py-7 px-6 bg-white w-[98%] rounded-md  relative border-2 border-transparent hover:border-primary  hover:-translate-y-2 transition-all ease-in-out duration-500">
+    <div className="py-7 px-6 bg-white w-[98%] rounded-md  relative border border-gray-200 hover:border-primary min-h-[430px] hover:-translate-y-2 transition-all ease-in-out duration-500">
+
       <Link
         className="absolute top-0 bottom-0 left-0 right-0 z-20"
-        to={`/course/${data.id}`}
+        to={`/course/${data._id}`}
       ></Link>
       <div className="flex flex-col mb-6">
         {loading ? (
           <Skeleton variant="rectangular" width="100%" height={192} />
         ) : (
           <img
-            className="w-full h-48 object-cover"
+            className="w-full rounded-md h-48 object-cover"
             src={data.imageUrl}
+
             alt={data.courseName}
           />
         )}
@@ -53,11 +48,11 @@ function Item(props) {
               </h2>
             )}
             <div className="flex flex-row items-center gap-x-1">
-              <span className="text-sm">{data.rating}</span>
+              <span className="text-sm">{data.ratingInfo.avgRating}</span>
               <Rating
                 className="mb-[2px]"
                 name="half-rating-read"
-                defaultValue={data.rating}
+                defaultValue={data.ratingInfo.avgRating}
                 precision={0.5}
                 readOnly
                 size="small"

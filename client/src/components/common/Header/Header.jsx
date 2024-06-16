@@ -49,7 +49,7 @@ const Header = () => {
       className={`${
         bg ? "bg-[white] shadow-md shadow-bottom py-3 lg:py-2" : "bg-none"
       } ${scrollDirection === "up" ? "show-header" : "hidden-header"}
-      } fixed header left-0 w-full py-3 lg:py-2 z-20 transition-all duration-200`}
+      } fixed header left-0 w-full py-3 lg:py-2 z-50 transition-all duration-200`}
     >
       {/* <header
     className={`header ${
