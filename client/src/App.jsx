@@ -130,7 +130,7 @@ function App() {
           </Route>
 
           {/* Route Learning Page */}
-          <Route path="learning/*" element={<LearningPage />}>
+          <Route path="learningCourse/:id/*" element={<LearningPage />}>
             {routesLearningPage.map((route, index) => (
               <Route key={index} path={route.path} element={route.element} />
             ))}
