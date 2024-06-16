@@ -5,29 +5,7 @@ import logoTest from '../../../assets/images/logoBrain.svg'
 import { getGlobalLoading, setGlobalLoading } from "../../../redux/features/globalLoadingSlice";
 
 const GlobalLoading = () => {
-  const globalLoading = useSelector(getGlobalLoading)
-  const dispatch = useDispatch()
-  // console.log(globalLoading)
-
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   if (globalLoading) {
-  //     setIsLoading(globalLoading);
-  //   } else {
-  //     setTimeout(() => {
-  //       setIsLoading(false);
-  //     }, 1500);
-  //   }
-  // }, [globalLoading]);
-  useEffect(() => {
-    if(globalLoading){
-      setTimeout(() => {
-        dispatch(setGlobalLoading(false))
-      }, 3000);
-    }
-  },[globalLoading ,dispatch])
-
+  const globalLoading = useSelector((state) => state.globalLoading.globalLoading);
   return (
     <>
       <div

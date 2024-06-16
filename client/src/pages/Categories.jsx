@@ -1,10 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import CategoriesBg from "../assets/images/Categories/bg1.jpg";
 
 import Item from "../components/common/Item";
+import { useNavigate } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
+import { getAllCourse } from "../fetchData/Course";
 
 export const Categories = () => {
+  const [courseList, setCourseList] = useState([]);
+  const { ref: courseRef, inView: courseView } = useInView({
+    triggerOnce: true,
+  });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (courseView) {
+      setLoading(true);
+      getAllCourse().then((res) => {
+        setCourseList(res.data.data);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      });
+    }
+  }, [courseView]);
   const sampleData = [
     {
       id: 1,
@@ -114,7 +135,7 @@ export const Categories = () => {
     setIsOpen(!isOpen);
   };
   return (
-    <div className="container px-0 mx-auto mb-8">
+    <div ref={courseRef} className="container bg-white px-0 mx-auto pb-20">
       <div className="flex justify-center gap-3 text-4xl pt-8 pb-16">
         <p className="font-semibold">E-learning Courses</p>
       </div>
@@ -181,7 +202,7 @@ export const Categories = () => {
             )}
           </div>
 
-          <div>100 results</div>
+          <div>{courseList && courseList.length} results</div>
         </div>
       </div>
       <div className="grid grid-cols-6 gap-10">
@@ -333,8 +354,8 @@ export const Categories = () => {
           </div>
           {/* cate */}
           <div className="grid justify-items-center grid-cols-1 gap-y-10 sm:grid-cols-2  lg:grid-cols-3 ">
-            {sampleData.map((data) => (
-              <Item key={data.id} data={data} />
+            {courseList?.map((data) => (
+              <Item key={data.id} data={data} loading={loading} />
             ))}
           </div>
         </div>

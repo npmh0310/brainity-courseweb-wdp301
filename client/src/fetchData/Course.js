@@ -1,49 +1,54 @@
 import axios from "./axios";
 
 const getAllCourse = () => {
-    return axios.get("/course");
-}
+  return axios.get("/course");
+};
+
+const getCourseInHomePage = () => {
+  return axios.get("/course/homepage");
+};
 
 const getCoursePro = () => {
-    return axios.get("/course/getCoursePro");
-}
+  return axios.get("/course/getCoursePro");
+};
 
 const getCourseFree = () => {
-    return axios.get("/course/getCourseFree");
-}
+  return axios.get("/course/getCourseFree");
+};
 
 const getCourseById = (id) => {
-    return axios.get(`/course/${id}`);
-}
+  return axios.get(`/course/${id}`);
+};
 
 const postCourse = (course) => {
-    return axios.post("/course", course);
-}
+  return axios.post("/course", course);
+};
 
 const updateCourse = (id, course) => {
-    return axios.put(`/course/${id}`, course);
-}
+  return axios.put(`/course/${id}`, course);
+};
 
 const deleteCourse = (id) => {
-    return axios.delete(`/course/${id}`);
-}
+  return axios.delete(`/course/${id}`);
+};
 
 const enrollCourseFree = (id, idCourse) => {
-    return axios.put(`/auth/${id}/course/${idCourse}`)
-}
+  return axios.put(`/auth/${id}/course/${idCourse}`);
+};
 
 const getFavouriteCourse = () => {
-    return axios.get(`/favourite` );
-}
+  return axios.get(`/favourite`);
+};
 
 export {
-    getAllCourse,
-    deleteCourse,
-    getCourseById,
-    getCourseFree,
-    getCoursePro,
-    postCourse,
-    enrollCourseFree,
-    updateCourse,
-    getFavouriteCourse
-}
+  getAllCourse,
+  getCourseInHomePage,
+  deleteCourse,
+  getCourseById,
+  getCourseFree,
+  getCoursePro,
+  postCourse,
+  enrollCourseFree,
+  updateCourse,
+  getFavouriteCourse,
+};

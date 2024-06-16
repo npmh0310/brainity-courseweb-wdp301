@@ -1,13 +1,14 @@
 var express = require('express');
-const { createCourse, getAllCourse, getCourseById, updateCourse, deleteCourseById, getCourseCount, getCourseBySearch, getFeaturedCourse, getFreeCourse, getProCourse, getCourseOfTeacher,
+const { createCourse,getCourseInHomePage, getAllCourse, getCourseById, updateCourse, deleteCourseById, getCourseCount,
+    getCourseBySearch, getFeaturedCourse, getFreeCourse, getProCourse, getCourseOfTeacher,
     getCourseByName, enrollCourse } = require('../controllers/courseController');
 const { verify } = require('jsonwebtoken');
 const { verifyAdmin, verifyTeacher, verifyUser } = require('../utils/verifyToken');
 
 
 const courseRoute = express.Router();
-
 courseRoute.get("/", getAllCourse);
+courseRoute.get("/homepage", getCourseInHomePage);
 courseRoute.get("/search/getFeaturedCourse", getFeaturedCourse);
 courseRoute.get("/search/getCourseBySearch", getCourseBySearch);
 courseRoute.get("/search/getCourseCount", getCourseCount);

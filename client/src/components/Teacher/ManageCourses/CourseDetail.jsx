@@ -7,6 +7,8 @@ import {
   CirclePlus,
   List,
   Upload,
+  Check,
+  X,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import ButtonAdd from "../common/ButtonAdd";
@@ -14,7 +16,12 @@ import ButtonAdd from "../common/ButtonAdd";
 import Modal from "@mui/material/Modal";
 import ModalChapter from "./ModalChapter";
 import InputCustom from "../common/InputCustom";
-import { createLinkUrl, getCourseById, getCourseByName, updateCourse } from "../../../fetchData/TeacherCourse";
+import {
+  createLinkUrl,
+  getCourseById,
+  getCourseByName,
+  updateCourse,
+} from "../../../fetchData/TeacherCourse";
 import EditCourse from "./EditCourse";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -26,9 +33,9 @@ const CourseDetail = () => {
   const handleToggle = () => {
     setIsChecked(!isChecked);
   };
-  const [status, setStatus] = useState(false)
+  const [status, setStatus] = useState(false);
   const navigate = useNavigate();
-  const [course, setCourse] = useState({})
+  const [course, setCourse] = useState({});
   const { urlLink } = useParams();
   // const [data, setData] = useState({
   //   courseName: urlLink
@@ -36,13 +43,16 @@ const CourseDetail = () => {
   // console.log(urlLink)
   // const [imagePreview, setImagePreview] = useState(true);
   useEffect(() => {
-    getCourseById(urlLink).then((res) => setCourse(res.data.data)).catch(err => console.log(err))
-    setStatus(false)
-  }, [status, urlLink])
+    getCourseById(urlLink)
+      .then((res) => setCourse(res.data.data))
+      .catch((err) => console.log(err));
+    setStatus(false);
+  }, [status, urlLink]);
 
   const handleAddNewChapter = (sectionId) => {
     navigate(`/teacher/managecourses/${course._id}/${sectionId}`);
   };
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -51,6 +61,9 @@ const CourseDetail = () => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  // const handleAddNewChapter = (sectionId) => {
+  //   navigate(`/teacher/managecourses/${course.urlLink}/${sectionId}`);
+  // };
   const handleFileInputClick = () => {
     fileInputRef.current.click();
   };
@@ -58,29 +71,32 @@ const CourseDetail = () => {
   //  chuyen file text name thanh img
   const handleSelectedFile = async (e) => {
     const file = e.target.files[0];
-    const preset_key = "hbmfnkks"
+    const preset_key = "hbmfnkks";
     // setSelectedFile(file);
     const formData = new FormData();
-    formData.append('file', file)
+    formData.append("file", file);
     formData.append("upload_preset", preset_key);
 
     // https://api.cloudinary.com/v1_1/demo/video/create_video
 
-    const res = await axios.post("https://api.cloudinary.com/v1_1/doydh7dtj/image/upload", formData)
+    const res = await axios.post(
+      "https://api.cloudinary.com/v1_1/doydh7dtj/image/upload",
+      formData
+    );
     // console.log(res.data)
     if (res && res.status === 200) {
       // console.log(res.data.secure_url)
       const linkImg = {
-        imageUrl: res.data.secure_url
-      }
-      console.log(linkImg)
+        imageUrl: res.data.secure_url,
+      };
+      console.log(linkImg);
       const resUpdate = await updateCourse(course._id, linkImg);
       // console.log(resUpdate)
       if (resUpdate && resUpdate.status === 200) {
-        toast.success("Updated success")
-        setStatus(true)
+        toast.success("Updated success");
+        setStatus(true);
       } else {
-        toast.error("Something wrong")
+        toast.error("Something wrong");
       }
 
       // const reader = new FileReader();
@@ -89,9 +105,8 @@ const CourseDetail = () => {
       // };
       // reader.readAsDataURL(file);
     } else {
-      toast.error("Please select the image file")
+      toast.error("Please select the image file");
     }
-
   };
 
   // const handleUpdate = async(e) = {
@@ -109,7 +124,6 @@ const CourseDetail = () => {
     <div className="mt-6 px-10 ">
       <div className="flex flex-col gap-y-5 mb-10 ">
         <div className="flex justify-between items-center">
-
           <div className="flex items-center gap-x-4 text-third  mt-6">
             <div className="w-12 h-12  rounded-full flex items-center justify-center text-third bg-third bg-opacity-15 ">
               <LayoutDashboard className=" " />
@@ -173,7 +187,7 @@ const CourseDetail = () => {
                 setStatus={setStatus}
               />
             </div>
-            <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1 ">
+            <div className="flex items-center flex-col bg-white justify-between  px-6 py-6 w-6/12 gap-y-4 rounded-lg border border-spacing-1">
               <EditCourse
                 idCourse={course._id}
                 label="Course description"
@@ -298,7 +312,8 @@ const CourseDetail = () => {
                 <ModalChapter
                   courseId={course._id}
                   handleClose={handleClose}
-                  setStatus={setStatus} />
+                  setStatus={setStatus}
+                />
               </>
             </Modal>
           </div>

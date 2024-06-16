@@ -9,28 +9,23 @@ function Item(props) {
     navigate(`/course/${id}`);
   };
 
-  const data = props.data;
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
+  const { data, loading } = props;
 
   return (
-    <div className="py-7 px-6 bg-white w-[98%] rounded-md  relative  hover:-translate-y-2 transition-all ease-in-out duration-500">
+    <div className="py-7 px-6 bg-white w-[98%] rounded-md  relative border border-gray-200 hover:border-primary min-h-[430px] hover:-translate-y-2 transition-all ease-in-out duration-500">
+
       <Link
         className="absolute top-0 bottom-0 left-0 right-0 z-20"
-        to={`/course/${data.id}`}
+        to={`/course/${data._id}`}
       ></Link>
       <div className="flex flex-col mb-6">
         {loading ? (
           <Skeleton variant="rectangular" width="100%" height={192} />
         ) : (
           <img
-            className="w-full h-48 object-cover"
-            src={data.image}
+            className="w-full rounded-md h-48 object-cover"
+            src={data.imageUrl}
+
             alt={data.courseName}
           />
         )}
@@ -47,18 +42,24 @@ function Item(props) {
         ) : (
           <>
             <h1 className="font-medium text-lg">{data.courseName}</h1>
-            <h2 className="text-gray-700 text-sm">{data.teacher}</h2>
+            {data.instructor && (
+              <h2 className="text-gray-700 text-sm">
+                {data.instructor.username}
+              </h2>
+            )}
             <div className="flex flex-row items-center gap-x-1">
-              <span className="text-sm">{data.rating}</span>
+              <span className="text-sm">{data.ratingInfo.avgRating}</span>
               <Rating
                 className="mb-[2px]"
                 name="half-rating-read"
-                defaultValue={data.rating}
+                defaultValue={data.ratingInfo.avgRating}
                 precision={0.5}
                 readOnly
                 size="small"
               />
-              <span className="text-sm text-gray-500">({data.student})</span>
+              <span className="text-sm text-gray-500">
+                ({data.numOfEnrolledUsers})
+              </span>
             </div>
             <div className="flex flex-row gap-x-2 items-center">
               <span className="font-medium">{data.price} VND</span>
@@ -66,9 +67,11 @@ function Item(props) {
                 120000 VND
               </span>
             </div>
-            <div className="py-[6px] w-28 bg-[#eceb98]">
-              <h1 className="text-center text-sm">Best seller</h1>
-            </div>
+            {data.numOfEnrolledUsers >= 2 && (
+              <div className="py-[6px] w-28 bg-[#eceb98]">
+                <h1 className="text-center text-sm">Best seller</h1>
+              </div>
+            )}
           </>
         )}
       </div>
