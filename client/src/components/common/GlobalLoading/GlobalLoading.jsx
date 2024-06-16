@@ -1,7 +1,8 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import "./GlobalLoading.css";
 import logoTest from '../../../assets/images/logoBrain.svg'
+import { getGlobalLoading, setGlobalLoading } from "../../../redux/features/globalLoadingSlice";
 
 const GlobalLoading = () => {
   const globalLoading = useSelector((state) => state.globalLoading.globalLoading);

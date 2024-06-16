@@ -12,11 +12,11 @@ const MainLayout = () => {
 
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(setGlobalLoading(false))
-    }, 1500);
-  }, [dispatch])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     dispatch(setGlobalLoading(false))
+  //   }, 1500);
+  // }, [dispatch])
   return (
     <div className="mx-auto">
       {/* Header */}

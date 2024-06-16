@@ -108,9 +108,9 @@ function SignInPage() {
   };
 
   const handleLoginGoogle = () => {
-    window.open("http://localhost:4000/auth/google/", "_self");
-  };
-
+    dispatch(setGlobalLoading(true))
+    window.open("http://localhost:4000/auth/google/", "_self")
+  }
   return (
     <>
       {!user && (

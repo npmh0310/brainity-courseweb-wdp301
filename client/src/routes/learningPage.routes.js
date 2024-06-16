@@ -20,7 +20,8 @@ export const routesLearningPage = [
     {
         path: "exercise",
         element: <Exercise/>,
-    }
+    },
+    
 ]
 
 
