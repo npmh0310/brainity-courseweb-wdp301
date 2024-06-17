@@ -91,7 +91,7 @@ const PaymentSuccess = () => {
             </span>
             <h1
               className={`text-4xl font-semibold my-5 ${
-                showMessage ? "animate-open" : "opacity-0"
+                showMessage ? "animate-text-open" : "opacity-0"
               }`}
             >
               <span className="clip-text">PAYMENT SUCCESSFULLY !!!</span>
