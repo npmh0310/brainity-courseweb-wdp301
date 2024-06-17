@@ -2,10 +2,15 @@
 import React from 'react'
 import Star from '../../../../assets/images/star.png'
 import { Flag } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
+import { parseISO, format } from 'date-fns';
+import { formatDate } from '../../../../function/function';
 function OverView() {
+    const location = useLocation()
+    const { course } = location.state || {};
     return (
         <div className=' px-4 flex flex-col w-full mx-auto'>
-            <h1 className=' mb-6 text-2xl text-[#2D2F31]'>[NEW] Spring Boot 3, Spring 6 & Hibernate for Beginners </h1>
+            <h1 className=' mb-6 text-2xl text-[#2D2F31]'>{course.courseName}</h1>
             <div className=' flex justify-start items-center mb-4 '>
                 <div className=' flex flex-col  items-start'>
                     <div className=' flex justify-center items-center gap-2'>
@@ -29,13 +34,14 @@ function OverView() {
             </div>
             <div className='  flex justify-start items-center mb-4'>
                 <Flag size={12} className=' mr-2' />
-                <span className=' text-[12px]'>Last updated May 2024</span>
+                <span className=' text-[12px]'>{formatDate(course.updatedAt)} </span>
             </div>
             <div className='p-6 flex items-start border-t'>
                 <div className=' w-2/12 text-sm text-start'>
                     Description
                 </div>
                 <div className=' w-10/12 text-sm font-semibold '>
+                    <p><strong>{course.description}</strong></p>
                     <p><strong>NEW FOR SPRING BOOT 3 AND SPRING 6</strong></p>
                     <p><strong>POPULAR IDE - IntelliJ (free version)</strong></p>
                     <p><strong>#1 BEST SELLING SPRING BOOT &amp; HIBERNATE&nbsp;COURSE ON UDEMY - 350,000+ STUDENTS ENROLLED</strong></p>

@@ -1,21 +1,17 @@
-import React from 'react'
-import Star from '../assets/images/star.png'
-import courseimg from '../assets/images/photo.jpg'
-import { Tag } from 'lucide-react'
+import React from "react";
+import { Tag } from "lucide-react";
 import { Button } from "flowbite-react";
-import ItemInCart from '../components/User/CartPage/ItemInCart'
+import ItemInCart from "../components/User/CartPage/ItemInCart";
 function CartPage() {
   return (
-    <div className=' max-w-[1440px] mx-auto px-10 animate-open'>
-      <h1 className=' mt-8 text-4xl font-bold text-[#2d2f31] text-start'>
+    <div className=" max-w-[1440px] mx-auto px-10 animate-open">
+      <h1 className=" mt-8 text-4xl font-bold text-[#2d2f31] text-start">
         Shopping Cart
       </h1>
-      <div className=' flex flex-col lg:flex-row mb-4'>
-        <div className=' lg:w-9/12 w-full '>
-          <div className=' mt-8 flex flex-col gap-y-4'>
-            <h3 className=' font-semibold mb-2'>
-              2 Course in Cart
-            </h3>
+      <div className=" flex flex-col lg:flex-row mb-4">
+        <div className=" lg:w-9/12 w-full ">
+          <div className=" mt-8 flex flex-col gap-y-4">
+            <h3 className=" font-semibold mb-2">2 Course in Cart</h3>
             {/* <div className=' py-4 border-y-2 flex justify-between items-start'>
               <div className=' basis-1/6 w-full pr-2'>
                 <img className=' w-full h-full object-cover' src={courseimg} alt="" />
@@ -73,41 +69,44 @@ function CartPage() {
                   
               </div>
             </div> */}
-            <ItemInCart/>
+            <ItemInCart />
           </div>
-          <div className=' mt-8 flex flex-col gap-y-4'>
-            <h3 className=' font-semibold mb-2'>
-              2 Course for Later
-            </h3>
-            <ItemInCart/>
+          <div className=" mt-8 flex flex-col gap-y-4">
+            <h3 className=" font-semibold mb-2">2 Course for Later</h3>
+            <ItemInCart />
           </div>
         </div>
-        <div className=' lg:w-3/12 pl-6 w-full flex flex-col items-start py-4'>
-            <div className=' mt-8 mb-4 text-start'>
-              <h3 className=' text-third font-semibold mb-4'>Total:</h3>
-              <h2 className=' text-3xl text-gray-600 font-semibold'>₫598,000</h2>
+        <div className=" lg:w-3/12 pl-6 w-full flex flex-col items-start py-4">
+          <div className=" mt-8 mb-4 text-start">
+            <h3 className=" text-third font-semibold mb-4">Total:</h3>
+            <h2 className=" text-3xl text-gray-600 font-semibold">₫598,000</h2>
+          </div>
+          <button
+            className="  px-2 py-1 rounded-none w-full bg-primary hover:bg-opacity-75 "
+            color="success"
+          >
+            <span className=" text-white text-xl font-bold tracking-wide ">
+              Checkout
+            </span>
+          </button>
+          <div className=" my-4 w-full border-y"></div>
+          <div className=" w-full">
+            <h3 className=" text-third font-semibold mb-4">Promotions</h3>
+            <div className=" flex">
+              <input
+                type="text"
+                placeholder="Enter Coupon"
+                className=" w-11/12 px-2 py-1 border border-black text-sm"
+              />
+              <Button className=" px-2 py-1 rounded-none bg-primary border-primary hover:bg-opacity-75">
+                <span className=" text-white text-sm font-bold">Apply</span>
+              </Button>
             </div>
-            <button className='  px-2 py-1 rounded-none w-full bg-primary hover:bg-opacity-75 ' color="success">
-              <span className=' text-white text-xl font-bold tracking-wide '>
-                Checkout
-              </span>
-            </button>
-            <div className=' my-4 w-full border-y'></div>
-            <div className=' w-full'>
-              <h3 className=' text-third font-semibold mb-4'>Promotions</h3>
-              <div className=' flex'>
-                <input type="text" placeholder='Enter Coupon' className=' w-11/12 px-2 py-1 border border-black text-sm' />
-                <Button className=' px-2 py-1 rounded-none bg-primary border-primary hover:bg-opacity-75'>
-                  <span className=' text-white text-sm font-bold'>
-                    Apply
-                  </span>
-                </Button>
-              </div>
-            </div>
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CartPage
+export default CartPage;

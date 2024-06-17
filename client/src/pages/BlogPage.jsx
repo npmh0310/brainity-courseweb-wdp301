@@ -18,7 +18,7 @@ function BlogPage() {
             backgroundPosition: "center bottom",
           }}
         >
-          <div className="text-white italic font-extrabold text-6xl absolute inset-y-1/3 inset-x-1/2 lg:inset-x-1/2">
+          <div className="text-white italic font-extrabold text-7xl absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/">
             Blog
           </div>
           <div className="absolute bottom-0 left-12 right-12 bg-white h-12"></div>
@@ -44,8 +44,8 @@ function BlogPage() {
             </ul>
           </div>
           {BlogData.map((blog, index) => (
-            <>
-              <div className="py-8">
+            
+              <div className="py-8" key={index}>
                 <div className="flex flex-col lg:flex-row flex-1">
                   <div className="w-full lg:w-1/2 pr-0 lg:pr-8 mb-4 lg:mb-0">
                     <Link to={`/blogdetail/${blog.id}/`}>
@@ -93,7 +93,7 @@ function BlogPage() {
                   </div>
                 </div>
               </div>
-            </>
+            
           ))}
         </div>
       </div>

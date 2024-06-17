@@ -44,7 +44,7 @@ const SidebarProfileUser = () => {
   const user = useSelector((state) => state.auth.user)
 
   return (
-    <div className=" w-full md:w-[30%] h-[560px] bg-white mt-8 border pb-10 border-gray-200 rounded-md">
+    <div className=" w-full md:w-[30%] max-h-[590px] bg-white mt-8 border pb-10 border-gray-200 rounded-md">
       <div className="pt-10 pb-8 border-b-[1px] ">
         <h1 className="text-4xl uppercase font-logoTitle font-semibold text-center text-third">
           My profile

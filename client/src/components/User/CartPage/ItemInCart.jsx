@@ -1,6 +1,6 @@
 import React from 'react'
 import Star from '../../../assets/images/star.png'
-import courseimg from '../../../assets/images/photo.jpg'
+import courseimg from '../../../assets/images/healthy.jpg'
 import { Tag } from 'lucide-react'
 function ItemInCart() {
   return (

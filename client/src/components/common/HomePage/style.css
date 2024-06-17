@@ -1,10 +1,3 @@
-.fea-item {
-    transition: transform 0.3s ease;
-}
-
-.fea-item:hover {
-    transform: translateY(-14px);
-}
 
 .my-line {
     border-right: 1px solid black;

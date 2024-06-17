@@ -59,8 +59,13 @@ const deleteLesson = (id) => {
     return axios.delete(`/lesson/${id}`);
 }
 
+const createLinkUrl = (file) => {
+    // console.log(data)
+    return axios.post(`/cloudinary/upload`, file);
+}
+
 export {
     CreateCourse, getCourseOfTeacher, updateCourse, deleteCourse, getCourseById, getCourseByName,
     getSectionById, createSection, updateSection, deleteSection,
-    createLesson, deleteLesson, updateLesson
+    createLesson, deleteLesson, updateLesson, createLinkUrl
 }

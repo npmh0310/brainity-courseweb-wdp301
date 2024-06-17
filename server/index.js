@@ -19,6 +19,7 @@ require('./utils/auth/passport');
 var jwt = require('jsonwebtoken');
 const cartRoute = require('./routes/cart');
 const favouriteRoute = require('./routes/favourite');
+const ratingRoute = require('./routes/rating');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
 
 dotenv.config();
@@ -123,6 +124,7 @@ app.use('/api/v1/teacherRequest', teacherRequestRoute)
 app.use('/api/v1/cart', cartRoute)
 app.use('/api/v1/favourite', favouriteRoute)
 app.use('/api/v1/cloudinary', cloudinaryRoute)
+app.use('/api/v1/rating', ratingRoute)
 
 //Oauth2
 app.use('/auth', oauth2Route)

@@ -7,7 +7,7 @@
     @apply bg-grey-3 font-primary text-base leading-relaxed;
   }
   .section {
-    @apply py-[50px] lg:py-[70px];
+    @apply py-[30px] lg:py-[20px];
   }
   .title {
     @apply text-2xl lg:text-[34px] leading-tight font-semibold mb-4;

@@ -8,11 +8,12 @@ export const globalLoadingSlice = createSlice({
   },
   reducers: {
     setGlobalLoading: (state, action) => {
-      state.appState = action.payload;
+      state.globalLoading = action.payload;
     },
   },
 });
 
 export const { setGlobalLoading } = globalLoadingSlice.actions;
+export const getGlobalLoading = (state) => state.globalLoading.globalLoading
 
 export default globalLoadingSlice.reducer;

@@ -4,6 +4,7 @@ import InputCustom from "../common/InputCustom";
 import videoTest from "../../../assets/videos/ADBE925D-45A7-437E-A735-415F7A4625E4.mp4";
 import { createLesson } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
+import axios from "axios";
 const ModalLesson = ({ handleClose, sectionId, setStatus }) => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -36,15 +37,28 @@ const ModalLesson = ({ handleClose, sectionId, setStatus }) => {
   };
 
   //  chuyen file text name thanh img
-  const handleSelectedFile = (e) => {
+  const handleSelectedFile = async (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
+    const preset_key = "hbmfnkks"
+    // setSelectedFile(file);
+    const formData = new FormData();
+    formData.append('file', file)
+    formData.append("upload_preset", preset_key);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setVideoPreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+    const res = await axios.post("https://api.cloudinary.com/v1_1/doydh7dtj/video/upload", formData)
+    // console.log(res.data)
+    if (res && res.status === 200) {
+      setData(prev => ({ ...prev, videoUrl: res.data.secure_url }))
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVideoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      toast.error("Please select the video file")
+    }
+
   };
 
   const handleCancelSubmit = (e) => {
