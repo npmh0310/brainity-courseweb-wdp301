@@ -67,7 +67,7 @@
     }
 }
 
-.animate-open {
+.animate-text-open {
     animation: openText 4s ease forwards;
 }
 
