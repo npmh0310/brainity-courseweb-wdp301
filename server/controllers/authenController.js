@@ -274,6 +274,29 @@ const logout = async (req, res) => {
     });
 }
 
+const changePassword = async (req, res) => {
+    const { oldPassword, newPassword} = req.body
+    const user = await User.findById(req.user.id)
+    const checkCorrectPassword = await bcrypt.compare(oldPassword, user.password);
+
+    if (!checkCorrectPassword) {
+        return res.status(401).json({
+            success: false,
+            message: 'Incorrect email or password'
+        })
+    }
+    const salt = bcrypt.genSaltSync(10)
+    const hash = bcrypt.hashSync(newPassword, salt)
+
+    user.password = hash;
+    await user.save();
+
+    return res.status(200).json({
+        success: true,
+        message: 'Password updated successfully'
+    });
+}
+
 module.exports = {
     register,
     login,
@@ -284,5 +307,6 @@ module.exports = {
     updateUserFreeCourse,
     updateUser,
     getProfile,
-    logout
+    logout,
+    changePassword
 }
