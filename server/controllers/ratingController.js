@@ -63,7 +63,6 @@ const getAvgRatingByCourseId = async (courseId) => {
 
         // Calculate the average rating
         const avgRating = totalRating / ratings.length;
-        console.log(avgRating, ratings.length)
         return {
             avgRating, numOfRates: ratings.length
         }
