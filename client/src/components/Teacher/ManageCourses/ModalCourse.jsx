@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pen, Upload } from "lucide-react";
 import InputCustom from "../common/InputCustom";
-import { CreateCourse } from "../../../fetchData/TeacherCourse";
+import { CreateCourse, getAllCategory } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
 import axios from "axios";
 const ModalCourse = ({ handleClose, setStatus }) => {
@@ -15,6 +15,7 @@ const ModalCourse = ({ handleClose, setStatus }) => {
     categories: undefined,
     price: undefined
   })
+  const { cate, setCate } = useState([])
 
   const handleChange = e => {
     setData(prev => ({ ...prev, [e.target.id]: e.target.value }))
@@ -24,6 +25,13 @@ const ModalCourse = ({ handleClose, setStatus }) => {
   const handleFileInputClick = () => {
     fileInputRef.current.click();
   };
+
+  useEffect(() => {
+    getAllCategory().then(res => {
+      console.log(res)
+      setCate(res.data.data)
+    }).catch(err => console.error(err))
+  }, [])
 
   //  chuyen file text name thanh img
   const handleSelectedFile = async (e) => {
@@ -76,6 +84,17 @@ const ModalCourse = ({ handleClose, setStatus }) => {
       toast.error("Failed to create")
     }
   }
+
+  const [selectedOption, setSelectedOption] = useState('');
+  const [otherValue, setOtherValue] = useState('');
+
+  const handleDropdownChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    setOtherValue(event.target.value);
+  };
 
   return (
     <div className="w-[70%] max-w-[1100px] h-[650px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white">
@@ -196,8 +215,22 @@ const ModalCourse = ({ handleClose, setStatus }) => {
                     <Pen size={14} /> add categories
                   </span>
                 </div>
+                <div className="w-full">
+                  <label htmlFor="dropdown">Chọn tùy chọn:</label>
+                  <select id="dropdown" value="" onChange={handleDropdownChange}>
+                    <option value="">Choose...</option>
+                    {cate && cate.map((data, index) => (
+                      <option key={index} value={data._id}>{data.categoryName}</option>
+                    ))}
+                    <option value="other">Other...</option>
+                  </select>
 
-                <InputCustom id="categories" display="input categories" onChange={handleChange} />
+                  {/* {selectedOption === 'other' && (
+                    <div>
+                      <input className="w-full" id="categories" placeholder="input new category name" onChange={handleInputChange} />
+                    </div>
+                  )} */}
+                </div>
               </div>
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
                 <div className="flex items-center justify-between w-full  ">
