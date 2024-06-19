@@ -151,18 +151,44 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const id = req.params.id;
+    const {emai, password,  ...rest} = req.body;
+    const user = await User.findById(id);
 
     try {
-        const updateUser = await User.findByIdAndUpdate(id, {
-            $set: { ...req.body }
-        }, { new: true })
 
-        res.status(200).json({
-            success: true,
-            message: "Successfully updated",
-            data: updateUser
-        })
-    } catch (err) {
+        if(!user.googleId) {
+            const updateUser = await User.findByIdAndUpdate(id, {
+                $set: { ...req.body }
+            }, { new: true })
+            
+            res.status(200).json({
+                success: true,
+                message: "Successfully updated",
+                data: updateUser
+            })
+        } else {
+            const updateUser = await User.findByIdAndUpdate(id, {
+                $set: { ...rest }
+            }, { new: true })
+            
+            res.status(200).json({
+                success: true,
+                message: "Successfully updated",
+                data: updateUser
+            })
+        }
+        
+        // try {
+        //     const updateUser = await User.findByIdAndUpdate(id, {
+        //         $set: { ...req.body }
+        //     }, { new: true })
+        
+        //     res.status(200).json({
+            //         success: true,
+            //         message: "Successfully updated",
+            //         data: updateUser
+            //     })
+        } catch (err) {
         res.status(500).json({
             success: false,
             message: "Failed to update. Try again"
