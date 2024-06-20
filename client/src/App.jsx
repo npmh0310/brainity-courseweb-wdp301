@@ -33,6 +33,8 @@ import { validateToken } from "./redux/features/authSlice";
 import { Toaster } from 'react-hot-toast';
 import { routesLearningPage } from "./routes/learningPage.routes";
 import PaymentSuccess from "./components/User/Payment/PaymentSuccess";
+import VideoChaper from "./components/User/LearningPage/VideoChapter/VideoChaper";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -130,11 +132,15 @@ function App() {
           </Route>
 
           {/* Route Learning Page */}
-          <Route path="learningCourse/:id/*" element={<LearningPage />}>
-            {routesLearningPage.map((route, index) => (
-              <Route key={index} path={route.path} element={route.element} />
-            ))}
-          </Route>
+          
+
+            <Route path="learningCourse/:id/*" element={<LearningPage />}>
+                
+                {/* {routesLearningPage.map((route, index) => (
+                    <Route key={index} path={route.path} element={route.element} />
+                  ))} */}
+            </Route>
+
 
           {/* Route Admin*/}
           <Route path="/admin/*" element={<AdminLayout />}>
