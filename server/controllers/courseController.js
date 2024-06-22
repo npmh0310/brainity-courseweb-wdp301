@@ -2,7 +2,7 @@ var Course = require("../models/course");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
-const { getAvgRatingByCourseId } = require('./ratingController');
+const { getAvgRatingByCourseId } = require("./ratingController");
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
@@ -63,27 +63,22 @@ const getCourseByName = async (req, res) => {
 
 const getCourseOfTeacher = async (req, res) => {
   const userId = req.user.id;
-  // console.log(userId)
-  const page = parseInt(req.query.page);
+  const page = parseInt(req.query.page) || 0;
+  const pageSize = 8;
 
   try {
+    const totalCourses = await Course.countDocuments({ instructor: userId });
+    const totalPages = Math.ceil(totalCourses / pageSize);
     const getAllCourseOfTeacher = await Course.find({ instructor: userId })
-      // .populate({
-      //     path: 'sections',
-      //     populate: {
-      //         path: 'lessons',
-      //         model: 'Lesson' // Tên của mô hình Lesson
-      //     }
-      // })
-      // .populate('categories')
-      .skip(page * 8)
-      .limit(8);
+      .skip(page * pageSize)
+      .limit(pageSize);
 
     res.status(200).json({
       success: true,
       count: getAllCourseOfTeacher.length,
       message: "Successfully get all of Teacher",
       data: getAllCourseOfTeacher,
+      totalPages: totalPages,
     });
   } catch (err) {
     res.status(500).json({
