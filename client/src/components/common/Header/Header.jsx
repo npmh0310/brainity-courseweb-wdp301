@@ -23,32 +23,36 @@ const Header = () => {
     let lastScrollY = window.scrollY;
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > 50) {
+      if (currentScrollY > 0) {
         setBg(true);
         setBtnColor(true);
       } else {
         setBg(false);
         setBtnColor(false);
       }
-      if (currentScrollY === 0 || currentScrollY > lastScrollY) {
-        setScrollDirection("up");
-      } else {
+
+      if (currentScrollY > lastScrollY) {
         setScrollDirection("down");
+      } else {
+        setScrollDirection("up");
       }
 
       lastScrollY = currentScrollY;
     };
+
     window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
     <header
       className={`${
         bg ? "bg-[white] shadow-md shadow-bottom py-3 lg:py-2" : "bg-none"
-      } ${scrollDirection === "up" ? "show-header" : "hidden-header"}
+      } ${
+        scrollDirection === "up" ? "show-header" : "hidden-header"
       } fixed header left-0 w-full py-3 lg:py-2 z-50 transition-all duration-200`}
     >
       {/* <header

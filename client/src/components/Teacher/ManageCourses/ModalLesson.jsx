@@ -125,7 +125,7 @@ const ModalLesson = ({ handleClose, sectionId, setStatus }) => {
 
                 {/* Custom button */}
                 <span
-                  className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium  hover:font-medium"
+                  className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium "
                   onClick={handleFileInputClick}
                 >
                   <Upload className="w-4 h-4" />

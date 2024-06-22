@@ -1,0 +1,15 @@
+/* styles.css */
+.scrollbar-custom::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: rgba(4, 221, 178, 0.8); /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Rounded corners for the scrollbar thumb */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background-color: rgba(4, 221, 178, 0.2); /* Color of the scrollbar track */
+    border-radius: 4px; /* Rounded corners for the scrollbar track */
+  }
+  
