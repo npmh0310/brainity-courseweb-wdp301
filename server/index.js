@@ -20,6 +20,7 @@ var jwt = require('jsonwebtoken');
 const cartRoute = require('./routes/cart');
 const favouriteRoute = require('./routes/favourite');
 const ratingRoute = require('./routes/rating');
+const notificationRoute = require('./routes/notification');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
 
 dotenv.config();
@@ -47,6 +48,12 @@ app.get("/", (req, res) => {
     res.send("api is working")
 })
 
+// Su dung middleware de bind io object
+app.use((req, res, next) => {
+    res.io = io;
+    next()
+})
+    
 // Oauth cookie
 app.use(
     cookieSession({
@@ -125,13 +132,35 @@ app.use('/api/v1/cart', cartRoute)
 app.use('/api/v1/favourite', favouriteRoute)
 app.use('/api/v1/cloudinary', cloudinaryRoute)
 app.use('/api/v1/rating', ratingRoute)
+app.use('/api/v1/notification', notificationRoute)
 
 //Oauth2
 app.use('/auth', oauth2Route)
 
 
-
-app.listen(port, () => {
+// const server = require('http').createServer(app);
+const server = app.listen(port, () => {
     connect()
     console.log('server listening on port ', port)
 })
+
+const io = require("socket.io")(server, {
+    cors : {
+        origin: "http://localhost:3000", // Allow requests from this origin and my frontend port = 5173
+        methods: ["GET", "POST"], // Allow these HTTP methods
+
+    }
+})
+
+io.on('connection', (socket) => {
+    console.log(`⚡: ${socket.id} user just connected`);
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
+    socket.on('joinRoom', (room) => {
+        socket.join(room); // Join the client to the specified room
+        console.log(`User joined room: ${room}`);
+    });
+});
+
+  

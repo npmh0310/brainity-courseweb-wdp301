@@ -67,7 +67,10 @@ const userSchema = new mongoose.Schema(
         },
         github: {
             type: String
-        }
+        },
+        notificationRooms: [{
+            type: String,
+        }]
     },
     { timestamps: true }
 );

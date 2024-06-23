@@ -5,6 +5,7 @@ import { HiOutlineShoppingCart, HiOutlineBell } from "react-icons/hi";
 import Popover from "@mui/material/Popover";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ShoppingBag, ShoppingCart } from "lucide-react";
+import Notification from "../Notification/notification";
 import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
@@ -50,7 +51,11 @@ function HeaderUser() {
     <>
       {" "}
       {isLogin && (
+        
         <div className=" justify-around items-center gap-x-6 hidden px-3 md:flex">
+          <div>tesst
+          <Notification/>
+          </div>
           <div className=" items-center justify-between gap-x-4 hidden lg:flex">
             <div
               className="cursor-pointer w-12 h-12 flex justify-center items-center relative "

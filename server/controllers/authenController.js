@@ -3,13 +3,13 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const Course = require('../models/course');
 const { addProgress } = require('./userChapterProgressController');
+const { createNotification } = require('./notificationController');
 
 const register = async (req, res) => {
     try {
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
         const { avatar, password, ...otherFields } = req.body;
-
         const newUser = new User({
             // username: req.body.username,
             // email: req.body.email,
@@ -18,7 +18,18 @@ const register = async (req, res) => {
             ...otherFields
         })
 
+        const defaultNotificationRoom = 'room_profile_' + newUser.id
+        newUser.notificationRooms = ['room_system', defaultNotificationRoom];
+        
         await newUser.save()
+        
+        //create notification realtime and saving in db
+        const rooms = ["room_system"]
+        const notification = {
+            title: 'system',
+            message: 'new user create',
+        }
+        createNotification(newUser.id, res.io, notification, rooms)
 
         res.status(200).json({
             success: true,
@@ -301,6 +312,21 @@ const logout = async (req, res) => {
 }
 
 const changePassword = async (req, res) => {
+    const userId = req.user.id;
+    
+    const rooms = [`room_profile_${req.user.id}`] 
+    const notification = {
+        title: 'passwordChangeNotification',
+        sender: userId,
+        message: 'Your password has been changed',
+        type: 'profile',
+    }
+    createNotification(req.user.id, res.io, notification, rooms)
+     // Handle password change event
+    //  const room = "room_profile_" + req.user.id;
+    //  res.io.to(room).emit('passwordChangeNotification', "password changed");
+
+    //  io.emit('newLessonNotification', data);
     const { oldPassword, newPassword} = req.body
     const user = await User.findById(req.user.id)
     const checkCorrectPassword = await bcrypt.compare(oldPassword, user.password);
