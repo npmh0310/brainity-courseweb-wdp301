@@ -88,6 +88,7 @@ function SignInPage() {
           isLogin: true,
         })
       );
+      dispatch(setGlobalLoading(false));
       toast.success("Login successfully");
 
       if (res.data.role === "teacher") {
