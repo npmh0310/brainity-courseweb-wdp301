@@ -4,28 +4,57 @@ const UserNotification = require('../models/userNotification');
 const User = require('../models/user')
 const {io} = require("./../index")
 
-
-const createNotification = async (userId, io, notification, recieveNotificaitonRooms) => {
+const createNotification = async (userId, io, notification, recieveNotificationRooms) => {
     try {
-        const newNotification = new Notification(notification)
-        const newUserNotification = new UserNotification(
+        const newNotification = new Notification(notification);
+        const users = await User.aggregate([
             {
-                user: userId,
-                notification: newNotification.id,
-                read: false
-            })
+                $match: {
+                    notificationRooms: { $exists: true, $ne: [] }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    notificationRooms: 1,
+                    recieveNotificationRooms: 1,
+                    commonRoom: {
+                        $setIntersection: ["$notificationRooms", recieveNotificationRooms]
+                    }
+                }
+            },
+            {
+                $match: {
+                    commonRoom: { $ne: [] }
+                }
+            }
+        ]);
 
-        // save in db
+        // Hàm async để lưu UserNotification
+        const saveUserNotifications = async () => {
+            for (const user of users) {
+                const newUserNotification = new UserNotification({
+                    user: user._id,
+                    notification: newNotification.id,
+                    read: false
+                });
+                await newUserNotification.save();
+            }
+        };
+
+        await saveUserNotifications();
+
+        // Lưu notification mới vào cơ sở dữ liệu
         await newNotification.save();
-        await newUserNotification.save()
-        // sending real-time
-        for(let room of recieveNotificaitonRooms) {
+
+        // Gửi thông báo thời gian thực
+        for (let room of recieveNotificationRooms) {
             io.to(room).emit(notification.title, notification);
         }
     } catch (err) {
-            console.log("Failed to create notification. Try again" + err )
+        console.log("Failed to create notification. Try again: " + err);
     }
-}
+};
 
 const getAllNotificationByUserId = async (req, res) => {
     const userId = req.user.id;
