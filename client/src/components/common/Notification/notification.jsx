@@ -22,7 +22,7 @@ const NotificationsComponent = () => {
       })
     getAllNotification()
       .then(response => {
-        const data = Object.values(response.data.data);
+        const data = Object.values(response.data.data).map(notification => notification.notification.message);      
         setNotification(data);
       })
   // setNotification(["All message"]);
