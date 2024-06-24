@@ -13,7 +13,7 @@ import Security from "../components/User/ProfileUser/Security";
 import InformationProfile from "./../components/User/ProfileUser/InformationProfile";
 import CourseDetail from "../pages/CourseDetail";
 import CartPage from "../pages/CartPage";
-
+import RequestToTeacher from "../components/User/ProfileUser/RequestToTeacher";
 
 const routes = [
   { index: true, element: <HomePage />, state: "home" },
@@ -48,11 +48,15 @@ const routes = [
         path: "security",
         element: <Security />,
       },
+      {
+        path: "request-to-teacher",
+        element: <RequestToTeacher />,
+      },
     ],
   },
   {
-    path : "course/:id",
-    element: <CourseDetail/>
+    path: "course/:id",
+    element: <CourseDetail />,
   },
   {
     path: "blogpage",
@@ -68,8 +72,8 @@ const routes = [
   },
   {
     path: "cart",
-    element: <CartPage/>
-  }
+    element: <CartPage />,
+  },
 ];
 
 export default routes;
