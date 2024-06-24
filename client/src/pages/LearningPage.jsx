@@ -16,20 +16,23 @@ import Exercise from '../components/User/LearningPage/Exercise/Exercise';
 import SearchContent from '../components/User/LearningPage/Search/Search';
 import CourseContent from '../components/User/LearningPage/CourseContent/CourseContent';
 import { getLessonProgressUser } from '../fetchData/UserChapterProgress';
-import { LessonProgressProvider, useLessonProgress } from '../hooks/LearningPageContext';
+import { insertLessonProgress } from '../redux/features/learningSlice';
+import { calculateOverallCompletionPercent } from '../function/function';
 
 function LearningPage() {
-    const location = useLocation()
+    // const location = useLocation()
     const [anchorEl, setAnchorEl] = useState(null);
     const [isScrolled, setIsScrolled] = useState(false)
     const [showCourse, setShowCourse] = useState(true)
     const [innerWidth, setInnerWidth] = useState(true)
     const [course, setCourse] = useState({})
     const [courseProgress, setCourseProgress] = useState()
-    const [sectionsWithProgress, setSectionsWithProgress] = useState()
-    const { lessonsProgress, setInitialLessonsProgress } = useLessonProgress()
+    // const [sectionsWithProgress, setSectionsWithProgress] = useState()
+    // const { lessonsProgress, setInitialLessonsProgress } = useLessonProgress()
+    const lessonsProgress = useSelector((state) => state.learningSlice.lessonProgress)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [overralCompletionPercent , setOverralCompletionPercent] = useState(0)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -94,11 +97,12 @@ function LearningPage() {
                             isCompleted: response_LessonProgress.data.data.lessonsProgress.find(p => p.lesson === lesson._id)?.isCompleted || false
                         }))
                     }))
+                    
 
                     setCourse(response_Course.data.data);
                     setCourseProgress(response_LessonProgress.data.data)
-
-                    setInitialLessonsProgress(sectionsWithProgress);
+                    dispatch(insertLessonProgress(sectionsWithProgress))
+                    // setInitialLessonsProgress(sectionsWithProgress);
                     // setSectionsWithProgress(sectionsWithProgress)
                 }
             } catch (error) {
@@ -109,13 +113,11 @@ function LearningPage() {
         };
 
         fetchCourse(courseId);
-    }, [courseId  ,dispatch]);
+    }, []);
 
-    // useEffect(() => {
-    //     console.log(lessonsProgress)
-    //     setSectionsWithProgress(lessonsProgress)
-    // } , [lessonsProgress])
-
+    useEffect(() => {
+        setOverralCompletionPercent(calculateOverallCompletionPercent(lessonsProgress))
+    }, [lessonsProgress])
 
     // hash section
     const [section, setSection] = useState('overview');
@@ -168,13 +170,13 @@ function LearningPage() {
                             }}
                         >
                             <div className='p-4 flex flex-col gap-y-2 justify-center items-start text-sm'>
-                                <span className='font-bold'>203 of 390 complete</span>
+                                <span className='font-bold'>{overralCompletionPercent.completedLessons} of {overralCompletionPercent.totallesson} complete</span>
                                 <span>Finish course to get your certificate</span>
                             </div>
                         </Popover>
                         <div aria-describedby={id} className='flex justify-center items-center text-sm group cursor-pointer' onClick={handleClick}>
                             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap', marginRight: 1 }}>
-                                <CircularProgress size="md" determinate value={66.67}>
+                                <CircularProgress size="md" determinate value={overralCompletionPercent.overal}>
                                     <Sparkle />
                                 </CircularProgress>
                             </Box>
@@ -183,7 +185,7 @@ function LearningPage() {
                             </span>
                             <ChevronDown className='group-hover:text-gray-800 transition-all ease-in-out' />
                         </div>
-                        <div className='hidden text-sm sm:flex justify-center items-center gap-2'>
+                        {/* <div className='hidden text-sm sm:flex justify-center items-center gap-2'>
                             <div className='p-2 border border-black flex justify-center items-center gap-2 cursor-pointer'>
                                 Share
                                 <Forward className='text-slate-400 -translate-y-1' />
@@ -191,7 +193,7 @@ function LearningPage() {
                             <div className='p-2 border border-black text-center cursor-pointer'>
                                 <SettingsIcon />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     <div className='relative w-full flex'>
                         <div className={`${showCourse ? 'w-9/12' : 'w-full'}  flex flex-col`}>
@@ -225,7 +227,7 @@ function LearningPage() {
                                     <NavLink to={`#notes`} className={section === 'notes' ? 'py-4 px-1 text-center font-semibold text-lg border-b-2 border-black cursor-pointer' : "py-4 px-1 text-center font-semibold text-lg cursor-pointer"}>Notes</NavLink>
                                 </div>
                                 <div className=' mt-4'>
-                                    {section === 'courseContent' && <CourseContent course={course} sectionsWithProgress = { lessonsProgress}  />}
+                                    {section === 'courseContent' && <CourseContent course={course} />}
                                     {section === 'search' && <SearchContent course={course} />}
                                     {section === 'overview' && <OverView course={course} />}
                                     {section === 'exercise' && <Exercise course={course} />}

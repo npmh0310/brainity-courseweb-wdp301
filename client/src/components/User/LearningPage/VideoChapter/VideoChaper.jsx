@@ -2,37 +2,47 @@ import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
 import ReactPlayer from 'react-player'
 import { completedLesson } from '../../../../fetchData/UserChapterProgress';
-import { useNavigate } from 'react-router-dom';
-import { useLessonProgress } from '../../../../hooks/LearningPageContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { updateLessonProgress } from '../../../../redux/features/learningSlice';
+import {  ChevronLeft, ChevronRight, SkipForward } from 'lucide-react';
 
 function VideoChaper(props) {
   const { courseProgress, courseId, lesson } = props;
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate()
-  const { lessonsProgress, updateLessonProgress } = useLessonProgress();
+  const [nextVideo, setNextVideo] = useState(false);
+  const currentLesson = lesson && courseProgress.lessonsProgress.find(data => data.lesson === lesson._id)
+  const nextLesson = lesson && courseProgress.lessonsProgress.find(data => data.index === currentLesson.index + 1)
+  const preLesson = (lesson && currentLesson.index > 0) && courseProgress.lessonsProgress.find(data => data.index === currentLesson.index - 1)
 
-  console.log(lessonsProgress)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
 
   useEffect(() => {
     if (lesson) setLoading(false);
   }, [lesson]);
 
+
   const handleVideoEnd = async () => {
-    await completedLesson({ courseId: courseId, lessonId: lesson._id, isCompleted: true })
-    updateLessonProgress(lesson._id, true);
-    // const currentLesson = lessonsProgress.find(data => data.lesson  === lesson._id )
-    // const nextLesson = lessonsProgress.find(data => data.index === currentLesson.index  + 1)
-    // console.log(nextLesson)
-    // if(nextLesson){
-    //   navigate(`lesson/${nextLesson.nextLesson}`)
-    // }
+    const res = await completedLesson({ courseId: courseId, lessonId: lesson._id, isCompleted: true })
+    if (res.status === 200) {
+      dispatch(updateLessonProgress({ lessonId: lesson._id, isCompleted: true }));
+    }
+    setNextVideo(true)
+    const nextLesson = courseProgress.lessonsProgress.find(data => data.index === currentLesson.index + 1)
+
+    setTimeout(() => {
+      navigate(`/learningCourse/${courseProgress.course}/lesson/${nextLesson.lesson}`)
+      setNextVideo(false)
+    }, (3000));
+
   }
 
   return (
-    <div className='w-full h-full'>
+    <div className=' relative w-full h-full'>
       {loading ? (
-        <Spinner />
+        <Spinner color="gray"/>
       ) : (
         <ReactPlayer
           width='100%'
@@ -42,6 +52,17 @@ function VideoChaper(props) {
           onEnded={handleVideoEnd}
         />
       )}
+      <div className=' absolute right-[50%] top-[50%] -translate-y-[50%] flex gap-x-2 justify-center items-center z-50'>
+        {nextVideo && <SkipForward size={40} className=' text-white hover:scale-110 transition-all ease-in-out cursor-pointer' />}
+      </div>
+      {lesson && <>
+        <Link to={`/learningCourse/${courseProgress.course}/lesson/${nextLesson.lesson}`} className=' absolute top-[50%] right-0 -translate-y-[50%] flex justify-center items-center border border-white cursor-pointer'>
+          <ChevronRight className=' text-white' />
+        </Link>
+        <Link to={`/learningCourse/${courseProgress.course}/lesson/${preLesson.lesson}`} className=' absolute top-[50%] left-0 -translate-y-[50%] flex justify-center items-center border border-white cursor-pointer '>
+          <ChevronLeft className=' text-white' />
+        </Link>
+      </>}
     </div>
   );
 }

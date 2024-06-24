@@ -1,29 +1,39 @@
 import { Checkbox } from 'flowbite-react'
-import { ChevronDown, File, MonitorPlay, Play, Video } from 'lucide-react'
-import React, { useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Check, ChevronDown, Circle, CircleCheck, File, MonitorPlay, Play, Video } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { completedLesson } from '../../../../fetchData/UserChapterProgress'
-import { useLessonProgress } from '../../../../hooks/LearningPageContext'
+import { useDispatch } from 'react-redux'
+import { updateLessonProgress } from '../../../../redux/features/learningSlice'
 
 function Chapter(props) {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const { courseId, chapter } = props
-    const [completed , setCompleted] = useState(chapter.isCompleted)
-    const { updateLessonProgress } = useLessonProgress();
+    const [completed , setCompleted] = useState(false)
+    const url = useLocation()
+    const lesson_id  = url.pathname.split('/lesson/')[1]
+    console.log(lesson_id)
 
     const handleCompleted = async () => {
         const newCompletedState = !completed;
         setCompleted(!completed)
         const completedLessonProgress = await completedLesson({courseId: courseId, lessonId:chapter._id, isCompleted: !completed })
-        updateLessonProgress(chapter._id, newCompletedState);
+        if(completedLessonProgress.status === 200) {
+            dispatch(updateLessonProgress({ lessonId: chapter._id, isCompleted: newCompletedState }));
+        }
 
     }
+    useEffect(() => {
+        setCompleted(chapter.isCompleted)
+    },[chapter])
 
     return (
 
-        <div className=' p-2 w-full flex gap-2 bg-white cursor-pointer hover:bg-[#f7f9fa] '>
-                <div className=' pt-1'>
-                    <Checkbox checked={completed} onChange={handleCompleted}/>
+        <div className={` p-2 w-full flex gap-2 cursor-pointer hover:bg-[#f7f9fa] transition-all ease-in-out ${lesson_id === chapter._id ?  'bg-[#f7f9fa]' : 'bg-white'}  `}>
+                <div className=' pt-1' onClick={handleCompleted}>
+                    {/* <Checkbox checked={completed} onChange={handleCompleted}/> */}
+                    {completed ? <CircleCheck className=' bg-primary text-white rounded-full'/> : <Circle/> }
                 </div>
                 <Link className=' w-full' to={`lesson/${chapter._id}`}>
                     <div className=' w-full'>
