@@ -8,8 +8,14 @@ const cartSchema = new mongoose.Schema(
             // required: true
         },
         courses: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Course'
+            course: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Course'
+            },
+            later: {
+                type: Boolean,
+                default: true
+            }
         }],
     }
 );

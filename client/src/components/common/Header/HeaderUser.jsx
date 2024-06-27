@@ -9,10 +9,13 @@ import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
 import ModalNotification from "./ModalNotification";
+import ModalCart from "./ModalCart";
+import { getQuantityInCart } from "../../../redux/features/cartSlice";
 
 function HeaderUser() {
   const user = useSelector((state) => state.auth.user);
   const isLogin = useSelector((state) => state.auth.isLogin);
+  const num = useSelector(getQuantityInCart)
 
   const notifications = [
     {
@@ -58,6 +61,7 @@ function HeaderUser() {
   const [showUserItem, setShowUserItem] = useState(false);
   const [userAnchorEl, setUserAnchorEl] = useState(null);
   const [bellAnchorEl, setBellAnchorEl] = useState(null);
+  const [cartAnchorEl, setCartAnchorEl] = useState(null);
   const handleUserClick = (event) => {
     setUserAnchorEl(event.currentTarget);
   };
@@ -73,8 +77,29 @@ function HeaderUser() {
   const handleBellClose = () => {
     setBellAnchorEl(null);
   };
+
+  const handleCartClick = (event) => {
+    setCartAnchorEl(event.currentTarget);
+  };
+
+  const handleCartClose = () => {
+    setCartAnchorEl(false);
+  };
+
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+      handleCartClose()
+    }, (1000));
+  }
+
+  const handleNavigateCart = () => {
+    handleCartClose()
+    navigate('/cart')
+  }
+
   const open = Boolean(userAnchorEl);
   const bellOpen = Boolean(bellAnchorEl);
+  const cartOpen = Boolean(cartAnchorEl);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,6 +115,7 @@ function HeaderUser() {
       if (window.scrollY > 0) {
         handleUserClose();
         handleBellClose();
+        handleCartClose();
       }
     };
 
@@ -103,7 +129,7 @@ function HeaderUser() {
   return (
     <>
       {" "}
-      {isLogin && user &&(
+      {isLogin && user && (
         <div className=" justify-around items-center gap-x-6 hidden px-3 md:flex">
           <div className=" items-center justify-between gap-x-4 hidden lg:flex">
             <div
@@ -143,15 +169,36 @@ function HeaderUser() {
                 <ModalNotification notifications={notifications} />
               </>
             </Popover>
-            <div className="cursor-pointer w-12 h-12 justify-center flex items-center relative">
+            <div className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-20"  onClick={handleCartClick}  onDoubleClick={handleNavigateCart}>
               <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                1
+                {num}
               </div>
               <ShoppingBag
                 className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
                 size={20}
               />
             </div>
+            <Popover
+              style={{
+                zIndex: 20,
+                marginTop: "7px",
+                marginLeft: "22px",
+              }}
+              open={cartOpen}
+              anchorEl={cartAnchorEl}
+              onClose={handleCartClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: "right",
+              }}
+            >
+              {/* Content for the bell icon popover */}
+                <ModalCart />
+            </Popover>
           </div>
 
           <button variant="contained" onClick={handleUserClick}>
@@ -187,7 +234,7 @@ function HeaderUser() {
               <div className="flex flex-row items-center pb-4 gap-4">
                 <img
                   className="w-11 h-11 rounded-full"
-                  src={user?.avatar }
+                  src={user?.avatar}
                   alt=""
                 />
                 <h1>{user.username}</h1>
