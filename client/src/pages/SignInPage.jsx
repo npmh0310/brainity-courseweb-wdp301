@@ -72,10 +72,7 @@ function SignInPage() {
 
   const user = useSelector((state) => state.auth.isLogin);
 
-  if (user) {
-    navigate("/");
-  }
-
+ 
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
@@ -91,6 +88,7 @@ function SignInPage() {
           isLogin: true,
         })
       );
+      dispatch(setGlobalLoading(false));
       toast.success("Login successfully");
 
       if (res.data.role === "teacher") {

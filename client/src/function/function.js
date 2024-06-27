@@ -1,17 +1,17 @@
 import { parseISO, format } from 'date-fns';
 
 export const formatDate = (dateString) => {
-  // Parse the ISO date string to a JavaScript Date object
-  const date = parseISO(dateString);
+    // Parse the ISO date string to a JavaScript Date object
+    const date = parseISO(dateString);
 
-  // Format the date to "MMMM yyyy"
-  const formattedDate = format(date, 'MMMM yyyy');
+    // Format the date to "MMMM yyyy"
+    const formattedDate = format(date, 'MMMM yyyy');
 
-  return `Last updated ${formattedDate}`;
+    return `Last updated ${formattedDate}`;
 };
 
 export const searchCourseContent = (course, query) => {
-    console.log(course , query)
+    console.log(course, query)
     // Normalize the search query to lower case
     const normalizedQuery = query.toLowerCase();
 
@@ -31,7 +31,7 @@ export const searchCourseContent = (course, query) => {
         }
 
         // Search through lessons within the section
-        if(section.lessons) {
+        if (section.lessons) {
             section.lessons.forEach((lesson) => {
                 if (containsQuery(lesson.lessonName) || (lesson.description && containsQuery(lesson.description))) {
                     result.lessons.push({ sectionName: section.sectionName, lesson });
@@ -45,11 +45,28 @@ export const searchCourseContent = (course, query) => {
 export function formatCurrencyVND(amount) {
     // Create a new instance of Intl.NumberFormat for Vietnamese locale
     const formatter = new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0 // Ensure no decimal points are shown
+        style: 'currency',
+        currency: 'VND',
+        minimumFractionDigits: 0 // Ensure no decimal points are shown
     });
-  
+
     // Format the amount
     return formatter.format(amount)
-  }
+}
+
+export function calculateOverallCompletionPercent(sections) {
+    let totalLessons = 0;
+    let completedLessons = 0;
+
+    sections.forEach(section => {
+        totalLessons += section.lessons.length;
+        completedLessons += section.lessons.filter(lesson => lesson.isCompleted).length;
+    });
+
+    const completionPercent = totalLessons === 0 ? 0 : (completedLessons / totalLessons) * 100;
+    return {
+        totallesson: totalLessons,
+        completedLessons: completedLessons,
+        overal:completionPercent.toFixed(2)
+    } // Định dạng thành hai chữ số thập phân
+}
