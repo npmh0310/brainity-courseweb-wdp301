@@ -34,17 +34,19 @@ function ModalCart() {
                         </div>
                     ))}
 
-                    <h1 className=' text-xl text-black font-bold pt-2 pb-3 '>
-                        Total: {formatCurrencyVND(total)}
-                    </h1>
+                    {courseInCart.length > 0 &&
+                        <h1 className=' text-xl text-black font-bold pt-2 pb-3 '>
+                            Total: {formatCurrencyVND(total)}
+                        </h1>}
 
                     <div className=' w-full p-3 bg-primary text-white font-semibold uppercase cursor-pointer text-center hover:bg-opacity-80 hover:font-bold transition-all ease-in-out' onClick={goToCart}>
                         Go to cart
                     </div>
 
-                </div> : <>
-                    Nothing..
-                </>}
+                </div> :
+                <div className=''>
+                    Nothing...
+                </div>}
         </div>
     )
 }

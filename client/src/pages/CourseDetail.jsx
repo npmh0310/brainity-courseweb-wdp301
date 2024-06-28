@@ -4,13 +4,18 @@ import Star from '../assets/images/star.png'
 import { Check, Dot, Heart, Infinity, MonitorPlay, MonitorSmartphone, Trophy } from 'lucide-react'
 import Section from '../components/User/CourseDetail/Section/Section'
 import { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { setGlobalLoading } from '../redux/features/globalLoadingSlice'
 import { getCourseById } from '../fetchData/Course'
 import GlobalLoading from '../components/common/GlobalLoading/GlobalLoading'
 import { formatCurrencyVND } from '../function/function'
-
+import { addCourse, getCartLoading, getCoursesInCart } from '../redux/features/cartSlice'
+import { getRatingCourse } from '../fetchData/RatingOfCourse'
+import { Rating } from '@mui/material'
+import { addCourseToCart } from '../fetchData/Cart'
+import CircularProgress from '@mui/material/CircularProgress';
+import { Spinner } from "flowbite-react";
 function CourseDetail() {
     const [isScrolled, setIsScrolled] = useState(false)
     const divRefBanner = useRef(null);
@@ -18,25 +23,30 @@ function CourseDetail() {
     const [heightOfBanner, setHeightOfBanner] = useState()
     const dispatch = useDispatch()
     const [course, setCourse] = useState()
+    const [statusCousre, setStatusCourse] = useState(false);
+    const cart = useSelector(getCoursesInCart)
+    const [rating, setRating] = useState()
+    const loading = useSelector(getCartLoading)
+    const navigate = useNavigate()
 
-    useEffect(() => {
-        if (divRefBanner.current) {
-            setHeightOfBanner(divRefBanner.current.clientHeight)
-        }
-    }, []);
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > divRefBanner.current.clientHeight) {
-                setIsScrolled(true)
-            } else {
-                setIsScrolled(false)
-            }
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll)
-        };
-    }, []);
+    // useEffect(() => {
+    //     if (divRefBanner.current) {
+    //         setHeightOfBanner(divRefBanner.current.clientHeight)
+    //     }
+    // }, [divRefBanner]);
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (window.scrollY > divRefBanner.current.clientHeight) {
+    //             setIsScrolled(true)
+    //         } else {
+    //             setIsScrolled(false)
+    //         }
+    //     };
+    //     window.addEventListener('scroll', handleScroll);
+    //     return () => {
+    //         window.removeEventListener('scroll', handleScroll)
+    //     };
+    // }, []);
 
     //Data
     const { id: courseId } = useParams();
@@ -59,9 +69,43 @@ function CourseDetail() {
         fetchCourse(courseId);
     }, [courseId, dispatch]);
 
+    useEffect(() => {
+        console.log(courseId)
+        const course = cart.find(data => data.course._id === courseId)
+        if (course != null) {
+            setStatusCourse(true)
+        }
+    }, [cart,courseId])
+
+    // rating
+    const fetchRattingCourse = async (courseId) => {
+        const response = await getRatingCourse(courseId)
+        console.log(response.data)
+        if (response != null) {
+            setRating(response.data)
+        }
+    }
+    useEffect(() => {
+        fetchRattingCourse(courseId)
+    }, [courseId])
+
+    // add To cart
+    const addToCart = async () => {
+       dispatch(addCourse(courseId))
+    }
+
+    const handleButtonAdd = () => {
+        if(!statusCousre) {
+            addToCart()
+        }
+        else{
+            navigate("/cart")
+        }
+    }
+
     return (
         <div className='relative courseDetail w-full '>
-            <div style={{ height: `${heightOfBanner}px` }} className={`absolute bg-[#2d2f31]  z-0 w-full`}></div>
+            <div className={` h-[300px] absolute bg-[#2d2f31]  z-0 w-full`}></div>
             <GlobalLoading />
             {course && <>
                 <div ref={divRefPage} className=' max-w-[1280px] mx-auto w-full flex justify-start'>
@@ -74,29 +118,28 @@ function CourseDetail() {
                                 {course.description}
                             </div>
                             <div className=' flex gap-2 text-white justify-start items-center mb-6'>
-                                <div className='  p-1 bg-[#eceb98] text-sm text-center font-semibold text-black'>
-                                    Bestseller
-                                </div>
-                                <div className=' flex justify-center items-center gap-1 '>
-                                    <span className=' text-sm'>
-                                        4.9
-                                    </span>
-                                    <img className=' w-3 h-3 object-cover' src={Star} alt="" />
-                                    <img className=' w-3 h-3 object-cover' src={Star} alt="" />
-                                    <img className=' w-3 h-3 object-cover' src={Star} alt="" />
-                                    <img className=' w-3 h-3 object-cover' src={Star} alt="" />
-                                    <img className=' w-3 h-3 object-cover' src={Star} alt="" />
-                                </div>
-
-                                <span className=' text-purple-300 text-sm'>
-                                    12.999 rating
-                                </span>
+                                {rating && rating.numOfRates > 2 &&
+                                    <div className='  p-1 bg-[#eceb98] text-sm text-center font-semibold text-black'>
+                                        Bestseller
+                                    </div>}
+                                {rating != null &&
+                                    <div className=' flex justify-center items-center gap-1 '>
+                                        <span className="text-sm">{rating.avgRating}</span>
+                                        <Rating
+                                            className="mb-[2px]"
+                                            name="half-rating-read"
+                                            value={rating.avgRating}
+                                            precision={0.5}
+                                            readOnly
+                                            size="small"
+                                        />
+                                    </div>}
                                 <div className=' text-white text-sm'>
                                     90,817 students
                                 </div>
                             </div>
                             <div className=' text-white text-sm tracking-wide'>
-                                Create by <a className=' text-purple-200 underline' href="#">NgocTam</a>
+                                Create by <a className=' text-purple-200 underline' href="#">{course.instructor.username}</a>
                             </div>
                         </div>
                         <div className='px-2 flex flex-col gap-y-6 bg-white '>
@@ -227,18 +270,20 @@ function CourseDetail() {
                     </div>
 
                     <div className=' relative w-0 lg:w-4/12'>
-                        <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg ${isScrolled ? '  sticky top-0 animate-open pt-[85px]' : ''}`}>
+                        <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg sticky top-0 `}>
                             <div className=' w-full'>
-                                <div className=' flex justify-center items-center mb-2'>
-                                    {course.sections[0].lessons[0] && <video controls src={course.sections[0].lessons[0].videoUrl} className=' w-full h-full object-fill ' ></video>}
+                                <div className=' h-40 flex justify-center items-center p-1 mb-2'>
+                                    {course.sections[0].lessons[0] && <video controls src={course.sections[0].lessons[0].videoUrl} className=' w-full h-full object-cover ' ></video>}
                                 </div>
                                 <div className=' p-6 w-full flex flex-col gap-y-2 items-start'>
                                     <span className=' text-2xl text-black font-semibold'>
-                                        đ {course.price}
+                                        {formatCurrencyVND(course.price)}
                                     </span>
                                     <div className=' w-full flex justify-between items-center '>
-                                        <div className=' p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border '>
-                                            Go to cart
+                                        <div className=' p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleButtonAdd}>
+                                            {/* {statusCousre ?  "Go to Cart" : "Add to Cart" } */}
+                                            {loading ? <CircularProgress color="inherit" /> : <>{statusCousre ?  "Go to Cart" : "Add to Cart" }</> }
+                                            
                                         </div>
                                         <div className=' p-3  flex items-center justify-center  w-2/12 border border-black '>
                                             <Heart size={14} />
