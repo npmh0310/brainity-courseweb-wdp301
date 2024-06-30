@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Lesson = require('../models/lesson')
 const sectionSchema = new mongoose.Schema(
     {
         sectionName: {
@@ -13,7 +13,7 @@ const sectionSchema = new mongoose.Schema(
     }, { timestamps: true }
 );
 
-sectionSchema.pre('remove', async function (next) {
+sectionSchema.pre('findByIdAndDelete', async function (next) {
     try {
         await Lesson.deleteMany({ _id: { $in: this.lessons } });
         next();
@@ -23,4 +23,4 @@ sectionSchema.pre('remove', async function (next) {
 });
 
 const Section = mongoose.model('Section', sectionSchema);
-module.exports = Section;
+module.exports = Section

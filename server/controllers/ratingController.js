@@ -17,16 +17,16 @@ const createRating = async (req, res) => {
     }
 
     // Check if the user is enrolled in the course
-    const isEnrolled = await User.findOne({
-      _id: userId,
-      coursesEnrolled: { $in: courseId },
-    });
+    // const isEnrolled = await User.findOne({
+    //   _id: userId,
+    //   coursesEnrolled: { $in: courseId },
+    // });
 
-    if (!isEnrolled) {
-      return res
-        .status(400)
-        .json({ error: "User is not enrolled in the course" });
-    }
+    // if (!isEnrolled) {
+    //   return res
+    //     .status(400)
+    //     .json({ error: "User is not enrolled in the course" });
+    // }
 
     // Check if the user has completed at least 90% of the course
     // const userProgress = await UserChapterProgress.findOne({ user: userId, course: courseId });

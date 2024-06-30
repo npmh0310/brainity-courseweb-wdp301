@@ -5,9 +5,10 @@ import { searchCourseContent } from '../../../../function/function';
 import Section from '../Section/Section';
 import Chapter from '../Chapter/Chapter';
 
-function Search() {
-  const location = useLocation();
-  const course = location.state || {};
+function Search( props) {
+  // const location = useLocation();
+  // const course = location.state || {};
+  const {course} = props
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
 
@@ -15,7 +16,7 @@ function Search() {
     const value = e.target.value;
     setQuery(value);
     if (value) {
-      const find = searchCourseContent(course.course, value);
+      const find = searchCourseContent(course, value);
       setResult(find);
     } else {
       setResult(null);
@@ -23,7 +24,7 @@ function Search() {
   };
 
   const search = () => {
-    const find = searchCourseContent(course.course, query);
+    const find = searchCourseContent(course, query);
     setResult(find);
   };
 

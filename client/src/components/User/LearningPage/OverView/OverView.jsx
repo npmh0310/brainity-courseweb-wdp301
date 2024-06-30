@@ -5,9 +5,10 @@ import { Flag } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { parseISO, format } from 'date-fns';
 import { formatDate } from '../../../../function/function';
-function OverView() {
-    const location = useLocation()
-    const { course } = location.state || {};
+function OverView( props) {
+    // const location = useLocation()
+    // const { course } = location.state || {};
+    const {course} = props
     return (
         <div className=' px-4 flex flex-col w-full mx-auto'>
             <h1 className=' mb-6 text-2xl text-[#2D2F31]'>{course.courseName}</h1>
@@ -34,7 +35,7 @@ function OverView() {
             </div>
             <div className='  flex justify-start items-center mb-4'>
                 <Flag size={12} className=' mr-2' />
-                <span className=' text-[12px]'>{formatDate(course.updatedAt)} </span>
+                {/* <span className=' text-[12px]'>{formatDate(course.updatedAt)} </span> */}
             </div>
             <div className='p-6 flex items-start border-t'>
                 <div className=' w-2/12 text-sm text-start'>
