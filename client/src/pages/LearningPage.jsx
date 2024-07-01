@@ -1,59 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { Logo } from '../components/common/Logo';
-import { ChevronDown, ChevronLeft, Forward, Search, SettingsIcon, Sparkle, Video, X } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Forward, Search, SettingsIcon, Sparkle, X } from 'lucide-react';
 import { Box, Popover } from '@mui/material';
 import CircularProgress from '@mui/joy/CircularProgress';
 import Section from '../components/User/LearningPage/Section/Section';
 import Footer from '../components/common/Footer/Footer';
-import { Link, NavLink, Outlet, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavLink, Outlet,Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { getCourseById } from '../fetchData/Course';
 import { useDispatch, useSelector } from 'react-redux';
 import { getGlobalLoading, setGlobalLoading } from '../redux/features/globalLoadingSlice';
 import GlobalLoading from '../components/common/GlobalLoading/GlobalLoading';
-import VideoChaper from '../components/User/LearningPage/VideoChapter/VideoChaper';
-import OverView from '../components/User/LearningPage/OverView/OverView';
-import Exercise from '../components/User/LearningPage/Exercise/Exercise';
-import SearchContent from '../components/User/LearningPage/Search/Search';
-import CourseContent from '../components/User/LearningPage/CourseContent/CourseContent';
+import CourseReviewDialog from "../components/User/LearningPage/SubmitReview/CourseReviewDialog";
+import Toast from "../components/User/LearningPage/Toast/Toast";
 import { getLessonProgressUser } from '../fetchData/UserChapterProgress';
 import { insertLessonProgress } from '../redux/features/learningSlice';
 import { calculateOverallCompletionPercent } from '../function/function';
-
+import VideoChaper from './../components/User/LearningPage/VideoChapter/VideoChaper';
+import CourseContent from './../components/User/LearningPage/CourseContent/CourseContent';
+import OverView from './../components/User/LearningPage/OverView/OverView';
+import Exercise from './../components/User/LearningPage/Exercise/Exercise';
+import SearchContent from './../components/User/LearningPage/Search/Search';
 function LearningPage() {
-    // const location = useLocation()
     const [anchorEl, setAnchorEl] = useState(null);
     const [isScrolled, setIsScrolled] = useState(false)
     const [showCourse, setShowCourse] = useState(true)
     const [innerWidth, setInnerWidth] = useState(true)
     const [course, setCourse] = useState({})
+    const [link, setLink] = useState()
+    const [showModal, setShowModal] = useState(false);
+    const [toastOpen, setToastOpen] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastSeverity, setToastSeverity] = useState("success");
     const [courseProgress, setCourseProgress] = useState()
+    const navigate = useNavigate()
+    const [overralCompletionPercent , setOverralCompletionPercent] = useState(0)
     // const [sectionsWithProgress, setSectionsWithProgress] = useState()
     // const { lessonsProgress, setInitialLessonsProgress } = useLessonProgress()
     const lessonsProgress = useSelector((state) => state.learningSlice.lessonProgress)
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [overralCompletionPercent , setOverralCompletionPercent] = useState(0)
+
+
+    const openModal = () => {
+      setShowModal(true);
+    };
+  
+    const closeModal = () => {
+      setShowModal(false);
+    };
+  
+    const handleToastClose = () => {
+      setToastOpen(false);
+    };
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headerHeight =
+        document.querySelector(".headerLearning").offsetHeight;
+      if (window.scrollY > headerHeight) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
-
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const headerHeight = document.querySelector('.headerLearning').offsetHeight;
-            if (window.scrollY > headerHeight) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
-        };
-
 
         const handleResize = () => {
             if (window.innerWidth < 1000) {
@@ -63,21 +82,20 @@ function LearningPage() {
                 setShowCourse(true);
                 setInnerWidth(true)
                 navigate('#overview')
-
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('resize', handleResize);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
 
-        // Check initial window size
-        handleResize();
+    // Check initial window size
+    handleResize();
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
     //Data
     const { id: courseId } = useParams();
@@ -247,6 +265,34 @@ function LearningPage() {
                                 { lessonsProgress && lessonsProgress.map((section, index) => (<Section courseId={course._id} section={section} key={index} />))}
 
                                 </div>
+                                <div>
+                <button
+                  onClick={openModal}
+                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Write a Review
+                </button>
+                {showModal && (
+                  <CourseReviewDialog
+                    course={course}
+                    courseId={course._id}
+                    onSubmit={(data) => {
+                      console.log("Submit data:", data);
+                      closeModal(); // Close modal after successful submit
+                    }}
+                    onClose={closeModal}
+                    setToastMessage={setToastMessage}
+                    setToastSeverity={setToastSeverity}
+                    setToastOpen={setToastOpen}
+                  />
+                )}
+                <Toast
+                  open={toastOpen}
+                  handleClose={handleToastClose}
+                  message={toastMessage}
+                  severity={toastSeverity}
+                />
+              </div>
                             </div>
                         
                         }
