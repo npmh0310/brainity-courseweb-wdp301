@@ -210,7 +210,8 @@ const getCourseById = async (req, res) => {
           model: "Lesson", // Tên của mô hình Lesson
         },
       })
-      .populate("categories");
+      .populate("categories")
+      .populate("instructor")
 
     res.status(200).json({
       success: true,

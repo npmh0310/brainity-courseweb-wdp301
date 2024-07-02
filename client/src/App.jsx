@@ -29,19 +29,27 @@ import FavoriteCourses from "./components/User/ProfileUser/FavoriteCourses";
 import Security from "./components/User/ProfileUser/Security";
 
 import { useEffect } from "react";
-import { validateToken } from "./redux/features/authSlice";
+import { getIsLogin, validateToken } from "./redux/features/authSlice";
 import { Toaster } from 'react-hot-toast';
 import { routesLearningPage } from "./routes/learningPage.routes";
 import PaymentSuccess from "./components/User/Payment/PaymentSuccess";
 import VideoChaper from "./components/User/LearningPage/VideoChapter/VideoChaper";
+import { getCart } from "./redux/features/cartSlice";
 
 
 function App() {
   const dispatch = useDispatch();
+  const isLogin = useSelector(getIsLogin)
 
   useEffect(() => {
     dispatch(validateToken());
   }, [dispatch]);
+
+  useEffect(() => {
+    if(isLogin){
+      dispatch(getCart())
+    }
+  },[dispatch, isLogin])
 
   return (
     <>

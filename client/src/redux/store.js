@@ -5,6 +5,7 @@ import globalLoadingSlice from "./features/globalLoadingSlice";
 // import teacherSlice from "./features/teacherSlice";
 import authSlice from "./features/authSlice";
 import learningSlice from "./features/learningSlice";
+import cart from "./features/cartSlice"
 
 const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
     globalLoading: globalLoadingSlice,
     appState: appStateSlice,
     // teacherCRUD: teacherSlice,
-    learningSlice: learningSlice 
+    learningSlice: learningSlice,
+    cart: cart
   },
 });
 

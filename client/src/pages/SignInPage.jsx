@@ -15,6 +15,7 @@ import { loginSuccess } from "../redux/features/authSlice";
 import Typewriter from "typewriter-effect";
 import toast from "react-hot-toast";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
+import { getCart } from "../redux/features/cartSlice";
 
 function SignInPage() {
   // const [displayText, setDisplayText] = useState("");
@@ -88,6 +89,7 @@ function SignInPage() {
           isLogin: true,
         })
       );
+      dispatch(getCart())
       dispatch(setGlobalLoading(false));
       toast.success("Login successfully");
 

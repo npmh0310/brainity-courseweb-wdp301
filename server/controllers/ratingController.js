@@ -163,9 +163,46 @@ const getRatingByCourseId = async (req, res) => {
   }
 };
 
-module.exports = {
-  createRating,
-  getAvgRatingByCourseId,
-  getAverageRatingByCourseId,
-  getRatingByCourseId,
+const getRatingCourse = async (req, res) => {
+    const courseId = req.params.id;
+
+    try {
+        // Find all ratings for the specified course
+        const ratings = await Rating.find({ course: courseId });
+
+        if (ratings.length === 0) {
+            return res.status(200).json({
+                avgRating: 0,
+                numOfRates: ratings.length
+            });
+        }
+
+        const totalRating = ratings.reduce((acc, curr) => acc + curr.rate, 0);
+
+        // Calculate the average rating
+        const avgRating = totalRating / ratings.length;
+        console.log(avgRating, ratings.length);
+
+        return res.status(200).json({
+            avgRating,
+            numOfRates: ratings.length
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
 };
+
+
+module.exports = {
+    createRating,
+    getAvgRatingByCourseId,
+    getAverageRatingByCourseId,
+    getRatingByCourseId,
+    getRatingCourse
+}
+
+
+
+
+
