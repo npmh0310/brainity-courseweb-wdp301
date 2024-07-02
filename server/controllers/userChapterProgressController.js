@@ -1,19 +1,41 @@
 const UserChapterProgress = require("../models/UserChapterProgress");
+const Course = require("../models/course")
 
-const addProgress = async (user, course) => {
-    for (const section of course.chapters) {
-        const lessonIds = section.lessons.map(lesson => lesson._id);
-
-        // Create a new progress document for the section's lessons
+const addProgress = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log(req.params.id)
+        const course =  await Course.findById(req.params.id).populate({
+            path: "sections",
+            populate: {
+              path: "lessons",
+              model: "Lesson", // Tên của mô hình Lesson
+            },
+          })
+        console.log(course)
+        let overallIndex = 0;
         const progress = new UserChapterProgress({
-            user: user._id,
+            user: userId,
             course: course._id,
-            lessonsProgress: lessonIds.map(lessonId => ({ lesson: lessonId, completed: false })),
+            lessonsProgress: [],
             completed: false,
             progressPercentage: 0
         });
+        for (const section of course.sections) {
+            const lessonIds = section.lessons.map(lesson => lesson._id);
 
+            // Create a new progress document for the section's lessons
+
+            progress.lessonsProgress.push(...lessonIds.map(lessonId => ({ index: overallIndex++ , lesson: lessonId, completed: false })));
+
+        }
         await progress.save();
+        res.status(200).json({
+            message: 'Add Progress successfull'
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
 
@@ -41,7 +63,7 @@ const submitLesson = async (req, res) => {
             });
         }
 
-        lessonProgress.completed = true;
+        lessonProgress.isCompleted = true;
 
         const allLessonsCompleted = progress.lessonsProgress.every(lesson => lesson.completed);
         progress.completed = allLessonsCompleted;
@@ -57,7 +79,50 @@ const submitLesson = async (req, res) => {
     }
 }
 
+
+const getLessonsProgressUser = async (req, res) => {
+    const userId = req.user.id;
+    const course_id = req.params.id;
+
+  
+    try {
+        const lessonsProgressUser = await UserChapterProgress.findOne({ user: userId, course: course_id });
+  
+      res.status(200).json({
+        success: true,
+        message: "Successfully get lessons progress user",
+        data: lessonsProgressUser,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        message: "Failed to get Course. Try again",
+      });
+    }
+  };
+
+const completeLesson =  async ( req, res) => {
+    const userId = req.user.id;
+    const {courseId, lessonId , isCompleted } = req.body;  
+
+    try {
+        const updateLesson = await UserChapterProgress.findOneAndUpdate(
+            {user : userId, course: courseId , "lessonsProgress.lesson": lessonId},
+            {
+                $set: { 'lessonsProgress.$.isCompleted': isCompleted }
+            }
+        )
+        res.status(200).send('complete successfull')
+
+    } catch (error) {
+        res.status(500).send('complete faild')
+    }
+}
+
 module.exports = {
     submitLesson,
-    addProgress
+    addProgress,
+    getLessonsProgressUser,
+    completeLesson
 }

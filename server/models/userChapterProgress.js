@@ -12,6 +12,9 @@ const userChapterProgressSchema = new mongoose.Schema({
         required: true
     },
     lessonsProgress: [{
+        index: {
+            type: Number
+        },
         lesson: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Lesson'
