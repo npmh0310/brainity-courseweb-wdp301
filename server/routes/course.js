@@ -1,5 +1,5 @@
 var express = require('express');
-const { createCourse, getCourseInHomePage, getAllCourse, getCourseById, updateCourse, deleteCourseById, getCourseCount,
+const { createCourse,getCourseInHomePage, getAllCourse, getCourseById, updateCourse, deleteCourseById, getCourseCount,
     getCourseBySearch, getFeaturedCourse, getFreeCourse, getProCourse, getCourseOfTeacher,
     getCourseByName, enrollCourse } = require('../controllers/courseController');
 const { verify } = require('jsonwebtoken');

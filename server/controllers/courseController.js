@@ -360,6 +360,45 @@ const enrollCourse = async (req, res) => {
   }
 };
 
+const getEnrolledCourses = async (req, res) => {
+  const userId = req.userId;
+  console.log(userId);
+  try {
+    const user = await User.findById(userId);
+
+    // .populate({
+    //   path: "coursesEnrolled",
+    //   populate: {
+    //     path: "Section",
+    //     populate: {
+    //       path: "Lesson",
+    //       model: "Lesson", // Tên của mô hình Lesson
+    //     },
+    //   },
+    // });
+    // .populate("categories");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully retrieved enrolled courses",
+      data: user.coursesEnrolled,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve enrolled courses. Try again",
+    });
+  }
+};
+
 const checkCourseStatus = async (req, res) => {
   // get course enrolled number
 };
@@ -380,4 +419,5 @@ module.exports = {
   getCourseNumOfEnrolled,
   getCourseOfTeacher,
   getCourseByName,
+  getEnrolledCourses,
 };

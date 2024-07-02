@@ -13,6 +13,8 @@ import Security from "../components/User/ProfileUser/Security";
 import InformationProfile from "./../components/User/ProfileUser/InformationProfile";
 import CourseDetail from "../pages/CourseDetail";
 import CartPage from "../pages/CartPage";
+import MyBlog from "../components/User/BlogPage/MyBlog";
+import SavedBlog from "../components/User/BlogPage/SavedBlog";
 import RequestToTeacher from "../components/User/ProfileUser/RequestToTeacher";
 
 const routes = [
@@ -73,6 +75,14 @@ const routes = [
   {
     path: "cart",
     element: <CartPage />,
+  },
+  {
+    path: "/myblog",
+    element: <MyBlog />,
+  },
+  {
+    path: "/savedblog",
+    element: <SavedBlog />,
   },
 ];
 
