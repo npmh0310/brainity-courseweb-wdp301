@@ -2,7 +2,8 @@ const { use } = require('passport');
 const Course = require('../models/course');
 const User = require('../models/user');
 const { model } = require('mongoose');
-const { getCourseNumOfEnrolled } = require('./courseController');
+const { getCourseNumOfEnrolled, checkCourseStatus } = require('./courseController');
+const { getAvgRatingByCourseId } = require('./ratingController');
 
 
 const addCourseToFavourite = async (req, res, next) => {
@@ -95,15 +96,11 @@ const getFavouriteByUserId = async (req, res) => {
             }
         })
 
-        // for (let i = 0; i < wishList.favouriteCourses.length; i++) {
-        //     const courseId = wishList.favouriteCourses[i]._id; // Assuming the course id field is '_id'
-        //     const numOfEnrolledUsers = getCourseNumOfEnrolled(courseId); // Call a helper function to get enrolled number
-        //     wishList.favouriteCourses[i].numOfEnrolledUsers = numOfEnrolledUsers; // Add enrolled number to the course object
-        // }
-
         const promises = wishList.favouriteCourses.map(async (course) => {
             const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
-            return { ...course.toObject(), numOfEnrolledUsers }; // Add enrolled number to the course object
+            const ratingInfo = await getAvgRatingByCourseId(course._id)
+            // const courseStatus = await checkCourseStatus(course._id)
+            return { ...course.toObject(), numOfEnrolledUsers, ratingInfo }; // Add enrolled number to the course object
         });
 
         // Wait for all promises to resolve

@@ -19,6 +19,7 @@ require('./utils/auth/passport');
 var jwt = require('jsonwebtoken');
 const cartRoute = require('./routes/cart');
 const favouriteRoute = require('./routes/favourite');
+const ratingRoute = require('./routes/rating');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
 
 dotenv.config();
@@ -40,6 +41,10 @@ const connect = async () => {
         console.log('MongoDB connect fail');
     }
 };
+/// middleware
+app.use(express.json())
+app.use(cors(corsOptions))
+app.use(cookieParser())
 
 // for testing
 app.get("/", (req, res) => {
@@ -108,10 +113,6 @@ app.get('/auth/google/callback',
             })(req, res, next);
     });
 
-/// middleware
-app.use(express.json())
-app.use(cors(corsOptions))
-app.use(cookieParser())
 
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/category', categoryRoute)
@@ -123,11 +124,10 @@ app.use('/api/v1/teacherRequest', teacherRequestRoute)
 app.use('/api/v1/cart', cartRoute)
 app.use('/api/v1/favourite', favouriteRoute)
 app.use('/api/v1/cloudinary', cloudinaryRoute)
+app.use('/api/v1/rating', ratingRoute)
 
 //Oauth2
 app.use('/auth', oauth2Route)
-
-
 
 app.listen(port, () => {
     connect()

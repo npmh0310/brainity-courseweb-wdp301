@@ -10,25 +10,34 @@ import HeaderMobile from "./HeaderMobile.jsx";
 import HeaderUser from "./HeaderUser.jsx";
 import { useSelector } from "react-redux";
 
-
 const Header = () => {
   const [bg, setBg] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
   const [btnColor, setBtnColor] = useState(false);
   const [loginSuccess, setLogginSuccess] = useState(true);
+  const [scrollDirection, setScrollDirection] = useState("up");
 
-  const user = useSelector((state) => state.auth.isLogin)
-  console.log(user)
+  const user = useSelector((state) => state.auth.isLogin);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     const handleScroll = () => {
-      if (window.scrollY > 50) {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 0) {
         setBg(true);
         setBtnColor(true);
       } else {
         setBg(false);
         setBtnColor(false);
       }
+
+      if (currentScrollY > lastScrollY) {
+        setScrollDirection("down");
+      } else {
+        setScrollDirection("up");
+      }
+
+      lastScrollY = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -37,11 +46,20 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
     <header
-      className={`${bg ? "bg-[white] shadow-md  shadow-bottom  py-3 lg:py-2" : "bg-none"
-        }  fixed left-0 w-full py-3 lg:py-2 z-20 transition-all duration-200`}
+      className={`${
+        bg ? "bg-[white] shadow-md shadow-bottom py-3 lg:py-2" : "bg-none"
+      } ${
+        scrollDirection === "up" ? "show-header" : "hidden-header"
+      } fixed header left-0 w-full py-3 lg:py-2 z-50 transition-all duration-200`}
     >
+      {/* <header
+    className={`header ${
+      bg ? "bg-white shadow-md py-3 lg:py-2" : "bg-none"
+    } ${scrollDirection === "up" ? "show-header" : "hidden-header"}`}
+  > */}
       <div className=" flex items-center justify-around">
         <div className="flex items-center justify-between gap-x-10 ">
           <a href="/">
@@ -80,20 +98,22 @@ const Header = () => {
               />
             </button>
           </div>
-          {
-            user ? <HeaderUser />
-              : <Link
-                to="/signin"
-                className={`${btnColor
+          {user ? (
+            <HeaderUser />
+          ) : (
+            <Link
+              to="/signin"
+              className={`${
+                btnColor
                   ? "bg-primary hover:bg-[#03ecbe] text-white "
                   : "bg-grey-5 hover:bg-grey-1 text-second"
-                  }  
+              }  
                                           px-[40px] py-[9px] my-1 hover:transform-[scale3d(1.05,1.05,1.05)] text-sm font-semibold  
                                           rounded-full  backdrop-blur-md transition  transform hover:scale-105 hidden md:flex`}
-              >
-                Login
-              </Link>
-          }
+            >
+              Login
+            </Link>
+          )}
           {/* <HeaderUser /> */}
 
           {/* <Link
@@ -111,8 +131,9 @@ const Header = () => {
 
         {/* MOBILE */}
         <div
-          className={`${mobileNav ? " top-[64px]" : "bottom-full"
-            } md:hidden h-[550px] fixed left-0 w-full max-w-full backdrop-blur-lg bg-white/60 transition-all shadow-lg border-t-[1px] custom-nav-mobile `}
+          className={`${
+            mobileNav ? " top-[64px]" : "bottom-full"
+          } md:hidden h-[550px] fixed left-0 w-full max-w-full backdrop-blur-lg bg-white/60 transition-all shadow-lg border-t-[1px] custom-nav-mobile `}
         >
           <HeaderMobile />
         </div>

@@ -5,10 +5,11 @@ const CreateCourse = (data) => {
     return axios.post("/course/teacher", data);
 }
 
-const getCourseOfTeacher = () => {
-    return axios.get("/course/teacher/getCourse");
-}
+const getCourseOfTeacher = (page = 0) => {
+    return axios.get(`/course/teacher/getCourse?page=${page}`);
+  };
 
+  
 const getCourseById = (id) => {
     return axios.get(`/course/getCourseById/${id}`);
 }

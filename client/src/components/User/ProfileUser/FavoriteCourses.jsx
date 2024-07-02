@@ -103,13 +103,13 @@ const FavoriteCourses = () => {
                   <Rating
                     className="mb-[1px]"
                     name="half-rating-read"
-                    defaultValue={item.rating}
+                    defaultValue={item.ratingInfo.avgRating} 
                     precision={0.5}
                     readOnly
                     size="small"
                   />
                   <span className="text-sm text-gray-500">
-                    ({item.numOfEnrolled})
+                    ({item.ratingInfo.numOfRates})
                   </span>
                 </div>
                 <div className="flex flex-row gap-x-2 items-center">

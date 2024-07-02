@@ -14,7 +14,7 @@ const register = async (req, res) => {
             // username: req.body.username,
             // email: req.body.email,
             password: hash,
-            avatar: "https://img.upanh.tv/2024/05/29/imagec044add25318cd59.png",
+            avatar: "https://img.upanh.tv/2024/06/18/user-avatar.png",
             ...otherFields
         })
 
@@ -67,7 +67,7 @@ const login = async (req, res) => {
         // set token in cookies
         console.log("token: " + token)
         res.cookie('accessToken', token, {
-            httpOnly: true,
+            // httpOnly: true,
             expires: token.expiresIn
         }).status(200).json({
             success: true,
@@ -127,7 +127,7 @@ const getUserById = async (req, res) => {
 
     try {
         const user = await User.findById(id)
-        .populate('coursesEnrolled')
+            .populate('coursesEnrolled')
 
         if (!user) {
             return res.status(404).json({

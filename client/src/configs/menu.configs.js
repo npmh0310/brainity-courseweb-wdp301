@@ -5,9 +5,9 @@ const main = [
     state: "home",
   },
   {
-    display: "path",
-    path: "/path",
-    state: "path",
+    display: "Blog",
+    path: "/blogpage",
+    state: "blogpage",
   },
   {
     display: "categories",
