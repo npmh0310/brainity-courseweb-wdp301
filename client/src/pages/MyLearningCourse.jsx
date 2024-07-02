@@ -1,29 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import learningImg from "../assets/images/wallpaperflare.com_wallpaper.jpg";
 import avatar from "../assets/images/6298053d43cd1.jpg";
-import html from "../assets/images/Product/html-css.jpg";
-import javascript from "../assets/images/Product/js.jpg";
-
-import { HiUserGroup } from "react-icons/hi";
-import { HiCursorClick } from "react-icons/hi";
+import { getAllCourse } from "../fetchData/Course";
+import { HiUserGroup, HiCursorClick } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import Rating from "@mui/material/Rating";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import LinearProgress, {
+  LinearProgressProps,
+} from "@mui/material/LinearProgress";
+
+const LinearProgressWithLabel = (props) => {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+};
+
 const MyLearningCourse = () => {
-  const courseList = {
-    courses: [
-      {
-        image: html,
-        name: "HTML vs CSS basic",
-        description:
-          "In this course, we will work together to build the interface of two websites, The Band & Shopee.",
-      },
-      {
-        image: javascript,
-        name: "Java script basic",
-        description:
-          "In this course, we will work together to build the interface of two websites, The Band & Shopee.",
-      },
-    ],
-  };
+  const [enrollCourse, setEnrollCourse] = useState([]);
+  const [progress, setProgress] = useState(10);
+
+  useEffect(() => {
+    getAllCourse()
+      .then((res) => {
+        setEnrollCourse(res.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+      });
+
+    setProgress(30); // set progress
+  }, []);
+
   return (
     <div className="mb-20">
       <div className="container w-full mx-auto">
@@ -38,7 +56,7 @@ const MyLearningCourse = () => {
         >
           <div className="absolute top-56 left-24 flex items-end">
             <div className="rounded-full p-2 bg-white">
-              <img className="rounded-full w-40" src={avatar} alt="" />
+              <img className="rounded-full w-40" src={avatar} alt="Avatar" />
             </div>
             <div className="mb-8 ml-5">
               <h1 className="text-3xl font-semibold">Nguyen Phuoc Minh Hieu</h1>
@@ -76,9 +94,7 @@ const MyLearningCourse = () => {
               </div>
             </div>
           </div>
-          {/* Left */}
           {/* Right */}
-
           <div className="flex w-[57%]">
             <div
               className="flex w-full flex-col gap-y-7 rounded-lg px-6 py-5"
@@ -87,29 +103,53 @@ const MyLearningCourse = () => {
               }}
             >
               <h1 className="text-lg font-medium">Courses attended</h1>
-              {courseList.courses.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex gap-x-10 mx-3 pb-7 border-b-[1px] border-b-gray-300 last:border-none last:pb-0 "
-                >
-                  <Link className="w-[90%]" to={"/"}>
-                    <img
-                      className="rounded-lg w-full"
-                      src={item.image}
-                      alt=""
-                    />
-                  </Link>
-                  <div>
-                    <h2 className=" font-medium">
-                      <Link to={"/"}>{item.name}</Link>
-                    </h2>
-                    <span className="text-sm">{item.description}</span>
+              {Array.isArray(enrollCourse) && enrollCourse.length > 0 ? (
+                enrollCourse.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col md:flex-row gap-4 mx-1 pb-7 border-b-[1px] border-b-gray-300 last:border-none last:pb-0"
+                  >
+                    <Link className="md:w-1/2 w-full" to={"/"}>
+                      <img
+                        className="rounded-lg w-full h-auto md:h-44"
+                        src={item.imageUrl}
+                        alt={item.name}
+                      />
+                    </Link>
+                    <div className="w-full md:w-1/2 block">
+                      <h2 className="font-bold text-lg mb-2 ">
+                        <Link to={"/"}>{item.courseName}</Link>
+                      </h2>
+                      <div className="text-sm mb-2 mt-2">
+                        {item.description}
+                      </div>
+                      <div className="text-sm mb-2 mt-2">
+                        Learned 3 months ago
+                      </div>
+                      <div className="flex flex-row items-center gap-x-1 mt-2 mb-2">
+                        <span className="text-sm">
+                          {Math.round(item.ratingInfo.avgRating)}
+                        </span>
+                        <Rating
+                          className="mb-[2px]"
+                          name="half-rating-read"
+                          defaultValue={item.ratingInfo.avgRating}
+                          precision={0.5}
+                          readOnly
+                          size="small"
+                        />
+                      </div>
+                      <div>
+                        <LinearProgressWithLabel value={progress} />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>No courses available</p>
+              )}
             </div>
           </div>
-
           {/* Right */}
         </div>
       </div>

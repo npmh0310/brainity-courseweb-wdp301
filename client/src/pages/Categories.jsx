@@ -354,7 +354,7 @@ export const Categories = () => {
           </div>
           {/* cate */}
           <div className="grid justify-items-center grid-cols-1 gap-y-10 sm:grid-cols-2  lg:grid-cols-3 ">
-            {courseList?.map((data) => (
+            {courseList.map((data) => (
               <Item key={data.id} data={data} loading={loading} />
             ))}
           </div>
