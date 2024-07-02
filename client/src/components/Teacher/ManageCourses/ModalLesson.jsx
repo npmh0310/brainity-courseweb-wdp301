@@ -46,18 +46,26 @@ const ModalLesson = ({ handleClose, sectionId, setStatus }) => {
     formData.append('file', file)
     formData.append("upload_preset", preset_key);
 
-    const res = await axios.post("https://api.cloudinary.com/v1_1/doydh7dtj/video/upload", formData)
-    // console.log(res.data)
-    if (res && res.status === 200) {
-      setData(prev => ({ ...prev, videoUrl: res.data.secure_url }))
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVideoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      toast.error("Please select the video file")
+    try {
+      const res = await axios.post("https://api.cloudinary.com/v1_1/doydh7dtj/video/upload", formData);
+
+      if (res && res.status === 200) {
+        setData(prev => ({ ...prev, videoUrl: res.data.secure_url }));
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVideoPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        console.error("Please select the video file");
+      }
+    } catch (error) {
+      // If there's an error during the request (network issue, etc.), we handle it here
+      toast.error("Please select the video file");
+      console.error("Upload error:", error);
     }
+
 
   };
 

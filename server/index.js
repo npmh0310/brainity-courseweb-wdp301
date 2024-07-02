@@ -41,6 +41,10 @@ const connect = async () => {
         console.log('MongoDB connect fail');
     }
 };
+/// middleware
+app.use(express.json())
+app.use(cors(corsOptions))
+app.use(cookieParser())
 
 // for testing
 app.get("/", (req, res) => {
@@ -109,10 +113,6 @@ app.get('/auth/google/callback',
             })(req, res, next);
     });
 
-/// middleware
-app.use(express.json())
-app.use(cors(corsOptions))
-app.use(cookieParser())
 
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/category', categoryRoute)
@@ -128,8 +128,6 @@ app.use('/api/v1/rating', ratingRoute)
 
 //Oauth2
 app.use('/auth', oauth2Route)
-
-
 
 app.listen(port, () => {
     connect()

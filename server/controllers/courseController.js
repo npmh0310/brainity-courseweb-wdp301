@@ -9,6 +9,7 @@ const createCourse = async (req, res) => {
   const userId = req.user.id;
   const newCourse = new Course(req.body);
   newCourse.instructor = userId;
+
   try {
     const savedCourse = await newCourse.save();
     console.log(savedCourse);
@@ -120,8 +121,7 @@ const deleteCourseById = async (req, res) => {
 
   try {
     const deleteCourseById = await Course.findOneAndDelete({
-      _id: id,
-      instructor: userId,
+      _id: id
     });
 
     res.status(200).json({
