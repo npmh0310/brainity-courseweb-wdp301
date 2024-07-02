@@ -15,6 +15,7 @@ import CourseDetail from "../pages/CourseDetail";
 import CartPage from "../pages/CartPage";
 import MyBlog from "../components/User/BlogPage/MyBlog";
 import SavedBlog from "../components/User/BlogPage/SavedBlog";
+import RequestToTeacher from "../components/User/ProfileUser/RequestToTeacher";
 
 const routes = [
   { index: true, element: <HomePage />, state: "home" },
@@ -48,6 +49,10 @@ const routes = [
       {
         path: "security",
         element: <Security />,
+      },
+      {
+        path: "request-to-teacher",
+        element: <RequestToTeacher />,
       },
     ],
   },

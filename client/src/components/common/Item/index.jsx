@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import Skeleton from "@mui/material/Skeleton";
+import { formatCurrencyVND } from "../../../function/function";
 
 function Item(props) {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ function Item(props) {
               </span>
             </div>
             <div className="flex flex-row gap-x-2 items-center">
-              <span className="font-medium">{data.price} VND</span>
+              <span className="font-medium">{formatCurrencyVND(data.price)}</span>
               <span className="text-gray-400 text-sm line-through">
                 120000 VND
               </span>

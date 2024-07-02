@@ -1,24 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./header.css";
 import Avatar from "../../../assets/images/6298053d43cd1.jpg";
 import { HiOutlineShoppingCart, HiOutlineBell } from "react-icons/hi";
 import Popover from "@mui/material/Popover";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { Bell, ShoppingBag, ShoppingCart } from "lucide-react";
 import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
+import ModalNotification from "./ModalNotification";
+import ModalCart from "./ModalCart";
+import { getQuantityInCart } from "../../../redux/features/cartSlice";
 
 function HeaderUser() {
-
   const user = useSelector((state) => state.auth.user);
   const isLogin = useSelector((state) => state.auth.isLogin);
+  const num = useSelector(getQuantityInCart)
 
+  const notifications = [
+    {
+      id: 1,
+      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
+      message: 'New lesson "Join the F8 community on Discord',
+      time: "3 months",
+    },
+    {
+      id: 2,
+      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
+      message: "React Hooks Deep Dive",
+      time: "1 month",
+    },
+    {
+      id: 3,
+      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
+      message: "Understanding JavaScript Closures",
+      time: "2 weeks",
+    },
+    {
+      id: 4,
+      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
+      message: "Understanding JavaScript Closures",
+      time: "2 weeks",
+    },
+    {
+      id: 5,
+      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
+      message: "Understanding JavaScript Closures",
+      time: "2 weeks",
+    },
+    {
+      id: 6,
+      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
+      message: "Understanding JavaScript Closures",
+      time: "2 weeks",
+    },
+
+    // Thêm nhiều thông báo khác nếu cần
+  ];
 
   const [showUserItem, setShowUserItem] = useState(false);
-
   const [userAnchorEl, setUserAnchorEl] = useState(null);
   const [bellAnchorEl, setBellAnchorEl] = useState(null);
+  const [cartAnchorEl, setCartAnchorEl] = useState(null);
   const handleUserClick = (event) => {
     setUserAnchorEl(event.currentTarget);
   };
@@ -34,22 +77,59 @@ function HeaderUser() {
   const handleBellClose = () => {
     setBellAnchorEl(null);
   };
+
+  const handleCartClick = (event) => {
+    setCartAnchorEl(event.currentTarget);
+  };
+
+  const handleCartClose = () => {
+    setCartAnchorEl(false);
+  };
+
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+      handleCartClose()
+    }, (1000));
+  }
+
+  const handleNavigateCart = () => {
+    handleCartClose()
+    navigate('/cart')
+  }
+
   const open = Boolean(userAnchorEl);
   const bellOpen = Boolean(bellAnchorEl);
+  const cartOpen = Boolean(cartAnchorEl);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    navigate("/");
     dispatch(logout());
     onLogout();
-    navigate("/");
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        handleUserClose();
+        handleBellClose();
+        handleCartClose();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
       {" "}
-      {isLogin && (
+      {isLogin && user && (
         <div className=" justify-around items-center gap-x-6 hidden px-3 md:flex">
           <div className=" items-center justify-between gap-x-4 hidden lg:flex">
             <div
@@ -57,7 +137,7 @@ function HeaderUser() {
               onClick={handleBellClick}
             >
               <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                1
+                {notifications.length}
               </div>
               <Bell
                 className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
@@ -65,7 +145,10 @@ function HeaderUser() {
               />
             </div>
             <Popover
-              style={{ marginTop: "12px", marginLeft: "22px" }}
+              style={{
+                marginTop: "7px",
+                marginLeft: "22px",
+              }}
               open={bellOpen}
               anchorEl={bellAnchorEl}
               onClose={handleBellClose}
@@ -77,32 +160,61 @@ function HeaderUser() {
                 vertical: "top",
                 horizontal: "right",
               }}
+              PaperProps={{
+                style: { width: "396px" },
+              }}
             >
               {/* Content for the bell icon popover */}
-              <div className="p-4">Từ từ chưa biết phần ni</div>
+              <>
+                <ModalNotification notifications={notifications} />
+              </>
             </Popover>
-            <div className="cursor-pointer w-12 h-12 justify-center flex items-center relative">
+            <div className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-20"  onClick={handleCartClick}  onDoubleClick={handleNavigateCart}>
               <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                1
+                {num}
               </div>
               <ShoppingBag
                 className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
                 size={20}
               />
             </div>
+            <Popover
+              style={{
+                zIndex: 20,
+                marginTop: "7px",
+                marginLeft: "22px",
+              }}
+              open={cartOpen}
+              anchorEl={cartAnchorEl}
+              onClose={handleCartClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: "right",
+              }}
+            >
+              {/* Content for the bell icon popover */}
+                <ModalCart />
+            </Popover>
           </div>
 
           <button variant="contained" onClick={handleUserClick}>
             <div onClick={() => setShowUserItem(!showUserItem)}>
               <img
-                className="w-8 h-8 min-w-8 rounded-full transition-transform duration-200 ease-in-out transform hover:scale-110"
+                className="w-8 h-8 min-w-8 rounded-full transition-transform duration-200 ease-in-out transform hover:scale-110 hover:opacity-80"
                 src={user.avatar}
                 alt=""
               />
             </div>
           </button>
           <Popover
-            style={{ marginTop: "12px", marginLeft: "22px" }}
+            style={{
+              marginTop: "12px",
+              marginLeft: "22px",
+            }}
             open={open}
             anchorEl={userAnchorEl}
             onClose={handleUserClose}
@@ -114,13 +226,15 @@ function HeaderUser() {
               vertical: "top",
               horizontal: "right",
             }}
-            className="min-w-40"
+            PaperProps={{
+              style: { width: "346px" },
+            }}
           >
-            <div className=" px-9 pt-6 pb-2 ">
-              <div className="flex flex-row items-center pb-4 gap-4 ">
+            <div className="flex flex-col justify-center px-9 pt-6 pb-2  ">
+              <div className="flex flex-row items-center pb-4 gap-4">
                 <img
                   className="w-11 h-11 rounded-full"
-                  src={user.avatar}
+                  src={user?.avatar}
                   alt=""
                 />
                 <h1>{user.username}</h1>

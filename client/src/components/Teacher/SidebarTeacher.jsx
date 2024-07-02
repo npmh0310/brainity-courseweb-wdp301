@@ -26,33 +26,65 @@ const SidebarTeacher = ({ hiddenSideBar }) => {
   }, [location.pathname]);
 
   return (
-    <div
-      className={`${hiddenSideBar ? "hidden" : "flex"} w-1/5 transition-all mb-20 `}
-    >
-      <div className=" mx-auto w-full mt-6">
-        <ul className="">
-          {teacherRoutes.map((route, index) => (
-            <li
-              className={` text-third font-medium  ${
-                activeItem === route.key
-                  ? "bg-primary bg-opacity-15 border-r-4 border-primary"
-                  : ""
-              } hover:bg-primary hover:bg-opacity-15  block transition-all `}
-              onClick={() => handleActiveItem(route.key)}
-              key={index}
-            >
-              <Link
-                className="flex items-center justify-center p-3 gap-x-3 w-full"
-                to={route.path}
+    <>
+      <div
+        className={`${
+          hiddenSideBar ? "hidden" : "flex"
+        } max-w-[350px] w-1/5  transition-all mb-20 `}
+      >
+        <div className=" mx-auto w-full mt-6">
+          <ul className="">
+            {teacherRoutes.map((route, index) => (
+              <li
+                className={` text-third font-medium  ${
+                  activeItem === route.key
+                    ? "bg-primary bg-opacity-15 border-r-4 border-primary"
+                    : ""
+                } hover:bg-primary hover:bg-opacity-15  block transition-all `}
+                onClick={() => handleActiveItem(route.key)}
+                key={index}
               >
-                <span className="text-primary"> {route.icon}</span>{" "}
-                <span>{route.display}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Link
+                  className="flex items-center justify-center px-3 py-5 gap-x-3 w-full"
+                  to={route.path}
+                >
+                  <span className="text-primary"> {route.icon}</span>{" "}
+                  <span>{route.display}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+      <div
+        className={`${
+          hiddenSideBar ? "flex" : "hidden"
+        } w-24 transition-all mb-20 `}
+      >
+        <div className=" mx-auto w-full mt-6">
+          <ul className="">
+            {teacherRoutes.map((route, index) => (
+              <li
+                className={` text-third font-medium  ${
+                  activeItem === route.key
+                    ? "bg-primary bg-opacity-15 border-r-4 border-primary"
+                    : ""
+                } hover:bg-primary hover:bg-opacity-15  block transition-all `}
+                onClick={() => handleActiveItem(route.key)}
+                key={index}
+              >
+                <Link
+                  className="flex items-center justify-center px-3 py-5  gap-x-3 w-full"
+                  to={route.path}
+                >
+                  <span className="text-primary"> {route.icon}</span>{" "}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
   );
 };
 

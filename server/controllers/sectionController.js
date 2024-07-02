@@ -1,6 +1,8 @@
 
 var Section = require('../models/section')
-const Course = require('../models/course')
+const Course = require('../models/course');
+const sectionSchema = require('../models/section');
+const Lesson = require('../models/lesson');
 
 // teacher
 const createChapterInCourse = async (req, res) => {
@@ -116,6 +118,7 @@ const deleteChapterById = async (req, res) => {
 
     try {
         const deleteChapterById = await Section.findByIdAndDelete(id)
+
 
         res.status(200).json({
             success: true,
