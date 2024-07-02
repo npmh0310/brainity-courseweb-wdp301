@@ -65,8 +65,13 @@ const createLinkUrl = (file) => {
     return axios.post(`/cloudinary/upload`, file);
 }
 
+const getAllCategory = () => {
+    return axios.get('/category');
+}
+
 export {
     CreateCourse, getCourseOfTeacher, updateCourse, deleteCourse, getCourseById, getCourseByName,
     getSectionById, createSection, updateSection, deleteSection,
-    createLesson, deleteLesson, updateLesson, createLinkUrl
+    createLesson, deleteLesson, updateLesson, createLinkUrl,
+    getAllCategory
 }
