@@ -88,6 +88,7 @@ function SignInPage() {
           isLogin: true,
         })
       );
+      dispatch(setGlobalLoading(false));
       toast.success("Login successfully");
 
       if (res.data.role === "teacher") {
@@ -103,7 +104,6 @@ function SignInPage() {
       toast.error("Username is invalid");
     }
   };
-
   const handleLoginGoogle = () => {
     dispatch(setGlobalLoading(true))
     window.open("http://localhost:4000/auth/google/", "_self")

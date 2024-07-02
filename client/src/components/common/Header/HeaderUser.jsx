@@ -1,60 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./header.css";
-import Avatar from "../../../assets/images/6298053d43cd1.jpg";
-import { HiOutlineShoppingCart, HiOutlineBell } from "react-icons/hi";
 import Popover from "@mui/material/Popover";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { Bell, ShoppingBag, ShoppingCart } from "lucide-react";
-import Notification from "../Notification/notification";
 import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
 import ModalNotification from "./ModalNotification";
+import useNotifications from "../Notification/useNotifications";
 
 function HeaderUser() {
   const user = useSelector((state) => state.auth.user);
   const isLogin = useSelector((state) => state.auth.isLogin);
 
-  const notifications = [
-    {
-      id: 1,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: 'New lesson "Join the F8 community on Discord',
-      time: "3 months",
-    },
-    {
-      id: 2,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "React Hooks Deep Dive",
-      time: "1 month",
-    },
-    {
-      id: 3,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-    {
-      id: 4,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-    {
-      id: 5,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-    {
-      id: 6,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-
-    // Thêm nhiều thông báo khác nếu cần
-  ];
+  // goi. userNotification
+  const { notifications } = useNotifications(user._id);
 
   const [showUserItem, setShowUserItem] = useState(false);
   const [userAnchorEl, setUserAnchorEl] = useState(null);
@@ -104,21 +64,20 @@ function HeaderUser() {
   return (
     <>
       {" "}
-      {isLogin && user &&(
+      {isLogin && user && (
         <div className=" justify-around items-center gap-x-6 hidden px-3 md:flex">
-          <div>tesst
-          <Notification/>
-          </div>
           <div className=" items-center justify-between gap-x-4 hidden lg:flex">
             <div
               className="cursor-pointer w-12 h-12 flex justify-center items-center relative "
               onClick={handleBellClick}
             >
-              <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                {notifications.length}
-              </div>
+              {notifications.length > 0 && (
+                <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
+                  {notifications.length}
+                </div>
+              )}
               <Bell
-                className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
+                className=" transition-transform duration-200 ease-in-out transform  hover:text-primary"
                 size={20}
               />
             </div>
@@ -152,7 +111,7 @@ function HeaderUser() {
                 1
               </div>
               <ShoppingBag
-                className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
+                className=" transition-transform duration-200 ease-in-out transform hover:text-primary"
                 size={20}
               />
             </div>
@@ -191,7 +150,7 @@ function HeaderUser() {
               <div className="flex flex-row items-center pb-4 gap-4">
                 <img
                   className="w-11 h-11 rounded-full"
-                  src={user?.avatar }
+                  src={user?.avatar}
                   alt=""
                 />
                 <h1>{user.username}</h1>

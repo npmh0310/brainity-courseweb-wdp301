@@ -320,6 +320,7 @@ const changePassword = async (req, res) => {
         sender: userId,
         message: 'Your password has been changed',
         type: 'profile',
+        image: 'https://img.upanh.tv/2024/06/26/21009353.jpg'
     }
     createNotification(req.user.id, res.io, notification, rooms)
      // Handle password change event
