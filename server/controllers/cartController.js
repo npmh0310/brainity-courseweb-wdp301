@@ -4,7 +4,7 @@ const Course = require('../models/course')
 
 
 const createCart = async (req, res) => {
-    const newCart = new Cart({"user" : req.user.id, ...req.body})
+    const newCart = new Cart({ "user": req.user.id, ...req.body })
 
     try {
         const savedCart = await newCart.save()
@@ -21,6 +21,7 @@ const createCart = async (req, res) => {
         })
     }
 }
+
 
 const getCartById = async (req, res) => {
     const cartId = req.body.cartId;
@@ -42,139 +43,137 @@ const getCartById = async (req, res) => {
 }
 
 const addCourseToCart = async (req, res, next) => {
-    if(!req.body.action) 
-        return res.status(400).json({
-        success: false,
-        message: "Please provide an action: add or remove in req body"
-    });
-
-    if(req.body.action == "remove") {
-        return next();
-    }
-
-    const cartId = req.body.cartId;
     const courseId = req.body.courseId;
     const userId = req.user.id;
 
     try {
-        let cart;
-        let modifyMessage;
+        let cart = await Cart.findOne({ user: userId }).populate({
+            path: 'courses.course',
+            populate: {
+                path: 'instructor'
+            }
+        });
+        let modifyMessage = "";
 
-        if (cartId) {
-          cart = await Cart.findById(cartId);
-          modifyMessage = "Exist cart id in req. "
-        } else {
-          cart = await Cart.findOne({user: userId});
-          modifyMessage = "Cart id find by user id. "
-        }
         if (!cart) {
-            cart = new Cart({ user: userId, courses: [] });
-            modifyMessage = "New cart created. "
+            cart = await createNewCart(req, res);
+            modifyMessage = "New cart created. ";
         }
-        
-        // Check if the course already exists in the cart
-        if (cart.courses.includes(courseId)) {
+
+        if (cart.courses.some(data => data.course._id.toString() === courseId)) {
             return res.status(200).json({
                 success: true,
-                message: modifyMessage+ "Course already exists in the cart",
-                data: {
-                    cart: {
-                        id: cart._id,
-                        courses: cart.courses
-                    }
-                }
+                message: modifyMessage + "Course already exists in the cart",
+                data: cart
             });
         }
 
         // Add the course to the cart
-        cart.courses.push(courseId);
+        cart.courses.push({ course: courseId });
         await cart.save();
-        
+
+        cart = await Cart.findOne({ user: userId }).populate({
+            path: 'courses.course',
+            populate: {
+                path: 'instructor'
+            }
+        });
+
         return res.status(200).json({
             success: true,
             message: modifyMessage + "Course added to cart successfully",
-            data: {
-                cart: {
-                    id: cart._id,
-                    courses: cart.courses
-                }
-            }
+            data: cart
         });
     } catch (err) {
+        console.error("Error adding course to cart:", err);
         return res.status(500).json({
             success: false,
             message: "Failed to add course. Try again"
         });
-    } 
-}
+    }
+};
+
 
 const removeCourseFromCart = async (req, res) => {
     const courseId = req.body.courseId;
-    const cartId = req.body.cartId;
     const userId = req.user.id;
-    try {
-        let cart = await Cart.findById(cartId);
-        
-        if (cartId) {
-            cart = await Cart.findById(cartId);
-            modifyMessage = "Exist cart id in req. "
-        } else {
-            cart = await Cart.findOne({user: userId});
-            modifyMessage = "Cart id find by user id. "
+    let cart = await Cart.findOne({ user: userId }).populate({
+        path: 'courses.course',
+        populate: {
+            path: 'instructor'
         }
-      
-        if (!cart) {
-            return res.status(404).json({
-                success: false,
-                message: "Cart not found ID provided "
-            })
-        }
+    });
+    let modifyMessage = "";
 
-        // Remove the course from the cart
-        const index = cart.courses.indexOf(courseId);
-        if (index !== -1) {
-            cart.courses.splice(index, 1);
-            await cart.save();
-            return res.status(200).json({
-                success: true,
-                message: modifyMessage + "Course remove successfully",
-                data: {
-                    cart: {
-                        id: cart._id,
-                        courses: cart.courses
-                    }
-                }
-            })
-        } else {
-            return res.status(200).json({
-                success: false,
-                message: "Course not found in the cart"
-            })
-        }
-    } catch (error) {
-        return { message: 'Failed to remove course from cart' };
+    if (!cart) {
+        return res.status(500).json({
+            success: false,
+            message: "Cart not found. Unable to remove course."
+        });
     }
-} 
+    
+
+    const courseIndex = cart.courses.findIndex(data => data.course._id.toString() === courseId);
+
+    if (courseIndex === -1) {
+        return res.status(500).json({
+            success: false,
+            message: "Course not found in the cart. Unable to remove course."
+        });
+    }
+
+    // Remove the course from the cart
+    cart.courses.splice(courseIndex, 1);
+    await cart.save();
+
+    cart = await Cart.findOne({ user: userId }).populate({
+        path: 'courses.course',
+        populate: {
+            path: 'instructor'
+        }
+    });
+
+    return res.status(200).json({
+        success: true,
+        message: "Course removed from cart successfully",
+        data: cart
+    });
+
+};
+
 
 const getCartByUserId = async (req, res) => {
     const userId = req.user.id;
-    try {
-        const cart = await Cart.findOne({user: userId})
 
-        if(!cart) {
-            createCart(req, res);
+    let cart = await Cart.findOne({ user: userId })
+    .populate({
+        path: 'courses.course',
+        populate: {
+            path: 'instructor'
         }
+    });
 
-        return res.status(200).json({
-            success: true,
-            message: "Successfully get Cart",
-            data: cart
-        })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to get Cart. Try again"
-        })
+    if (!cart) {
+        cart = await createNewCart(req, res);
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Successfully retrieved Cart",
+        data: cart
+    });
+
+};
+
+
+const createNewCart = async (req, res) => {
+    const userId = req.user.id
+
+    try {
+        const newCart = new Cart({ user: userId })
+        return newCart.save()
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -217,6 +216,43 @@ const updateCart = async (req, res) => {
     }
 }
 
+const updateCourseInCart = async ( req, res) => {
+    const userId = req.user.id
+    const courseId = req.body.courseId
+    const later = req.body.later
+
+    try {
+        const cart = await Cart.findOneAndUpdate(
+            {user: userId , 'courses.course': courseId },
+            {$set: {'courses.$.later' : later}},
+            {new: true}
+        ).populate({
+            path: 'courses.course',
+            populate: {
+                path: 'instructor'
+            }
+        });
+        if(!cart) {
+            return res.status(500).json({
+                success: false,
+                message: "Cart or course not found",
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Course updated successfully",
+            data: cart
+        })
+    } catch (error) {
+        console.error("Error updating course:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Cart or course not found",
+        })
+    }
+
+
+}
 
 
 module.exports = {
@@ -225,5 +261,6 @@ module.exports = {
     getCartByUserId,
     removeCourseFromCart,
     addCourseToCart,
-    updateCart
+    updateCart,
+    updateCourseInCart
 }

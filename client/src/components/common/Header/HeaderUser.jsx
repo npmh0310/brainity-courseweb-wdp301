@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./header.css";
 import Popover from "@mui/material/Popover";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { Bell, ShoppingBag, ShoppingCart } from "lucide-react";
 import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
 import ModalNotification from "./ModalNotification";
 import useNotifications from "../Notification/useNotifications";
+import ModalCart from "./ModalCart";
+import { getQuantityInCart } from "../../../redux/features/cartSlice";
 
 function HeaderUser() {
   const user = useSelector((state) => state.auth.user);
   const isLogin = useSelector((state) => state.auth.isLogin);
+  const num = useSelector(getQuantityInCart);
 
   // goi. userNotification
   const { notifications } = useNotifications(user._id);
@@ -19,6 +22,7 @@ function HeaderUser() {
   const [showUserItem, setShowUserItem] = useState(false);
   const [userAnchorEl, setUserAnchorEl] = useState(null);
   const [bellAnchorEl, setBellAnchorEl] = useState(null);
+  const [cartAnchorEl, setCartAnchorEl] = useState(null);
   const handleUserClick = (event) => {
     setUserAnchorEl(event.currentTarget);
   };
@@ -34,11 +38,33 @@ function HeaderUser() {
   const handleBellClose = () => {
     setBellAnchorEl(null);
   };
+
+  const handleCartClick = (event) => {
+    setCartAnchorEl(event.currentTarget);
+  };
+
+  const handleCartClose = () => {
+    setCartAnchorEl(false);
+  };
+
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+      handleCartClose();
+    }, 1000);
+  };
+
+  const handleNavigateCart = () => {
+    navigate("/cart");
+    handleCartClose();
+  };
+
   const open = Boolean(userAnchorEl);
   const bellOpen = Boolean(bellAnchorEl);
+  const cartOpen = Boolean(cartAnchorEl);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     navigate("/");
@@ -51,6 +77,7 @@ function HeaderUser() {
       if (window.scrollY > 0) {
         handleUserClose();
         handleBellClose();
+        handleCartClose();
       }
     };
 
@@ -60,6 +87,12 @@ function HeaderUser() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  
+  useEffect(() => {
+    handleUserClose();
+    handleBellClose();
+    handleCartClose();
+  }, [location]);
 
   return (
     <>
@@ -106,15 +139,44 @@ function HeaderUser() {
                 <ModalNotification notifications={notifications} />
               </>
             </Popover>
-            <div className="cursor-pointer w-12 h-12 justify-center flex items-center relative">
-              <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                1
-              </div>
+            <div
+              className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-20"
+              onClick={handleCartClick}
+              onDoubleClick={handleNavigateCart}
+            >
+              {num > 0 && (
+                <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
+                  {num}
+                </div>
+              )}
               <ShoppingBag
                 className=" transition-transform duration-200 ease-in-out transform hover:text-primary"
                 size={20}
               />
             </div>
+            <Popover
+              style={{
+                marginTop: "7px",
+                marginLeft: "22px",
+              }}
+              open={cartOpen}
+              anchorEl={cartAnchorEl}
+              onClose={handleCartClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              PaperProps={{
+                style: { width: "346px" },
+              }}
+            >
+              {/* Content for the bell icon popover */}
+              <ModalCart />
+            </Popover>
           </div>
 
           <button variant="contained" onClick={handleUserClick}>

@@ -40,15 +40,19 @@ const ModalNotification = ({ notifications }) => {
   return (
     <div className=" mx-auto">
       <div className="px-3 mb-3">
-        <header className="my-5">
+        <header className="my-3">
           <span className="text-third font-secondary font-semibold">
             Notification
           </span>
         </header>
         <div className="flex flex-col gap-y-2 max-h-[60vh] scrollbar-custom pr-1 overflow-y-auto ">
+          {notifications.length === 0 && (
+            <div className="my-3 ">
+              <h1 className="text-center">No notifications</h1>
+            </div>
+          )}
           {notifications.map((notification) => {
             const timeAgo = moment(notification.updatedAt).fromNow();
-
             return (
               <div
                 key={notification._id}

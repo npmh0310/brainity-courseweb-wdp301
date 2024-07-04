@@ -50,10 +50,10 @@ const Header = () => {
   return (
     <header
       className={`${
-        bg ? "bg-[white] shadow-md shadow-bottom py-3 lg:py-2" : "bg-none"
+        bg ? "bg-[white] shadow-md shadow-bottom " : "bg-none"
       } ${
         scrollDirection === "up" ? "show-header" : "hidden-header"
-      } fixed header left-0 w-full py-3 lg:py-2 z-50 transition-all duration-200`}
+      } fixed header left-0 w-full z-50 transition-all duration-200`}
     >
       {/* <header
     className={`header ${
@@ -83,7 +83,7 @@ const Header = () => {
           </nav>
         </div>
 
-        <div className="flex items-center justify-around gap-x-14 ">
+        <div className="flex items-center justify-around gap-x-14 h-[76px]">
           <div className=" items-center hidden lg:flex">
             <input
               type="text"
