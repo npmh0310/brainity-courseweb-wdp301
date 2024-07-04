@@ -1,12 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getCoursesInCart } from '../../../redux/features/cartSlice'
+import { getCoursesInCart , getAllInCart } from '../../../redux/features/cartSlice'
 import { formatCurrencyVND } from '../../../function/function'
 import { Link, useNavigate } from 'react-router-dom'
 
 function ModalCart() {
 
-    const courseInCart = useSelector(getCoursesInCart)
+    const courseInCart = useSelector(getAllInCart)
     const total = courseInCart ? courseInCart.reduce((sum, data) => sum + data.course.price, 0) : 0;
     const navigate = useNavigate()
     const goToCart = () => {

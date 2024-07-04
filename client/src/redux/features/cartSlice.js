@@ -108,9 +108,10 @@ const cartSlice = createSlice({
 
 })
 
-export const getQuantityInCart = (state) => state.cart.cart != null ? state.cart.cart.filter(data => data.later).length : 0
+export const getQuantityInCart = (state) => state.cart.cart != null ? state.cart.cart.length : 0
 export const getCoursesInCart = (state) => state.cart.cart != null && state.cart.cart.filter(data => data.later)
 export const getCartLoading = (state) => state.cart.loading
 export const getCourseLaterInCart = (state) => state.cart.cart != null && state.cart.cart.filter(data => data.later === false)
+export const getAllInCart = (state) => state.cart.cart
 
 export default cartSlice.reducer

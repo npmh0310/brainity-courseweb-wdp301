@@ -1,6 +1,8 @@
 
 const Section = require('../models/section')
 var Lesson = require('../models/lesson')
+const Course = require('../models/course')
+const UserChapterProgress = require('../models/UserChapterProgress');
 
 
 
@@ -33,6 +35,33 @@ const createLessonInChapter = async (req, res) => {
         await Section.findByIdAndUpdate(chapterId, {
             $push: { lessons: savedLesson._id }
         })
+
+        const courses = await Course.find({ sections: chapterId });
+        if (!courses || courses.length === 0) {
+            throw new Error("No courses found with the given chapterId");
+        }
+
+        // Duyệt qua từng khóa học để tìm UserChapterProgress
+        for (const course of courses) {
+            const listUserProgress = await UserChapterProgress.find({ course: course._id });
+
+            for (const userProgress of listUserProgress) {
+                // Tính index lớn nhất
+                const maxIndex = Math.max(...userProgress.lessonsProgress.map(lesson => lesson.index));
+
+                // Thêm bài học mới vào lessonsProgress
+                userProgress.lessonsProgress.push({
+                    index: maxIndex + 1,
+                    lesson: savedLesson._id, // Giả sử newLesson là một ID hợp lệ
+                    isCompleted: false
+                });
+
+                // Lưu lại tài liệu đã cập nhật
+                await userProgress.save();
+            }
+        }
+
+        console.log("Successfully added new lesson to user progress.");
 
         res.status(200).json({
             success: true,

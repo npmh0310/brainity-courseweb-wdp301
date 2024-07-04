@@ -5,7 +5,7 @@ import { completedLesson } from '../../../../fetchData/UserChapterProgress';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { updateLessonProgress } from '../../../../redux/features/learningSlice';
-import {  ChevronLeft, ChevronRight, SkipForward } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SkipForward } from 'lucide-react';
 
 function VideoChaper(props) {
   const { courseProgress, courseId, lesson } = props;
@@ -29,20 +29,23 @@ function VideoChaper(props) {
     if (res.status === 200) {
       dispatch(updateLessonProgress({ lessonId: lesson._id, isCompleted: true }));
     }
-    setNextVideo(true)
+    
     const nextLesson = courseProgress.lessonsProgress.find(data => data.index === currentLesson.index + 1)
 
-    setTimeout(() => {
-      navigate(`/learningCourse/${courseProgress.course}/lesson/${nextLesson.lesson}`)
-      setNextVideo(false)
-    }, (3000));
+    if(nextLesson) {
+      setNextVideo(true)
+      setTimeout(() => {
+        navigate(`/learningCourse/${courseProgress.course}/lesson/${nextLesson.lesson}`)
+        setNextVideo(false)
+      }, (3000));
+    }
 
   }
 
   return (
     <div className=' relative w-full h-full'>
       {loading ? (
-        <Spinner color="gray"/>
+        <Spinner color="gray" />
       ) : (
         <ReactPlayer
           width='100%'
@@ -56,12 +59,12 @@ function VideoChaper(props) {
         {nextVideo && <SkipForward size={40} className=' text-white hover:scale-110 transition-all ease-in-out cursor-pointer' />}
       </div>
       {lesson && <>
-        <Link to={`/learningCourse/${courseProgress.course}/lesson/${nextLesson.lesson}`} className=' absolute top-[50%] right-0 -translate-y-[50%] flex justify-center items-center border border-white cursor-pointer'>
+        {nextLesson && <Link to={`/learningCourse/${courseProgress.course}/lesson/${nextLesson.lesson}`} className=' absolute top-[50%] right-0 -translate-y-[50%] flex justify-center items-center border border-white cursor-pointer'>
           <ChevronRight className=' text-white' />
-        </Link>
-        <Link to={`/learningCourse/${courseProgress.course}/lesson/${preLesson.lesson}`} className=' absolute top-[50%] left-0 -translate-y-[50%] flex justify-center items-center border border-white cursor-pointer '>
+        </Link>}
+        {preLesson && <Link to={`/learningCourse/${courseProgress.course}/lesson/${preLesson.lesson}`} className=' absolute top-[50%] left-0 -translate-y-[50%] flex justify-center items-center border border-white cursor-pointer '>
           <ChevronLeft className=' text-white' />
-        </Link>
+        </Link>}
       </>}
     </div>
   );

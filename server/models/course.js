@@ -48,10 +48,10 @@ const courseSchema = new mongoose.Schema(
         ref: "Section",
       },
     ],
-    // isFree: {
-    //     type: Boolean,
-    //     default: false
-    // },
+    isFree: {
+        type: Boolean,
+        default: false
+    }
     // featured: {
     //     type: Boolean,
     //     default: false
