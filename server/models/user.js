@@ -58,6 +58,18 @@ const userSchema = new mongoose.Schema(
         favouriteCourses: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course'
+        }],
+        facebook: {
+            type: String
+        },
+        instagram: {
+            type: String
+        },
+        github: {
+            type: String
+        },
+        notificationRooms: [{
+            type: String,
         }]
     },
     { timestamps: true }

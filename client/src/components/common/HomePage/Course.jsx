@@ -20,10 +20,13 @@ const Course = () => {
       setLoading(true);
       getCourseInHomePage().then((res) => {
         setCourseList(res.data.data);
+        console.log("1", courseList);
         setTimeout(() => {
           setLoading(false);
         }, 1000);
       });
+      console.log("2", courseList);
+
     }
   }, [courseView]);
 

@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
       message: "You're not authorize",
     });
   }
-
+  console.log("token here: " + token)
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
     if (err) {
       return res.status(401).json({

@@ -8,7 +8,7 @@ const Toast = ({ open, handleClose, message, severity }) => {
       open={open}
       autoHideDuration={6000}
       onClose={handleClose}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       TransitionComponent={(props) => <Grow {...props} />}
     >
       <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
