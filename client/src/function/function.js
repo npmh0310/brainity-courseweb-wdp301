@@ -1,15 +1,6 @@
 import { parseISO, format } from "date-fns";
 
-// export const formatDate = (dateString) => {
-//     // Parse the ISO date string to a JavaScript Date object
-//     const date = parseISO(dateString);
-
-//     // Format the date to "MMMM yyyy"
-//     const formattedDate = format(date, 'MMMM yyyy');
-
-//     return `Last updated ${formattedDate}`;
-// };
-export function formatDate(dateString) {
+export function formatDate2(dateString) {
   return new Date(dateString).toLocaleDateString("en-us", {
     weekday: "long",
     year: "numeric",
@@ -18,8 +9,18 @@ export function formatDate(dateString) {
   });
 }
 
+export const formatDate = (dateString) => {
+  // Parse the ISO date string to a JavaScript Date object
+  const date = parseISO(dateString);
+
+  // Format the date to "MMMM yyyy"
+  const formattedDate = format(date, 'MMMM yyyy');
+
+  return `Last updated ${formattedDate}`;
+};
+
 export const searchCourseContent = (course, query) => {
-  console.log(course, query);
+  console.log(course, query)
   // Normalize the search query to lower case
   const normalizedQuery = query.toLowerCase();
 
@@ -28,59 +29,53 @@ export const searchCourseContent = (course, query) => {
 
   // Result object to store search results
   const result = {
-    sections: [],
-    lessons: [],
+      sections: [],
+      lessons: []
   };
 
   // Search through sections
   course.sections.forEach((section) => {
-    if (containsQuery(section.sectionName)) {
-      result.sections.push(section);
-    }
+      if (containsQuery(section.sectionName)) {
+          result.sections.push(section);
+      }
 
-    // Search through lessons within the section
-    if (section.lessons) {
-      section.lessons.forEach((lesson) => {
-        if (
-          containsQuery(lesson.lessonName) ||
-          (lesson.description && containsQuery(lesson.description))
-        ) {
-          result.lessons.push({ sectionName: section.sectionName, lesson });
-        }
-      });
-    }
+      // Search through lessons within the section
+      if (section.lessons) {
+          section.lessons.forEach((lesson) => {
+              if (containsQuery(lesson.lessonName) || (lesson.description && containsQuery(lesson.description))) {
+                  result.lessons.push({ sectionName: section.sectionName, lesson });
+              }
+          });
+      }
   });
 
   return result;
 };
 export function formatCurrencyVND(amount) {
   // Create a new instance of Intl.NumberFormat for Vietnamese locale
-  const formatter = new Intl.NumberFormat("vi-VN", {
-    currency: "VND",
-    minimumFractionDigits: 0, // Ensure no decimal points are shown
+  const formatter = new Intl.NumberFormat('vi-VN', {
+      currency: 'VND',
+      minimumFractionDigits: 0 // Ensure no decimal points are shown
   });
-  const p = formatter.format(amount);
+  const p = formatter.format(amount)
 
   // Format the amount
-  return `${p} VND`;
+  return `${p} VND`
 }
 
 export function calculateOverallCompletionPercent(sections) {
   let totalLessons = 0;
   let completedLessons = 0;
 
-  sections.forEach((section) => {
-    totalLessons += section.lessons.length;
-    completedLessons += section.lessons.filter(
-      (lesson) => lesson.isCompleted
-    ).length;
+  sections.forEach(section => {
+      totalLessons += section.lessons.length;
+      completedLessons += section.lessons.filter(lesson => lesson.isCompleted).length;
   });
 
-  const completionPercent =
-    totalLessons === 0 ? 0 : (completedLessons / totalLessons) * 100;
+  const completionPercent = totalLessons === 0 ? 0 : (completedLessons / totalLessons) * 100;
   return {
-    totallesson: totalLessons,
-    completedLessons: completedLessons,
-    overal: completionPercent.toFixed(2),
-  }; // Định dạng thành hai chữ số thập phân
+      totallesson: totalLessons,
+      completedLessons: completedLessons,
+      overal:completionPercent.toFixed(2)
+  } // Định dạng thành hai chữ số thập phân
 }

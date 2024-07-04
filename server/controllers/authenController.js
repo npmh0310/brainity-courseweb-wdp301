@@ -78,7 +78,7 @@ const login = async (req, res) => {
         // set token in cookies
         console.log("token: " + token)
         res.cookie('accessToken', token, {
-            httpOnly: true,
+            // httpOnly: true,
             expires: token.expiresIn
         }).status(200).json({
             success: true,
@@ -138,7 +138,7 @@ const getUserById = async (req, res) => {
 
     try {
         const user = await User.findById(id)
-        .populate('coursesEnrolled')
+            .populate('coursesEnrolled')
 
         if (!user) {
             return res.status(404).json({

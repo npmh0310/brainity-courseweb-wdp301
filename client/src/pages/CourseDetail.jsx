@@ -16,7 +16,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 import { getCourseById } from "../fetchData/Course";
 import GlobalLoading from "../components/common/GlobalLoading/GlobalLoading";
-import { formatCurrencyVND, formatDate } from "../function/function";
+import {
+  formatCurrencyVND,
+  formatDate,
+  formatDate2,
+} from "../function/function";
 import {
   getRatingByCourseId,
   getAvgRating,
@@ -409,7 +413,7 @@ function CourseDetail() {
                           <footer className="mb-2 text-sm text-gray-500">
                             <p>
                               Reviewed on
-                              <span> {formatDate(rating.createdAt)}</span>
+                              <span> {formatDate2(rating.createdAt)}</span>
                             </p>
                           </footer>
                           <p className="mb-2 text-gray-500">{rating.review}</p>

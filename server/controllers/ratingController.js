@@ -244,6 +244,7 @@ const calculateRatingsCount = (ratings) => {
   return ratingsCount;
 };
 
+
 module.exports = {
   createRating,
   getAvgRatingByCourseId,

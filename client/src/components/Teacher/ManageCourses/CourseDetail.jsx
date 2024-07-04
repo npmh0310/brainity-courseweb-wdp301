@@ -17,6 +17,7 @@ import Modal from "@mui/material/Modal";
 import ModalChapter from "./ModalChapter";
 import {
   createLinkUrl,
+  deleteSection,
   getCourseById,
   getCourseByName,
   updateCourse,
@@ -24,6 +25,7 @@ import {
 import EditCourse from "./EditCourse";
 import toast from "react-hot-toast";
 import axios from "axios";
+import UpdateCate from "./UpdateCate";
 
 const CourseDetail = () => {
   const [isChecked, setIsChecked] = useState(false);
@@ -103,8 +105,16 @@ const CourseDetail = () => {
   };
 
   const handleDeleteClose = () => setDeleteOpen(false);
-  const handleDelete = () => {
+  const handleDelete = async () => {
     console.log("Deleting section id:", selectedSectionId);
+    const res = await deleteSection(selectedSectionId)
+    if (res.status === 200) {
+      toast.success('Deleted successfully')
+      setStatus(true)
+    }
+    else {
+      toast.error('Delete failed')
+    }
     setDeleteOpen(false);
   };
 
@@ -196,9 +206,8 @@ const CourseDetail = () => {
 
                 {/* Custom button */}
                 <span
-                  className={`flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ${
-                    pendingImg && "hidden"
-                  }`}
+                  className={`flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ${pendingImg && "hidden"
+                    }`}
                   onClick={handleFileInputClick}
                 >
                   <Upload className="w-4 h-4" />
@@ -212,9 +221,8 @@ const CourseDetail = () => {
                 >
                   <>
                     <img
-                      className={`w-full h-full object-cover rounded-lg ${
-                        pendingImg && "opacity-20"
-                      } `}
+                      className={`w-full h-full object-cover rounded-lg ${pendingImg && "opacity-20"
+                        } `}
                       src={course.imageUrl}
                       alt={course.courseName}
                     />
@@ -247,13 +255,13 @@ const CourseDetail = () => {
               </div>
             </div>{" "}
             <div className="flex flex-col justify-start w-6/12 gap-y-4 h-full">
-              <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">
-                <EditCourse
+              <div className="flex flex-col bg-white px-6 py-6 gap-y-4 rounded-lg border border-spacing-1 ">
+                <UpdateCate
                   idCourse={course._id}
                   label="Course categories"
-                  value="hi"
                   inputId="categories"
                   setStatus={setStatus}
+                  cateData={course.categories}
                 />
               </div>
               <div className="flex items-center flex-col bg-white justify-between px-6 py-6 gap-y-4 rounded-lg border border-spacing-1   ">

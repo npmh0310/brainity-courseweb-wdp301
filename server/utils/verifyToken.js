@@ -24,20 +24,17 @@ const verifyToken = (req, res, next) => {
 
 const verifyUser = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (
-      req.user.role === "admin" ||
-      req.user.role === "user" ||
-      req.user.role === "teacher"
-    ) {
-      next();
-    } else {
+    if (req.user.role === 'admin' || req.user.role === 'user' || req.user.role === 'teacher') {
+      next()
+    }
+    else {
       return res.status(401).json({
         success: false,
-        message: "You're not authenticated",
-      });
+        message: "You're not authenticated"
+      })
     }
-  });
-};
+  })
+}
 
 const verifyTeacher = (req, res, next) => {
   verifyToken(req, res, () => {
