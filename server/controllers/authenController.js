@@ -3,13 +3,13 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const Course = require('../models/course');
 const { addProgress } = require('./userChapterProgressController');
+const { createNotification } = require('./notificationController');
 
 const register = async (req, res) => {
     try {
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
         const { avatar, password, ...otherFields } = req.body;
-
         const newUser = new User({
             // username: req.body.username,
             // email: req.body.email,
@@ -18,7 +18,18 @@ const register = async (req, res) => {
             ...otherFields
         })
 
+        const defaultNotificationRoom = 'room_profile_' + newUser.id
+        newUser.notificationRooms = ['room_system', defaultNotificationRoom];
+        
         await newUser.save()
+        
+        //create notification realtime and saving in db
+        const rooms = ["room_system"]
+        const notification = {
+            title: 'system',
+            message: 'new user create',
+        }
+        createNotification(newUser.id, res.io, notification, rooms)
 
         res.status(200).json({
             success: true,
@@ -67,7 +78,7 @@ const login = async (req, res) => {
         // set token in cookies
         console.log("token: " + token)
         res.cookie('accessToken', token, {
-            httpOnly: true,
+            // httpOnly: true,
             expires: token.expiresIn
         }).status(200).json({
             success: true,
@@ -127,7 +138,7 @@ const getUserById = async (req, res) => {
 
     try {
         const user = await User.findById(id)
-        .populate('coursesEnrolled')
+            .populate('coursesEnrolled')
 
         if (!user) {
             return res.status(404).json({
@@ -151,18 +162,44 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const id = req.params.id;
+    const {emai, password,  ...rest} = req.body;
+    const user = await User.findById(id);
 
     try {
-        const updateUser = await User.findByIdAndUpdate(id, {
-            $set: { ...req.body }
-        }, { new: true })
 
-        res.status(200).json({
-            success: true,
-            message: "Successfully updated",
-            data: updateUser
-        })
-    } catch (err) {
+        if(!user.googleId) {
+            const updateUser = await User.findByIdAndUpdate(id, {
+                $set: { ...req.body }
+            }, { new: true })
+            
+            res.status(200).json({
+                success: true,
+                message: "Successfully updated",
+                data: updateUser
+            })
+        } else {
+            const updateUser = await User.findByIdAndUpdate(id, {
+                $set: { ...rest }
+            }, { new: true })
+            
+            res.status(200).json({
+                success: true,
+                message: "Successfully updated",
+                data: updateUser
+            })
+        }
+        
+        // try {
+        //     const updateUser = await User.findByIdAndUpdate(id, {
+        //         $set: { ...req.body }
+        //     }, { new: true })
+        
+        //     res.status(200).json({
+            //         success: true,
+            //         message: "Successfully updated",
+            //         data: updateUser
+            //     })
+        } catch (err) {
         res.status(500).json({
             success: false,
             message: "Failed to update. Try again"
@@ -274,6 +311,45 @@ const logout = async (req, res) => {
     });
 }
 
+const changePassword = async (req, res) => {
+    const userId = req.user.id;
+    
+    const rooms = [`room_profile_${req.user.id}`] 
+    const notification = {
+        title: 'passwordChangeNotification',
+        sender: userId,
+        message: 'Your password has been changed',
+        type: 'profile',
+        image: 'https://img.upanh.tv/2024/06/26/21009353.jpg'
+    }
+    createNotification(req.user.id, res.io, notification, rooms)
+     // Handle password change event
+    //  const room = "room_profile_" + req.user.id;
+    //  res.io.to(room).emit('passwordChangeNotification', "password changed");
+
+    //  io.emit('newLessonNotification', data);
+    const { oldPassword, newPassword} = req.body
+    const user = await User.findById(req.user.id)
+    const checkCorrectPassword = await bcrypt.compare(oldPassword, user.password);
+
+    if (!checkCorrectPassword) {
+        return res.status(401).json({
+            success: false,
+            message: 'Incorrect email or password'
+        })
+    }
+    const salt = bcrypt.genSaltSync(10)
+    const hash = bcrypt.hashSync(newPassword, salt)
+
+    user.password = hash;
+    await user.save();
+
+    return res.status(200).json({
+        success: true,
+        message: 'Password updated successfully'
+    });
+}
+
 module.exports = {
     register,
     login,
@@ -284,5 +360,6 @@ module.exports = {
     updateUserFreeCourse,
     updateUser,
     getProfile,
-    logout
+    logout,
+    changePassword
 }

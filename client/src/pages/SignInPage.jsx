@@ -106,7 +106,6 @@ function SignInPage() {
       toast.error("Username is invalid");
     }
   };
-
   const handleLoginGoogle = () => {
     dispatch(setGlobalLoading(true))
     window.open("http://localhost:4000/auth/google/", "_self")

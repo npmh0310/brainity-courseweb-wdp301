@@ -1,62 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./header.css";
-import Avatar from "../../../assets/images/6298053d43cd1.jpg";
-import { HiOutlineShoppingCart, HiOutlineBell } from "react-icons/hi";
 import Popover from "@mui/material/Popover";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { Bell, ShoppingBag, ShoppingCart } from "lucide-react";
 import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
 import ModalNotification from "./ModalNotification";
+import useNotifications from "../Notification/useNotifications";
 import ModalCart from "./ModalCart";
 import { getQuantityInCart } from "../../../redux/features/cartSlice";
 
 function HeaderUser() {
   const user = useSelector((state) => state.auth.user);
   const isLogin = useSelector((state) => state.auth.isLogin);
-  const num = useSelector(getQuantityInCart)
+  const num = useSelector(getQuantityInCart);
 
-  const notifications = [
-    {
-      id: 1,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: 'New lesson "Join the F8 community on Discord',
-      time: "3 months",
-    },
-    {
-      id: 2,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "React Hooks Deep Dive",
-      time: "1 month",
-    },
-    {
-      id: 3,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-    {
-      id: 4,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-    {
-      id: 5,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-    {
-      id: 6,
-      avatar: "https://fullstack.edu.vn/assets/images/f8_avatar.png",
-      message: "Understanding JavaScript Closures",
-      time: "2 weeks",
-    },
-
-    // Thêm nhiều thông báo khác nếu cần
-  ];
+  // goi. userNotification
+  const { notifications } = useNotifications(user._id);
 
   const [showUserItem, setShowUserItem] = useState(false);
   const [userAnchorEl, setUserAnchorEl] = useState(null);
@@ -88,14 +49,14 @@ function HeaderUser() {
 
   const handleMouseLeave = () => {
     setTimeout(() => {
-      handleCartClose()
-    }, (1000));
-  }
+      handleCartClose();
+    }, 1000);
+  };
 
   const handleNavigateCart = () => {
-    handleCartClose()
-    navigate('/cart')
-  }
+    handleCartClose();
+    navigate("/cart");
+  };
 
   const open = Boolean(userAnchorEl);
   const bellOpen = Boolean(bellAnchorEl);
@@ -103,6 +64,7 @@ function HeaderUser() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     navigate("/");
@@ -126,6 +88,12 @@ function HeaderUser() {
     };
   }, []);
 
+  useEffect(() => {
+    handleUserClose();
+    handleBellClose();
+    handleCartClose();
+  }, [location]);
+
   return (
     <>
       {" "}
@@ -136,11 +104,13 @@ function HeaderUser() {
               className="cursor-pointer w-12 h-12 flex justify-center items-center relative "
               onClick={handleBellClick}
             >
-              <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                {notifications.length}
-              </div>
+              {notifications.length > 0 && (
+                <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0 flex justify-center items-center text-xs font-semibold bg-primary">
+                  {notifications.length}
+                </div>
+              )}
               <Bell
-                className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
+                className=" transition-transform duration-200 ease-in-out transform  hover:text-primary"
                 size={20}
               />
             </div>
@@ -169,18 +139,25 @@ function HeaderUser() {
                 <ModalNotification notifications={notifications} />
               </>
             </Popover>
-            <div className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-20"  onClick={handleCartClick}  onDoubleClick={handleNavigateCart}>
-              <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
-                {num}
-              </div>
+            <div
+              className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-70"
+              onClick={handleCartClick}
+              onDoubleClick={handleNavigateCart}
+            >
+              {num > 0 && (
+                <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0   flex justify-center items-center text-xs font-semibold bg-primary">
+                  {num}
+                </div>
+              )}
               <ShoppingBag
-                className=" transition-transform duration-200 ease-in-out transform hover:scale-110"
+                className=" transition-transform duration-200 ease-in-out transform hover:text-primary"
                 size={20}
               />
             </div>
             <Popover
               style={{
-                zIndex: 20,
+                zIndex: 60,
+                // zIndex: 100,
                 marginTop: "7px",
                 marginLeft: "22px",
               }}
@@ -188,16 +165,19 @@ function HeaderUser() {
               anchorEl={cartAnchorEl}
               onClose={handleCartClose}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               transformOrigin={{
-                vertical: 'top',
+                vertical: "top",
                 horizontal: "right",
+              }}
+              PaperProps={{
+                style: { width: "346px" },
               }}
             >
               {/* Content for the bell icon popover */}
-                <ModalCart />
+              <ModalCart />
             </Popover>
           </div>
 

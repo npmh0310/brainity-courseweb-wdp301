@@ -40,6 +40,16 @@ const getFavouriteCourse = () => {
   return axios.get(`/favourite`);
 };
 
+const deleteCourseInFavourite = (courseId) => {
+  const data = {action: "remove", courseId}
+  return axios.post(`/favourite`, data)
+}
+
+const addCourseInFavourite = (courseId) => {
+  const data = {action: "add", courseId}
+  return axios.post(`/favourite`, data)
+}
+
 export {
   getAllCourse,
   getCourseInHomePage,
@@ -51,4 +61,6 @@ export {
   enrollCourseFree,
   updateCourse,
   getFavouriteCourse,
+  deleteCourseInFavourite,
+  addCourseInFavourite
 };

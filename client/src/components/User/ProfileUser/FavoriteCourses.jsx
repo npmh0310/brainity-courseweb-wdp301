@@ -8,43 +8,37 @@ import { faHeart as faHeartFilled } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faHeartOutline } from "@fortawesome/free-solid-svg-icons";
 import Rating from "@mui/material/Rating";
 import { getFavouriteCourse } from "../../../fetchData/Course";
+import { deleteCourseInFavourite } from "../../../fetchData/Course";
+import { addCourseInFavourite } from "../../../fetchData/Course";
+import toast from "react-hot-toast";
 
 const FavoriteCourses = () => {
   const [favorite, setFavorite] = useState({});
   const [courseList, setCourseList] = useState([]);
-  const handleFavorite = (courseId) => {
+
+  const handleFavorite = (courseId, favouriteStatus) => {
+    if(!favouriteStatus) {
+      deleteCourseInFavourite(courseId)
+      .then(res => {
+        toast.success("Remove favourite course")
+        // const data = Object.values(res.data.data)
+        // setCourseList(data)
+      })
+    } else {
+      addCourseInFavourite(courseId)
+      .then(res => {
+        toast.success("Undo remove favourite course")
+        // const data = Object.values(res.data.data)
+        // setCourseList(data)
+      })
+    }
     setFavorite((prevFavorite) => ({
       ...prevFavorite, // prevFavorite là trạng thái trc đó của favorites
       [courseId]: !prevFavorite[courseId], // ghi đè lên mảng cũ = mảng mới với giá trị đc thay đổi  (example: 2: false => 2: !false => 2: true)
     }));
   };
 
-    // const courseList = {
-  //   courses: [
-  //     {
-  //       id: 1,
-  //       image: html,
-  //       name: "HTML vs CSS basic",
-  //       description:
-  //         "In this course, we will work together to build the interface of two websites, The Band & Shopee.",
-  //       price: 340000,
-  //       teacher: "John Wick",
-  //       rating: 3,
-  //       student: 2450,
-  //     },
-  //     {
-  //       id: 2,
-  //       image: javascript,
-  //       name: "Java script basic",
-  //       description:
-  //         "In this course, we will work together to build the interface of two websites, The Band & Shopee.",
-  //       price: 450000,
-  //       teacher: "Eazy Bytes",
-  //       rating: 4.5,
-  //       student: 6420,
-  //     },
-  //   ],
-  // };
+
   useEffect(() => {
     getFavouriteCourse()
       .then(response => {
@@ -69,7 +63,7 @@ const FavoriteCourses = () => {
           >
             <button
               className="absolute border border-red-400 flex justify-center items-center p-[6px] rounded-full top-4 right-5 z-30"
-              onClick={() => handleFavorite(item._id)}
+              onClick={() => handleFavorite(item._id, favorite[item._id])}
             >
               {favorite[item._id] ? (
                 <FontAwesomeIcon

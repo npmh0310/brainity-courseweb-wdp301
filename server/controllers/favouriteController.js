@@ -7,6 +7,8 @@ const { getAvgRatingByCourseId } = require('./ratingController');
 
 
 const addCourseToFavourite = async (req, res, next) => {
+    const courseId = req.body.courseId;
+    const userId = req.user.id;
     if(!req.body.action) 
         return res.status(400).json({
         success: false,
@@ -17,32 +19,39 @@ const addCourseToFavourite = async (req, res, next) => {
         return next();
     }
 
-    const courseId = req.body.courseId;
-    const userId = req.user.id;
-
     try {
-        let user = (await User.findById(userId));
+        let user = await User.findById(userId).populate("favouriteCourses");
+        const existCourseInFavourite = user.favouriteCourses.some(course => course._id.toString() === courseId)
 
         // Check if the course already exists in the cart
-        if (user.favouriteCourses.includes(courseId)) {
-            return res.status(200).json({
+        if (existCourseInFavourite) {
+            return res.status(404).json({
                 success: true,
                 message:"Course already exists in the wishlist",
-                data: {
-                    "favouriteCourses": user.favouriteCourses
-                }
             });
         }
-
+        const newCourse = await Course.findById(courseId); 
         // Add the course to the wishlist
-        user.favouriteCourses.push(courseId);
+        user.favouriteCourses.push(newCourse);
         await user.save();
+
+        const promises = user.favouriteCourses.map(async (course) => {
+            const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
+            const ratingInfo = await getAvgRatingByCourseId(course._id)
+            // const courseStatus = await checkCourseStatus(course._id)
+            return { ...course.toObject(), numOfEnrolledUsers, ratingInfo }; // Add enrolled number to the course object
+        });
+        // Wait for all promises to resolve
+        const coursesWithEnrolledNumbers = await Promise.all(promises)
+        .catch(error => {
+            console.error('One of the promises failed:', error); // Log the specific promise rejection error
+            return [];
+        });
+
         return res.status(200).json({
             success: true,
             message: "Course added to wishlist successfully",
-            data: {
-                user
-            }
+            data: coursesWithEnrolledNumbers
         });
     } catch (err) {
         return res.status(500).json({
@@ -56,31 +65,46 @@ const removeCourseFromFavourite = async (req, res) => {
     const courseId = req.body.courseId;
     const userId = req.user.id;
     try {
-        let user = await User.findById(userId);
+        const user = await User.findById(userId).populate("favouriteCourses");
+        const existCourseInFavourite = user.favouriteCourses.some(course => course._id.toString() === courseId)
 
-
-        // Remove the course from the cart
-        const index = user.favouriteCourses.indexOf(courseId);
-        if (index !== -1) {
-            user.favouriteCourses.splice(index, 1);
+        // Check if the user and the course exist in the user's favouriteCourses
+        if (existCourseInFavourite) {
+            const index = user.favouriteCourses.indexOf(courseId);
+            user.favouriteCourses.splice(index, 1)
             await user.save();
+
+
+            const promises = user.favouriteCourses.map(async (course) => {
+                const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
+                const ratingInfo = await getAvgRatingByCourseId(course._id)
+                // const courseStatus = await checkCourseStatus(course._id)
+                return { ...course.toObject(), numOfEnrolledUsers, ratingInfo }; // Add enrolled number to the course object
+            });
+            // Wait for all promises to resolve
+            const coursesWithEnrolledNumbers = await Promise.all(promises)
+            .catch(error => {
+                console.error('One of the promises failed:', error); // Log the specific promise rejection error
+                return [];
+            });
             return res.status(200).json({
                 success: true,
-                message: "Course remove successfully",
-                data: {
-                    user
-                }
-            })
+                message: "Course removed successfully",
+                data: coursesWithEnrolledNumbers
+            });
         } else {
-            return res.status(200).json({
+            return res.status(404).json({
                 success: false,
-                message: "Course not found in the cart"
-            })
+                message: "Course not found in the favourite list"
+            });
         }
     } catch (error) {
-        return { message: 'Failed to remove course from cart' };
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to remove course from favourite list'
+        });
     }
-} 
+}
 
 const getFavouriteByUserId = async (req, res) => {
     const userId = req.user.id;
@@ -96,6 +120,7 @@ const getFavouriteByUserId = async (req, res) => {
             }
         })
 
+        //add on fields
         const promises = wishList.favouriteCourses.map(async (course) => {
             const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
             const ratingInfo = await getAvgRatingByCourseId(course._id)
@@ -104,10 +129,12 @@ const getFavouriteByUserId = async (req, res) => {
         });
 
         // Wait for all promises to resolve
-        const coursesWithEnrolledNumbers = await Promise.all(promises);
+        const coursesWithEnrolledNumbers = await Promise.all(promises)
+        .catch(error => {
+            console.error('One of the promises failed:', error); // Log the specific promise rejection error
+            return [];
+        });
         
-
-
         return res.status(200).json({
             success: true,
             message: "Successfully get Favourite",

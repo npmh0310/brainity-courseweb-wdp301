@@ -177,7 +177,7 @@ const SectionDetail = () => {
         {/* header */}
         {/* main */}
         <div>
-          <LessonDetail section={section} />
+          <LessonDetail section={section} setStatus={setStatus} />
         </div>
         {/* main */}
       </div>

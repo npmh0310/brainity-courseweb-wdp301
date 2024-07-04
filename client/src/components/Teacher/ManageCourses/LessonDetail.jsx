@@ -9,7 +9,9 @@ import videoTest from "../../../assets/videos/ADBE925D-45A7-437E-A735-415F7A4625
 import { useState } from "react";
 import { Modal } from "@mui/material";
 import ModalEditLesson from "./ModalEditLesson";
-const LessonDetail = ({ section }) => {
+import toast from "react-hot-toast";
+import { deleteLesson } from "../../../fetchData/TeacherCourse";
+const LessonDetail = ({ section, setStatus }) => {
   // delete lesson
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedLessonId, setSelectedLessonId] = useState(null);
@@ -21,8 +23,16 @@ const LessonDetail = ({ section }) => {
   };
 
   const handleDeleteClose = () => setDeleteOpen(false);
-  const handleDelete = () => {
+  const handleDelete = async () => {
     console.log("Deleting section id:", selectedLessonId);
+    const res = await deleteLesson(selectedLessonId)
+    if (res.status === 200) {
+      toast.success('Deleted successfully')
+      setStatus(true)
+    }
+    else {
+      toast.error('Delete failed')
+    }
     setDeleteOpen(false);
   };
   // edit lesson
@@ -32,10 +42,7 @@ const LessonDetail = ({ section }) => {
     setEditOpen(true);
   };
   const handleEditClose = () => setEditOpen(false);
-  const handleEditSave = () => {
-    console.log("saved");
-    setEditOpen(false);
-  };
+
   return (
     <>
       {section.lessons?.map((lesson, lessonIndex) => (
@@ -137,8 +144,8 @@ const LessonDetail = ({ section }) => {
         <>
           <ModalEditLesson
             close={handleEditClose}
-            save={handleEditSave}
             lesson={selectedLesson}
+            setStatus={setStatus}
           />
         </>
       </Modal>
