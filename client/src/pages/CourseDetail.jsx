@@ -84,7 +84,7 @@ function CourseDetail() {
       setFilteredRatings(filtered);
     }
   }, [rating]);
-  
+
   //Data
 
 
@@ -204,7 +204,7 @@ function CourseDetail() {
   const handleButtonEnroll = async () => {
     if (isLogin) {
       const res = await enrollCourse(courseId)
-      if(res.status === 200) {
+      if (res.status === 200) {
         dispatch(validateToken())
       }
     }
@@ -229,10 +229,10 @@ function CourseDetail() {
               <h1 className=' text-3xl text-white font-bold mb-4'>
                 {course.courseName}
               </h1>
-              <div className=' text-sm text-white mb-6'>
+              <div className=' text-sm text-white mb-4'>
                 {course.description}
               </div>
-              <div className=' flex gap-2 text-white justify-start items-center mb-6'>
+              <div className=' flex gap-2 text-white justify-start items-center mb-2'>
                 {ratingOfCourse && ratingOfCourse.numOfRates > 2 &&
                   <div className='  p-1 bg-[#eceb98] text-sm text-center font-semibold text-black'>
                     Bestseller
@@ -252,36 +252,14 @@ function CourseDetail() {
                 <div className=' text-white text-sm'>
                   90,817 students
                 </div>
-                <div className=" flex gap-2 text-white justify-start items-center mb-6">
-                  {ratingOfCourse && ratingOfCourse.numOfRates > 2 && (
-                    <div className="  p-1 bg-[#eceb98] text-sm text-center font-semibold text-black">
-                      Bestseller
-                    </div>
-                  )}
-                  {ratingOfCourse != null && (
-                    <div className=" flex justify-center items-center gap-1 ">
-                      <span className="text-sm">
-                        {ratingOfCourse.avgRating}
-                      </span>
-                      <Rating
-                        className="mb-[2px]"
-                        name="half-rating-read"
-                        value={ratingOfCourse.avgRating}
-                        precision={0.1}
-                        readOnly
-                        size="small"
-                      />
-                    </div>
-                  )}
-                  <div className=" text-white text-sm">90,817 students</div>
-                </div>
-                <div className=" text-white text-sm tracking-wide">
+                
+              </div>
+                <div className=" text-white text-sm tracking-wide mb-6">
                   Create by{" "}
                   <Link className=" text-purple-200 underline" href="#">
                     {course.instructor.username}
                   </Link>
                 </div>
-              </div>
               <div className="px-2 flex flex-col gap-y-6 bg-white ">
                 <div className=" py-6 pb-4 border ">
                   <h2 className=" text-xl text-start font-semibold mx-6 mb-4">
@@ -505,7 +483,7 @@ function CourseDetail() {
                                 sx={{
                                   opacity:
                                     selectedStar === null ||
-                                    selectedStar === star
+                                      selectedStar === star
                                       ? 1
                                       : 0.2,
                                 }}
@@ -615,27 +593,6 @@ function CourseDetail() {
                     </> :
                     <div className=' w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleExist}>Go to Course</div>}
 
-
-                  <div className=' mt-4 flex flex-col gap-y-2 items-start'>
-                    <h2 className=' text-sm text-start font-semibold mb-1'>
-                      This course includes:
-                    </h2>
-                    <div className=' flex gap-x-2 justify-between items-center'>
-                      <MonitorPlay size={12} />
-                      <span className=' text-[12px]'>
-                        1.5 hours on-demand video
-                      </span>
-                    </div>
-                    <div className=' flex gap-x-2 justify-between items-center'>
-                      <MonitorSmartphone size={12} />
-                      <span className=' text-[12px]'>
-                        Access on mobile and pc
-                      </span>
-
-                    </div>
-                    <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
-                      Buy now
-                    </div>
                     <div className=" mt-4 flex flex-col gap-y-2 items-start">
                       <h2 className=" text-sm text-start font-semibold mb-1">
                         This course includes:
@@ -663,7 +620,6 @@ function CourseDetail() {
                         </span>
                       </div>
                     </div>
-                  </div>
                 </div>
               </div>
             </div>
