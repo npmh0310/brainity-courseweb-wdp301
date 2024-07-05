@@ -22,6 +22,7 @@ const favouriteRoute = require('./routes/favourite');
 const ratingRoute = require('./routes/rating');
 const notificationRoute = require('./routes/notification');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
+const userRouter = require('./routes/user')
 
 dotenv.config();
 const app = express();
@@ -132,7 +133,9 @@ app.use('/api/v1/cart', cartRoute)
 app.use('/api/v1/favourite', favouriteRoute)
 app.use('/api/v1/cloudinary', cloudinaryRoute)
 app.use('/api/v1/rating', ratingRoute)
+app.use('/api/v1/user' , userRouter)
 app.use('/api/v1/notification', notificationRoute)
+
 
 //Oauth2
 app.use('/auth', oauth2Route)

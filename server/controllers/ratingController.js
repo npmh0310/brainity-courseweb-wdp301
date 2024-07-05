@@ -196,6 +196,7 @@ const getRatingByCourseIdSortStar = async (req, res) => {
 };
 
 const getRatingCourse = async (req, res) => {
+
   const courseId = req.params.id;
 
   try {

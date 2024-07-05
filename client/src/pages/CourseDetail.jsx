@@ -28,36 +28,43 @@ import {
 } from "../fetchData/Rating";
 import { getProfile } from "../fetchData/User";
 import { Modal, Button } from "@mui/material";
-import { FaStar, FaRegStar } from "react-icons/fa";
 
-import {
-  addCourse,
-  getCartLoading,
-  getCoursesInCart,
-} from "../redux/features/cartSlice";
-import { getRatingCourse } from "../fetchData/RatingOfCourse";
-import { Rating } from "@mui/material";
-import { addCourseToCart } from "../fetchData/Cart";
-import CircularProgress from "@mui/material/CircularProgress";
+import { FaStar, FaRegStar } from "react-icons/fa"; import { addCourse, getAllInCart, getCartLoading, getCoursesInCart } from '../redux/features/cartSlice'
+import { getRatingCourse } from '../fetchData/RatingOfCourse'
+import { Rating } from '@mui/material'
+import { addCourseToCart } from '../fetchData/Cart'
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { Spinner } from "flowbite-react";
+import { enrollCourse } from "../fetchData/Enroll";
+import { getCourseEnrolled, getIsLogin, validateToken } from "../redux/features/authSlice";
 function CourseDetail() {
-  const [isScrolled, setIsScrolled] = useState(false);
+
+  const { id: courseId } = useParams();
+  const [isScrolled, setIsScrolled] = useState(false)
   const divRefBanner = useRef(null);
-  const divRefPage = useRef(null);
-  const [heightOfBanner, setHeightOfBanner] = useState();
-  const dispatch = useDispatch();
-  const [course, setCourse] = useState();
-  const [statusCousre, setStatusCourse] = useState(false);
-  const cart = useSelector(getCoursesInCart);
-  const [rating, setRating] = useState();
-  const [ratingOfCourse, setRatingOfCourse] = useState();
-  const loading = useSelector(getCartLoading);
-  const navigate = useNavigate();
+  const divRefPage = useRef(null)
+  const [heightOfBanner, setHeightOfBanner] = useState()
+  const dispatch = useDispatch()
+  const [course, setCourse] = useState()
+  const [statusCourse, setStatusCourse] = useState(false);
+  const cart = useSelector(getAllInCart)
+  const [rating, setRating] = useState()
+  const [ratingOfCourse, setRatingOfCourse] = useState()
+  const loading = useSelector(getCartLoading)
+  const navigate = useNavigate()
   const [ratingByStar, setRatingByStar] = useState([]);
   const [avgRating, setAvgRating] = useState();
   const [showModal, setShowModal] = useState(false);
   const [selectedStar, setSelectedStar] = useState(null);
   const [filteredRatings, setFilteredRatings] = useState([]);
+
+  const isLogin = useSelector(getIsLogin)
+  const courseEnrolled = useSelector(getCourseEnrolled)
+  const exist = courseEnrolled && courseEnrolled.includes(courseId) ? true : false
+  console.log(exist)
+
+
   const [initialSortedRatings, setInitialSortedRatings] = useState([]);
   // đếm số người rating từng loại sao
   const [ratingsCount, setRatingsCount] = useState({
@@ -70,15 +77,16 @@ function CourseDetail() {
   // total rating
   const [totalRatingsCount, setTotalRatingsCount] = useState(0);
 
+
   useEffect(() => {
     if (rating) {
       const filtered = rating.filter((r) => r.comment);
       setFilteredRatings(filtered);
     }
   }, [rating]);
-
+  
   //Data
-  const { id: courseId } = useParams();
+
 
   useEffect(() => {
     const fetchData = async (courseId) => {
@@ -179,33 +187,70 @@ function CourseDetail() {
   };
 
   const handleButtonAdd = () => {
-    if (!statusCousre) {
-      addToCart();
-    } else {
-      navigate("/cart");
+    if (isLogin) {
+      if (!statusCourse) {
+        addToCart()
+      }
+      else {
+        navigate("/cart")
+      }
+    }
+    else {
+      navigate('/signin')
+
     }
   };
+
+  const handleButtonEnroll = async () => {
+    if (isLogin) {
+      const res = await enrollCourse(courseId)
+      if(res.status === 200) {
+        dispatch(validateToken())
+      }
+    }
+    else {
+      navigate('/signin')
+    }
+  }
+
+  const handleExist = async () => {
+    navigate(`/learningCourse/${courseId}`)
+  }
 
   return (
     <div className="relative courseDetail w-full ">
       <div className={` h-[300px] absolute bg-[#2d2f31]  z-0 w-full`}></div>
       <GlobalLoading />
-      {course && (
-        <>
-          <div
-            ref={divRefPage}
-            className=" max-w-[1280px] mx-auto w-full flex justify-start"
-          >
-            <div className=" w-full px-2 lg:w-8/12 z-10 ">
-              <div
-                ref={divRefBanner}
-                className=" banner px-8 py-6 flex flex-col mb-4 "
-              >
-                <h1 className=" text-3xl text-white font-bold mb-4">
-                  {course.courseName}
-                </h1>
-                <div className=" text-sm text-white mb-6">
-                  {course.description}
+
+      {course && <>
+        <div ref={divRefPage} className=' max-w-[1280px] mx-auto w-full flex justify-start'>
+          <div className=' w-full px-2 lg:w-8/12 z-10 '>
+            <div ref={divRefBanner} className=' banner px-8 py-6 flex flex-col mb-4 '>
+              <h1 className=' text-3xl text-white font-bold mb-4'>
+                {course.courseName}
+              </h1>
+              <div className=' text-sm text-white mb-6'>
+                {course.description}
+              </div>
+              <div className=' flex gap-2 text-white justify-start items-center mb-6'>
+                {ratingOfCourse && ratingOfCourse.numOfRates > 2 &&
+                  <div className='  p-1 bg-[#eceb98] text-sm text-center font-semibold text-black'>
+                    Bestseller
+                  </div>}
+                {ratingOfCourse != null &&
+                  <div className=' flex justify-center items-center gap-1 '>
+                    <span className="text-sm">{ratingOfCourse.avgRating}</span>
+                    <Rating
+                      className="mb-[2px]"
+                      name="half-rating-read"
+                      value={ratingOfCourse.avgRating}
+                      precision={0.1}
+                      readOnly
+                      size="small"
+                    />
+                  </div>}
+                <div className=' text-white text-sm'>
+                  90,817 students
                 </div>
                 <div className=" flex gap-2 text-white justify-start items-center mb-6">
                   {ratingOfCourse && ratingOfCourse.numOfRates > 2 && (
@@ -535,40 +580,58 @@ function CourseDetail() {
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className=" relative w-0 lg:w-4/12">
-              <div
-                className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg sticky top-0 `}
-              >
-                <div className=" w-full">
-                  <div className=" h-40 flex justify-center items-center p-1 mb-2">
-                    {course.sections[0].lessons[0] && (
-                      <video
-                        controls
-                        src={course.sections[0].lessons[0].videoUrl}
-                        className=" w-full h-full object-cover "
-                      ></video>
-                    )}
-                  </div>
-                  <div className=" p-6 w-full flex flex-col gap-y-2 items-start">
-                    <span className=" text-2xl text-black font-semibold">
-                      {formatCurrencyVND(course.price)}
-                    </span>
-                    <div className=" w-full flex justify-between items-center ">
-                      <div
-                        className=" p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:bg-opacity-80 hover:font-bold cursor-pointer transition-all ease-in-out "
-                        onClick={handleButtonAdd}
-                      >
-                        {/* {statusCousre ?  "Go to Cart" : "Add to Cart" } */}
-                        {loading ? (
-                          <CircularProgress color="inherit" />
-                        ) : (
-                          <>{statusCousre ? "Go to Cart" : "Add to Cart"}</>
-                        )}
-                      </div>
-                      <div className=" p-3  flex items-center justify-center  w-2/12 border border-black ">
-                        <Heart size={14} />
-                      </div>
+          <div className=' relative w-0 lg:w-4/12'>
+            <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg sticky top-0 `}>
+              <div className=' w-full'>
+                <div className=' h-40 flex justify-center items-center p-1 mb-2'>
+                  {course.sections[0].lessons[0] && <video controls src={course.sections[0].lessons[0].videoUrl} className=' w-full h-full object-cover ' ></video>}
+                </div>
+                <div className=' p-6 w-full flex flex-col gap-y-2 items-start'>
+                  {!course.isFree ? <span className=' text-2xl text-black font-semibold'>
+                    {formatCurrencyVND(course.price)}
+                  </span> : ""}
+                  {!exist ?
+                    <>
+                      {!course.isFree ?
+                        <div className=" w-full flex flex-col gap-y-2 items-start">
+                          <div className=' w-full flex justify-between items-center '>
+                            <div className=' p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleButtonAdd}>
+                              {loading ? (
+                                <CircularProgress color="inherit" />
+                              ) : (
+                                <>{statusCourse ? "Go to Cart" : "Add to Cart"}</>
+                              )}
+                            </div>
+                            <div className=' p-3  flex items-center justify-center  w-2/12 border border-black '>
+                              <Heart size={14} />
+                            </div>
+                          </div>
+                          <div className=' p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black '>
+                            Buy now
+                          </div>
+                        </div> : <div className=' w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleButtonEnroll}> Enroll now</div>}
+                    </> :
+                    <div className=' w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleExist}>Go to Course</div>}
+
+
+                  <div className=' mt-4 flex flex-col gap-y-2 items-start'>
+                    <h2 className=' text-sm text-start font-semibold mb-1'>
+                      This course includes:
+                    </h2>
+                    <div className=' flex gap-x-2 justify-between items-center'>
+                      <MonitorPlay size={12} />
+                      <span className=' text-[12px]'>
+                        1.5 hours on-demand video
+                      </span>
+                    </div>
+                    <div className=' flex gap-x-2 justify-between items-center'>
+                      <MonitorSmartphone size={12} />
+                      <span className=' text-[12px]'>
+                        Access on mobile and pc
+                      </span>
+
                     </div>
                     <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
                       Buy now
@@ -605,8 +668,11 @@ function CourseDetail() {
               </div>
             </div>
           </div>
-        </>
-      )}
+
+        </div>
+      </>}
+
+
     </div>
   );
 }
