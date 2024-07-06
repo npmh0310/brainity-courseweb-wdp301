@@ -3,6 +3,7 @@ let express = require('express');
 let $ = require('jquery');
 const request = require('request');
 const moment = require('moment');
+const { checkoutATM } = require('../controllers/checkout');
 const vnpayRoute = express.Router();
 
 vnpayRoute.post('/create_payment_url', function (req, res, next) {
@@ -126,13 +127,17 @@ vnpayRoute.get('/vnpay_ipn', function (req, res, next) {
                         //thanh cong
                         //paymentStatus = '1'
                         // Ở đây cập nhật trạng thái giao dịch thanh toán thành công vào CSDL của bạn
+                        // console.log("vailz duoc lun ne")
+                        checkoutATM();
                         res.status(200).json({ RspCode: '00', Message: 'Success' })
                     }
                     else {
                         //that bai
                         //paymentStatus = '2'
                         // Ở đây cập nhật trạng thái giao dịch thanh toán thất bại vào CSDL của bạn
-                        res.status(200).json({ RspCode: '00', Message: 'Success' })
+                        console.log("Bạn đã hủy đơn hàng này")
+
+                        res.status(200).json({ RspCode: '19', Message: 'Failed' })
                     }
                 }
                 else {
