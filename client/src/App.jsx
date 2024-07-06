@@ -35,6 +35,7 @@ import { routesLearningPage } from "./routes/learningPage.routes";
 import PaymentSuccess from "./components/User/Payment/PaymentSuccess";
 import VideoChaper from "./components/User/LearningPage/VideoChapter/VideoChaper";
 import { getCart } from "./redux/features/cartSlice";
+import PaymentResult from "./components/User/Payment";
 
 
 function App() {
@@ -46,10 +47,10 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if(isLogin){
+    if (isLogin) {
       dispatch(getCart())
     }
-  },[dispatch, isLogin])
+  }, [dispatch, isLogin])
 
   return (
     <>
@@ -140,14 +141,14 @@ function App() {
           </Route>
 
           {/* Route Learning Page */}
-          
 
-            <Route path="learningCourse/:id/*" element={<LearningPage />}>
-                
-                {/* {routesLearningPage.map((route, index) => (
+
+          <Route path="learningCourse/:id/*" element={<LearningPage />}>
+
+            {/* {routesLearningPage.map((route, index) => (
                     <Route key={index} path={route.path} element={route.element} />
                   ))} */}
-            </Route>
+          </Route>
 
 
           {/* Route Admin*/}
@@ -160,8 +161,10 @@ function App() {
           </Route>
 
           {/* Route Payment Success*/}
-          <Route path="/paymentSuccess" element={<PaymentSuccess />}>     
+          <Route path="/paymentSuccess" element={<PaymentSuccess />}>
+
           </Route>
+          <Route path="/payment" element={<PaymentResult />} />
         </Routes>
       </BrowserRouter>
     </>

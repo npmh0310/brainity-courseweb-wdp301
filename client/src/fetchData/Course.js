@@ -40,6 +40,11 @@ const getFavouriteCourse = () => {
   return axios.get(`/favourite`);
 };
 
+const createPayment = () => {
+  const amount = 10000;
+  return axios.post(`/vnpay/create_payment_url`, { amount: amount });
+};
+
 const deleteCourseInFavourite = (courseId) => {
   const data = {action: "remove", courseId}
   return axios.post(`/favourite`, data)
@@ -61,6 +66,7 @@ export {
   enrollCourseFree,
   updateCourse,
   getFavouriteCourse,
+  createPayment
   deleteCourseInFavourite,
   addCourseInFavourite
 };

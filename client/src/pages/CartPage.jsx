@@ -9,8 +9,13 @@ import {
   getCoursesInCart,
 } from "../redux/features/cartSlice";
 import { formatCurrencyVND } from "../function/function";
+
+import { createPayment } from "../fetchData/Course";
+import { redirect } from "react-router-dom";
+
 import cartEmpty from "../assets/images/cartEmpty.png";
 import { useNavigate } from "react-router-dom";
+
 function CartPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,6 +24,14 @@ function CartPage() {
   const total = courseInCart
     ? courseInCart.reduce((sum, data) => sum + data.course.price, 0)
     : 0;
+
+  const handleCheckout = async () => {
+    const res = await createPayment()
+    if (res) {
+      console.log(res.data)
+      window.open(res.data.url, "_self")
+    }
+  }
 
   return (
     <div className=" max-w-[1440px]  mx-auto px-10 pb-24  animate-open">
@@ -98,6 +111,7 @@ function CartPage() {
           <button
             className="px-4 py-3 rounded-none w-full bg-primary hover:bg-opacity-80 "
             color="success"
+            onClick={handleCheckout}
           >
             <span className=" text-white  font-bold tracking-wider uppercase ">
               Checkout
