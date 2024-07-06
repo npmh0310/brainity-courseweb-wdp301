@@ -19,4 +19,13 @@ const onLogout = () => {
 const updateUserProfile = (userId, data) => {
   return axios.put(`/auth/${userId}`, data);
 };
-export { onLogin, onRegister, onLogout, getProfile, updateUserProfile };
+
+const changePassword = (userId, data) => {
+  return axios.put(`/auth/changePassword`, {
+    userId,
+    ...data
+  });
+};
+
+
+export { onLogin, onRegister, onLogout, getProfile, updateUserProfile, changePassword  };

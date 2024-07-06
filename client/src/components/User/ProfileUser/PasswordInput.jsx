@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-const PasswordInput = ({ label, name, id }) => {
+const PasswordInput = ({ label, name, id, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -18,16 +18,19 @@ const PasswordInput = ({ label, name, id }) => {
         {label}
       </label>
       <input
-        className="h-10 text-gray-900 sm:text-sm block w-full px-5 border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-sky-300 hover:border-gray-700"
+        className="h-10 py-5 text-gray-900 sm:text-sm block w-full px-5 border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-sky-300 hover:border-gray-700"
         name={name}
         type={showPassword ? "text" : "password"}
-        placeholder="********"
+        placeholder={`Input here`}
         id={id}
+        value={value}
+        onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
           setIsFocused(false);
           setShowPassword(false);
         }}
+        autoComplete="on"
       />
       {isFocused && (
         <div
@@ -35,7 +38,7 @@ const PasswordInput = ({ label, name, id }) => {
           onClick={handleShowPassword}
           onMouseDown={handleMouseDown}
         >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </div>
       )}
     </div>
