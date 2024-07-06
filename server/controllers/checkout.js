@@ -1,5 +1,55 @@
 const Cart = require("../models/cart");
-const Purchase = require("../models/purchase")
+const Course = require("../models/course");
+const Purchase = require("../models/purchase");
+const User = require("../models/user");
+const UserChapterProgress = require("../models/UserChapterProgress");
+
+const enrollCourse = async (userId, courseId) => {
+    try {
+        const user = await User.findById(userId);
+
+        if (user.coursesEnrolled.includes(courseId)) {
+            return { status: 401, data: { message: 'Previously registered course' } };
+        } else {
+            const course = await Course.findById(courseId).populate({
+                path: "sections",
+                populate: {
+                    path: "lessons",
+                    model: "Lesson",
+                },
+            });
+
+            user.coursesEnrolled.push(course._id); // Lưu trữ chỉ ID của khóa học
+
+            let overallIndex = 0;
+            const progress = new UserChapterProgress({
+                user: userId,
+                course: course._id,
+                lessonsProgress: [],
+                completed: false,
+                progressPercentage: 0
+            });
+
+            for (const section of course.sections) {
+                const lessonIds = section.lessons.map(lesson => lesson._id);
+                progress.lessonsProgress.push(...lessonIds.map(lessonId => ({
+                    index: overallIndex++,
+                    lesson: lessonId,
+                    completed: false
+                })));
+            }
+
+            await user.save();
+            await progress.save();
+
+            console.log("enroll success ne")
+
+            return { data: { message: 'Course enrolled successfully' } };
+        }
+    } catch (error) {
+        return { data: { message: error.message } };
+    }
+};
 
 const checkoutSuccess = async (userId) => {
     try {
@@ -27,6 +77,10 @@ const checkoutSuccess = async (userId) => {
         });
 
         const savedOrder = await newOrder.save();
+
+        for (const item of courseToOrder) {
+            await enrollCourse(userId, item.course._id);
+        }
 
         cart.courses = cart.courses.filter(course => course.later === false);
         await cart.save();

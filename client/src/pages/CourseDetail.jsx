@@ -252,14 +252,14 @@ function CourseDetail() {
                 <div className=' text-white text-sm'>
                   90,817 students
                 </div>
-                
+
               </div>
-                <div className=" text-white text-sm tracking-wide mb-6">
-                  Create by{" "}
-                  <Link className=" text-purple-200 underline" href="#">
-                    {course.instructor.username}
-                  </Link>
-                </div>
+              <div className=" text-white text-sm tracking-wide mb-6">
+                Create by{" "}
+                <Link className=" text-purple-200 underline" href="#">
+                  {course.instructor.username}
+                </Link>
+              </div>
               <div className="px-2 flex flex-col gap-y-6 bg-white ">
                 <div className=" py-6 pb-4 border ">
                   <h2 className=" text-xl text-start font-semibold mx-6 mb-4">
@@ -564,7 +564,9 @@ function CourseDetail() {
             <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg sticky top-0 `}>
               <div className=' w-full'>
                 <div className=' h-40 flex justify-center items-center p-1 mb-2'>
-                  {course.sections[0].lessons[0] && <video controls src={course.sections[0].lessons[0].videoUrl} className=' w-full h-full object-cover ' ></video>}
+                  {course.sections && course.sections[0] && course.sections[0].lessons && course.sections[0].lessons.length > 0 && course.sections[0].lessons[0].videoUrl && (
+                    <video controls src={course.sections[0].lessons[0].videoUrl} className='w-full h-full object-cover'></video>
+                  )}
                 </div>
                 <div className=' p-6 w-full flex flex-col gap-y-2 items-start'>
                   {!course.isFree ? <span className=' text-2xl text-black font-semibold'>
@@ -593,33 +595,33 @@ function CourseDetail() {
                     </> :
                     <div className=' w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleExist}>Go to Course</div>}
 
-                    <div className=" mt-4 flex flex-col gap-y-2 items-start">
-                      <h2 className=" text-sm text-start font-semibold mb-1">
-                        This course includes:
-                      </h2>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <MonitorPlay size={12} />
-                        <span className=" text-[12px]">
-                          1.5 hours on-demand video
-                        </span>
-                      </div>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <MonitorSmartphone size={12} />
-                        <span className=" text-[12px]">
-                          Access on mobile and pc
-                        </span>
-                      </div>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <Infinity size={12} />
-                        <span className=" text-[12px]">Full time access</span>
-                      </div>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <Trophy size={12} />
-                        <span className=" text-[12px]">
-                          Certificate of completion
-                        </span>
-                      </div>
+                  <div className=" mt-4 flex flex-col gap-y-2 items-start">
+                    <h2 className=" text-sm text-start font-semibold mb-1">
+                      This course includes:
+                    </h2>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <MonitorPlay size={12} />
+                      <span className=" text-[12px]">
+                        1.5 hours on-demand video
+                      </span>
                     </div>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <MonitorSmartphone size={12} />
+                      <span className=" text-[12px]">
+                        Access on mobile and pc
+                      </span>
+                    </div>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <Infinity size={12} />
+                      <span className=" text-[12px]">Full time access</span>
+                    </div>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <Trophy size={12} />
+                      <span className=" text-[12px]">
+                        Certificate of completion
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
