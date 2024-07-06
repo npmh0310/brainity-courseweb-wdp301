@@ -5,12 +5,22 @@ import ItemInCart from "../components/User/CartPage/ItemInCart";
 import { useDispatch, useSelector } from "react-redux";
 import { getCart, getCourseLaterInCart, getCoursesInCart } from "../redux/features/cartSlice";
 import { formatCurrencyVND } from "../function/function";
+import { createPayment } from "../fetchData/Course";
+import { redirect } from "react-router-dom";
 function CartPage() {
   const dispatch = useDispatch()
   const courseInCart = useSelector(getCoursesInCart)
   const courseLateInCart = useSelector(getCourseLaterInCart)
   const total = courseInCart ? courseInCart.reduce((sum, data) => sum + data.course.price, 0) : 0;
   console.log(total)
+
+  const handleCheckout = async () => {
+    const res = await createPayment()
+    if (res) {
+      console.log(res.data)
+      window.open(res.data.url, "_self")
+    }
+  }
 
   return (
     <div className=" max-w-[1440px] mx-auto px-10 animate-open">
@@ -23,21 +33,21 @@ function CartPage() {
             <h3 className=" font-semibold mb-2">{courseInCart && courseInCart.length} Course in Cart</h3>
             {courseInCart &&
               courseInCart.map((data, index) => (
-                <ItemInCart course= {data.course} later= {data.later}  key={index}/>
+                <ItemInCart course={data.course} later={data.later} key={index} />
               ))
             }
-            
+
           </div>
           <div className=" mt-8 flex flex-col gap-y-4">
             <h3 className=" font-semibold mb-2">{courseLateInCart && courseLateInCart.length} Course for Later</h3>
-            { courseLateInCart &&
+            {courseLateInCart &&
               courseLateInCart.map((data, index) => (
-                <ItemInCart course= {data.course} later= {data.later} key={index}/>
+                <ItemInCart course={data.course} later={data.later} key={index} />
               ))
             }
           </div>
         </div>
-        <div className= {`${(courseInCart && courseInCart.length > 0) ? "lg:w-3/12 animate-transCourse" : " hidden animate-bounce"}  lg:w-3/12 pl-6 w-full flex flex-col items-start py-4`}>
+        <div className={`${(courseInCart && courseInCart.length > 0) ? "lg:w-3/12 animate-transCourse" : " hidden animate-bounce"}  lg:w-3/12 pl-6 w-full flex flex-col items-start py-4`}>
           <div className=" mt-8 mb-4 text-start">
             <h3 className=" text-third font-semibold mb-4">Total:</h3>
             <h2 className=" text-3xl text-gray-600 font-semibold">{formatCurrencyVND(total)}</h2>
@@ -45,6 +55,7 @@ function CartPage() {
           <button
             className="  px-4 py-5 rounded-none w-full bg-primary hover:bg-opacity-75 "
             color="success"
+            onClick={handleCheckout}
           >
             <span className=" text-white text-xl font-bold tracking-wider uppercase ">
               Checkout

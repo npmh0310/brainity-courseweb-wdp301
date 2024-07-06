@@ -40,6 +40,11 @@ const getFavouriteCourse = () => {
   return axios.get(`/favourite`);
 };
 
+const createPayment = () => {
+  const amount = 10000;
+  return axios.post(`/vnpay/create_payment_url`, { amount: amount });
+};
+
 export {
   getAllCourse,
   getCourseInHomePage,
@@ -51,4 +56,5 @@ export {
   enrollCourseFree,
   updateCourse,
   getFavouriteCourse,
+  createPayment
 };

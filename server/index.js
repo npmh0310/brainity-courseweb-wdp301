@@ -21,6 +21,9 @@ const cartRoute = require('./routes/cart');
 const favouriteRoute = require('./routes/favourite');
 const ratingRoute = require('./routes/rating');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
+const checkout = require('./routes/checkout');
+// const zalopayRoute = require('./routes/zaloPay');
+const vnpayRoute = require('./routes/VNpay');
 
 dotenv.config();
 const app = express();
@@ -125,6 +128,10 @@ app.use('/api/v1/cart', cartRoute)
 app.use('/api/v1/favourite', favouriteRoute)
 app.use('/api/v1/cloudinary', cloudinaryRoute)
 app.use('/api/v1/rating', ratingRoute)
+app.use('/api/v1/checkout', checkout)
+// app.use('/api/v1/payment', zalopayRoute)
+app.use('/api/v1/vnpay', vnpayRoute)
+
 
 //Oauth2
 app.use('/auth', oauth2Route)
