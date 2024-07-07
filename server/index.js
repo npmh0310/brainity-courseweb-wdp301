@@ -154,15 +154,71 @@ const io = require("socket.io")(server, {
     }
 })
 
+let adminSockets = [];
+let roomsWithUsers = [];
+
 io.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected`);
     socket.on('disconnect', () => {
         console.log('A user disconnected');
+        // Xóa socket của admin ra khỏi danh sách khi admin disconnect
+        adminSockets = adminSockets.filter(adminSocket => adminSocket !== socket);
     });
+
+    // Xử lý sự kiện admin kết nối
+    socket.on('adminJoin', () => {
+        console.log('Admin joined');
+        adminSockets.push(socket);
+
+        // Gửi lại danh sách các phòng đã có user join vào cho admin mới
+        roomsWithUsers.forEach(room => {
+            socket.emit('userRequestChatAdmin', room);
+        });
+    });
+
+
+    // Thông báo cho admin rằng user đã join vào room
+
+
     socket.on('joinRoom', (room) => {
         socket.join(room); // Join the client to the specified room
         console.log(`User joined room: ${room}`);
+        
+        // Lưu trạng thái phòng vào danh sách
+        if (!roomsWithUsers.includes(room)) {
+            roomsWithUsers.push(room);
+        }
+
+        if((room+"").includes("chatWithAdmin_")) {
+            adminSockets.forEach(adminSocket => {
+                adminSocket.emit('userRequestChatAdmin', room);
+            });
+        }
     });
+
+    socket.on('sendMessage', ({ room, message }) => {
+        io.to(room).emit('receiveMessage', message);
+        
+        // Lưu tin nhắn vào cơ sở dữ liệu
+        const newMessage = new Message({
+          sender: message.senderId,
+          content: message.content,
+          timestamp: message.timestamp
+        });
+    
+        newMessage.save().then((savedMessage) => {
+          ChatRoom.findOneAndUpdate(
+            { users: { $all: [message.senderId, 'admin_id'] } },
+            { $push: { messages: savedMessage._id } },
+            { new: true, upsert: true },
+            (err, chatRoom) => {
+              if (err) console.error(err);
+              else console.log('Chat room updated:', chatRoom);
+            }
+          );
+        });
+    });
+
 });
 
   
