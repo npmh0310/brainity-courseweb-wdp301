@@ -30,33 +30,30 @@ import Security from "./components/User/ProfileUser/Security";
 
 import { useEffect } from "react";
 import { getIsLogin, validateToken } from "./redux/features/authSlice";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 import { routesLearningPage } from "./routes/learningPage.routes";
 import PaymentSuccess from "./components/User/Payment/PaymentSuccess";
 import VideoChaper from "./components/User/LearningPage/VideoChapter/VideoChaper";
 import { getCart } from "./redux/features/cartSlice";
-
+import ChatBoxAdmin from "./pages/Admin/ChatBoxAdmin";
 
 function App() {
   const dispatch = useDispatch();
-  const isLogin = useSelector(getIsLogin)
+  const isLogin = useSelector(getIsLogin);
 
   useEffect(() => {
     dispatch(validateToken());
   }, [dispatch]);
 
   useEffect(() => {
-    if(isLogin){
-      dispatch(getCart())
+    if (isLogin) {
+      dispatch(getCart());
     }
-  },[dispatch, isLogin])
+  }, [dispatch, isLogin]);
 
   return (
     <>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
+      <Toaster position="top-center" reverseOrder={false} />
       <GlobalStyles
         styles={{
           body: { paddingRight: "0 !important", overflow: "auto !important" },
@@ -140,17 +137,17 @@ function App() {
           </Route>
 
           {/* Route Learning Page */}
-          
 
-            <Route path="learningCourse/:id/*" element={<LearningPage />}>
-                
-                {/* {routesLearningPage.map((route, index) => (
+          <Route path="learningCourse/:id/*" element={<LearningPage />}>
+            {/* {routesLearningPage.map((route, index) => (
                     <Route key={index} path={route.path} element={route.element} />
                   ))} */}
-            </Route>
-
+          </Route>
 
           {/* Route Admin*/}
+          <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
+          <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
+        
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
@@ -158,10 +155,8 @@ function App() {
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
           </Route>
-
           {/* Route Payment Success*/}
-          <Route path="/paymentSuccess" element={<PaymentSuccess />}>     
-          </Route>
+          <Route path="/paymentSuccess" element={<PaymentSuccess />}></Route>
         </Routes>
       </BrowserRouter>
     </>
