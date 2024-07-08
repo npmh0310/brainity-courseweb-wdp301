@@ -156,7 +156,7 @@ const io = require("socket.io")(server, {
 
 let adminSockets = [];
 let roomsWithUsers = [];
-
+ 
 io.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected`);
     socket.on('disconnect', () => {
@@ -198,25 +198,24 @@ io.on('connection', (socket) => {
 
     socket.on('sendMessage', ({ room, message }) => {
         io.to(room).emit('receiveMessage', message);
-        
+        console.log("message: " + message)     
         // Lưu tin nhắn vào cơ sở dữ liệu
-        const newMessage = new Message({
-          sender: message.senderId,
-          content: message.content,
-          timestamp: message.timestamp
-        });
+        // const newMessage = new Message({
+        //   sender: message.senderId,
+        //   content: message.content,
+        // });
     
-        newMessage.save().then((savedMessage) => {
-          ChatRoom.findOneAndUpdate(
-            { users: { $all: [message.senderId, 'admin_id'] } },
-            { $push: { messages: savedMessage._id } },
-            { new: true, upsert: true },
-            (err, chatRoom) => {
-              if (err) console.error(err);
-              else console.log('Chat room updated:', chatRoom);
-            }
-          );
-        });
+        // newMessage.save().then((savedMessage) => {
+        //   ChatRoom.findOneAndUpdate(
+        //     { users: { $all: [message.senderId, 'admin_id'] } },
+        //     { $push: { messages: savedMessage._id } },
+        //     { new: true, upsert: true },
+        //     (err, chatRoom) => {
+        //       if (err) console.error(err);
+        //       else console.log('Chat room updated:', chatRoom);
+        //     }
+        //   );
+        // });
     });
 
 });
