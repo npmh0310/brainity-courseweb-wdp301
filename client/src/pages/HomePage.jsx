@@ -7,6 +7,7 @@ import Introduce from "../components/common/HomePage/Introduce";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Course from "./../components/common/HomePage/Course";
+import ChatBoxUser from "./ChatBoxUser";
 const HomePage = () => {
   return (
     <div>
@@ -15,6 +16,7 @@ const HomePage = () => {
       <Features />
       <Course />
       {/* <SlideProduct /> */}
+      <ChatBoxUser />
     </div>
   );
 };
