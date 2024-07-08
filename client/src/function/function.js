@@ -1,5 +1,6 @@
 import { parseISO, format } from "date-fns";
 
+
 export function formatDate2(dateString) {
   return new Date(dateString).toLocaleDateString("en-us", {
     weekday: "long",

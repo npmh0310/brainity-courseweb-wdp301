@@ -13,7 +13,6 @@ function Chapter(props) {
     const [completed , setCompleted] = useState(false)
     const url = useLocation()
     const lesson_id  = url.pathname.split('/lesson/')[1]
-    console.log(lesson_id)
 
     const handleCompleted = async () => {
         const newCompletedState = !completed;
@@ -43,11 +42,11 @@ function Chapter(props) {
                                 <MonitorPlay size={14} />
                                 <span className='text-sm text-[#b0b0b0] '>2min</span>
                             </div>
-                            <div className=' p-2 border-black border flex gap-2 items-center '>
+                            {/* <div className=' p-2 border-black border flex gap-2 items-center '>
                                 <File size={14} />
                                 <span className=' text-sm font-semibold'>Resource</span>
                                 <ChevronDown size={14} />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </Link>

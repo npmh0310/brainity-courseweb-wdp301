@@ -161,8 +161,8 @@ const getUserById = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const id = req.params.id;
-    const {emai, password,  ...rest} = req.body;
+    const id = req.user.id
+    const {email, password,  ...rest} = req.body;
     const user = await User.findById(id);
 
     try {
@@ -349,6 +349,36 @@ const changePassword = async (req, res) => {
         message: 'Password updated successfully'
     });
 }
+const updateAvatar = async (req, res) => {
+    const userId = req.user.id
+    try {
+        const user = await User.findByIdAndUpdate(
+          userId,
+          { avatar: req.body.avatar },
+          { new: true }
+        );
+    
+        if (!user) {
+          return res.status(404).json({
+            success: false,
+            message: 'User not found'
+          });
+        }
+    
+        res.status(200).json({
+          success: true,
+          message: 'Avatar updated successfully',
+          data: user
+        });
+      } catch (err) {
+        res.status(500).json({
+          success: false,
+          message: 'Failed to update avatar',
+          error: err.message
+        });
+      }
+    
+}
 
 module.exports = {
     register,
@@ -361,5 +391,6 @@ module.exports = {
     updateUser,
     getProfile,
     logout,
-    changePassword
+    changePassword,
+    updateAvatar
 }

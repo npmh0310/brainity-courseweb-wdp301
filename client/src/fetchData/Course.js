@@ -49,6 +49,9 @@ const addCourseInFavourite = (courseId) => {
   const data = {action: "add", courseId}
   return axios.post(`/favourite`, data)
 }
+const getStudents = (courseId) => {
+  return axios.get("/course/getStudents/" + courseId)
+}
 
 export {
   getAllCourse,
@@ -62,5 +65,6 @@ export {
   updateCourse,
   getFavouriteCourse,
   deleteCourseInFavourite,
-  addCourseInFavourite
+  addCourseInFavourite,
+  getStudents
 };

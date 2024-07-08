@@ -14,7 +14,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
-import { getCourseById } from "../fetchData/Course";
+import { getCourseById, getStudents } from "../fetchData/Course";
 import GlobalLoading from "../components/common/GlobalLoading/GlobalLoading";
 import {
   formatCurrencyVND,
@@ -58,11 +58,11 @@ function CourseDetail() {
   const [showModal, setShowModal] = useState(false);
   const [selectedStar, setSelectedStar] = useState(null);
   const [filteredRatings, setFilteredRatings] = useState([]);
-
+  const [students, setStudents] = useState(0)
   const isLogin = useSelector(getIsLogin)
   const courseEnrolled = useSelector(getCourseEnrolled)
   const exist = courseEnrolled && courseEnrolled.includes(courseId) ? true : false
-  console.log(exist)
+
 
 
   const [initialSortedRatings, setInitialSortedRatings] = useState([]);
@@ -178,6 +178,7 @@ function CourseDetail() {
     }
   };
   useEffect(() => {
+    fetchStudents(courseId)
     fetchRattingCourse(courseId);
   }, [courseId]);
 
@@ -217,6 +218,13 @@ function CourseDetail() {
     navigate(`/learningCourse/${courseId}`)
   }
 
+  const fetchStudents = async (courseId) => {
+    const res = await getStudents(courseId)
+    if (res.status === 200) {
+      setStudents(res.data.total)
+    }
+  }
+
   return (
     <div className="relative courseDetail w-full ">
       <div className={` h-[300px] absolute bg-[#2d2f31]  z-0 w-full`}></div>
@@ -250,16 +258,16 @@ function CourseDetail() {
                     />
                   </div>}
                 <div className=' text-white text-sm'>
-                  90,817 students
+                  {students} students
                 </div>
-                
+
               </div>
-                <div className=" text-white text-sm tracking-wide mb-6">
-                  Create by{" "}
-                  <Link className=" text-purple-200 underline" href="#">
-                    {course.instructor.username}
-                  </Link>
-                </div>
+              <div className=" text-white text-sm tracking-wide mb-6">
+                Create by{" "}
+                <Link className=" text-purple-200 underline" href="#">
+                  {course.instructor.username}
+                </Link>
+              </div>
               <div className="px-2 flex flex-col gap-y-6 bg-white ">
                 <div className=" py-6 pb-4 border ">
                   <h2 className=" text-xl text-start font-semibold mx-6 mb-4">
@@ -593,33 +601,33 @@ function CourseDetail() {
                     </> :
                     <div className=' w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out ' onClick={handleExist}>Go to Course</div>}
 
-                    <div className=" mt-4 flex flex-col gap-y-2 items-start">
-                      <h2 className=" text-sm text-start font-semibold mb-1">
-                        This course includes:
-                      </h2>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <MonitorPlay size={12} />
-                        <span className=" text-[12px]">
-                          1.5 hours on-demand video
-                        </span>
-                      </div>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <MonitorSmartphone size={12} />
-                        <span className=" text-[12px]">
-                          Access on mobile and pc
-                        </span>
-                      </div>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <Infinity size={12} />
-                        <span className=" text-[12px]">Full time access</span>
-                      </div>
-                      <div className=" flex gap-x-2 justify-between items-center">
-                        <Trophy size={12} />
-                        <span className=" text-[12px]">
-                          Certificate of completion
-                        </span>
-                      </div>
+                  <div className=" mt-4 flex flex-col gap-y-2 items-start">
+                    <h2 className=" text-sm text-start font-semibold mb-1">
+                      This course includes:
+                    </h2>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <MonitorPlay size={12} />
+                      <span className=" text-[12px]">
+                        1.5 hours on-demand video
+                      </span>
                     </div>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <MonitorSmartphone size={12} />
+                      <span className=" text-[12px]">
+                        Access on mobile and pc
+                      </span>
+                    </div>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <Infinity size={12} />
+                      <span className=" text-[12px]">Full time access</span>
+                    </div>
+                    <div className=" flex gap-x-2 justify-between items-center">
+                      <Trophy size={12} />
+                      <span className=" text-[12px]">
+                        Certificate of completion
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

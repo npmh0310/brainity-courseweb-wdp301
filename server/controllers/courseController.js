@@ -1,4 +1,5 @@
 var Course = require("../models/course");
+const UserChapterProgress = require('../models/UserChapterProgress');
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
@@ -403,6 +404,20 @@ const checkCourseStatus = async (req, res) => {
   // get course enrolled number
 };
 
+const getStudents = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Use countDocuments to count the number of documents that match the query
+    const total = await UserChapterProgress.countDocuments({ course: id });
+    
+    return res.status(200).json({ total });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   createCourse,
   deleteCourseById,
@@ -420,4 +435,5 @@ module.exports = {
   getCourseOfTeacher,
   getCourseByName,
   getEnrolledCourses,
+  getStudents
 };
