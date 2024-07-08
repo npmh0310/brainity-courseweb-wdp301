@@ -572,7 +572,9 @@ function CourseDetail() {
             <div className={`courseView  hidden lg:flex mt-6  ml-4 min-w-[320px] w-[320px] bg-white shadow-lg sticky top-0 `}>
               <div className=' w-full'>
                 <div className=' h-40 flex justify-center items-center p-1 mb-2'>
-                  {course.sections[0].lessons[0] && <video controls src={course.sections[0].lessons[0].videoUrl} className=' w-full h-full object-cover ' ></video>}
+                  {course.sections && course.sections[0] && course.sections[0].lessons && course.sections[0].lessons.length > 0 && course.sections[0].lessons[0].videoUrl && (
+                    <video controls src={course.sections[0].lessons[0].videoUrl} className='w-full h-full object-cover'></video>
+                  )}
                 </div>
                 <div className=' p-6 w-full flex flex-col gap-y-2 items-start'>
                   {!course.isFree ? <span className=' text-2xl text-black font-semibold'>

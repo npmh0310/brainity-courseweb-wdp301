@@ -4,7 +4,7 @@ import Chapter from '../Chapter/Chapter';
 
 
 function Section(props) {
-    const {section} = props
+    const { section } = props
     const [isOpen, setIsOpen] = useState(false)
 
     const toggleOpen = () => {
@@ -30,7 +30,10 @@ function Section(props) {
             </div>
             {isOpen &&
                 <div className={`py-4 px-6 flex flex-col w-full `}>
-                    {section.lessons && section.lessons.map((lesson, index) => (<Chapter key ={index} lesson = {lesson}/>))}
+                    {section.lessons && section.lessons.length !== 0 && section.lessons.map((lesson, index) => (
+                        <Chapter key={index} lesson={lesson} />
+                    ))}
+
                     {/* <Chapter />
                     <Chapter />
                     <Chapter />

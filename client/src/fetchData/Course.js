@@ -40,17 +40,28 @@ const getFavouriteCourse = () => {
   return axios.get(`/favourite`);
 };
 
+
 const deleteCourseInFavourite = (courseId) => {
-  const data = {action: "remove", courseId}
+  const data = { action: "remove", courseId }
   return axios.post(`/favourite`, data)
 }
 
 const addCourseInFavourite = (courseId) => {
-  const data = {action: "add", courseId}
+  const data = { action: "add", courseId }
   return axios.post(`/favourite`, data)
 }
 const getStudents = (courseId) => {
   return axios.get("/course/getStudents/" + courseId)
+}
+
+// checkout
+const createPayment = (amount) => {
+  // const amount = 10000;
+  return axios.post(`/vnpay/create_payment_url`, { amount: amount });
+};
+
+const updatePayment = (param) => {
+  return axios.get(`/vnpay/vnpay_ipn${param}`);
 }
 
 export {
@@ -67,4 +78,7 @@ export {
   deleteCourseInFavourite,
   addCourseInFavourite,
   getStudents
+  createPayment,
+  updatePayment,
+
 };

@@ -12,8 +12,8 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
     description: {
-        type: String,
-        // required: true
+      type: String,
+      // required: true
     },
     imageUrl: {
       type: String,
@@ -24,9 +24,9 @@ const courseSchema = new mongoose.Schema(
     },
     price: {
 
-        type: Number,
-        min: 0,
-        required: true
+      type: Number,
+      min: 0,
+      required: true
     },
     categories: [
       {
