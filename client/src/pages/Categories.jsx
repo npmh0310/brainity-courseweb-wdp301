@@ -54,19 +54,9 @@ export const Categories = () => {
 
   // Xử lý khi filter ở Left thay đổi
   const handleFilteredCourses = (filteredCourses) => {
-    if (filteredCourses.length === 0) {
-      // Nếu danh sách filter rỗng, hiển thị tất cả khoá học với Sort By hiện tại
-      if (sortBy === "Best Seller") {
-        handleSortByBestSeller();
-      } else if (sortBy === "New release") {
-        handleSortByNewest();
-      }
-    } else {
-      // Ngược lại, áp dụng filter và sort theo Sort By hiện tại
       // Lỗi xử lý cái chỗ Dropdown, nếu chọn Sort by New release, chọn filter, 
       // sau đó hủy filter đi thì nó không sort theo New release nữa
       setFilteredCourses(filteredCourses);
-    }
   };
   
 

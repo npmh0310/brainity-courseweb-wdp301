@@ -5,8 +5,8 @@ import { getAllCourse } from "../../../fetchData/Course";
 export const Left = ({ onFilteredCourses }) => {
   const [courseData, setCourseData] = useState([]);
   const [checked, setChecked] = useState("");
-  const [priceRange, setPriceRange] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [priceRange, setPriceRange] = useState("");
+  const [categories, setCategories] = useState("");
   const [ratingRange, setRatingRange] = useState("");
 
   useEffect(() => {
@@ -14,154 +14,134 @@ export const Left = ({ onFilteredCourses }) => {
       try {
         const response = await getAllCourse();
         setCourseData(response.data.data);
-        console.log("hihihaha",response.data.data);
+        console.log("hihihaha", response.data.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-},[])
-   // Xử lý khi người dùng chọn lựa chọn sắp xếp
-   const handleChecked = (option) => {
+  }, []);
+
+  // Handle sort option change
+  const handleChecked = (option) => {
     setChecked((prevOption) => (prevOption === option ? "" : option));
   };
 
-  // Xử lý khi người dùng thay đổi phạm vi giá
+  // Handle price range change
   const handlePriceRangeChange = (range) => {
-    setPriceRange((prev) =>
-      prev.includes(range) ? prev.filter((r) => r !== range) : [...prev, range]
-    );
+    setPriceRange((prevRange) => (prevRange === range ? "" : range));
   };
 
-  // Xử lý khi người dùng thay đổi danh mục
+  // Handle category change
   const handleCategoryChange = (category) => {
-    setCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
-    );
+    setCategories((prevCategory) => (prevCategory === category ? "" : category));
   };
 
-  // Xử lý khi người dùng thay đổi phạm vi đánh giá
+  // Handle rating range change
   const handleRatingRangeChange = (range) => {
-    setRatingRange((prev) => (prev === range ? "" : range));
+    setRatingRange((prevRange) => (prevRange === range ? "" : range));
   };
-
 
   useEffect(() => {
-     const filterCourses = () => {
-    let filteredCourses = [...courseData];
+    const filterCourses = () => {
+      let filteredCourses = [...courseData];
 
-    // Sort by Best Seller
-    if (checked === 1) {
-      filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers > 2);
-      console.log(filteredCourses);
-    }
+      // Sort by Best Seller
+      if (checked === 1) {
+        filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers > 2);
+        console.log(filteredCourses);
+      }
 
-    // Sort by Rating
-    if (checked === 2) {
-      filteredCourses.sort((a, b) => b.ratingInfo.avgRating - a.ratingInfo.avgRating);
-      console.log(filteredCourses);
-    }
+      // Sort by Rating
+      if (checked === 2) {
+        filteredCourses.sort((a, b) => b.ratingInfo.avgRating - a.ratingInfo.avgRating);
+        console.log(filteredCourses);
+      }
 
-    // Filter by Categories
-    // chứa "beginner", "newbie" hay "basic" thì nó là beginner
-    if (categories.length > 0) {
-      filteredCourses = filteredCourses.filter((course) =>
-        categories.includes("Beginner")
-          ? course.courseName.toLowerCase().includes("beginner") || 
-            course.courseName.toLowerCase().includes("newbie") || 
-            course.courseName.toLowerCase().includes("basic")
-          : !course.courseName.toLowerCase().includes("beginner") && 
-            !course.courseName.toLowerCase().includes("newbie") && 
-            !course.courseName.toLowerCase().includes("basic")
-      );
-      console.log(filteredCourses);
-    }
+      // Filter by Categories
+      if (categories) {
+        filteredCourses = filteredCourses.filter((course) =>
+          categories === "Beginner"
+            ? course.courseName.toLowerCase().includes("beginner") ||
+              course.courseName.toLowerCase().includes("newbie") ||
+              course.courseName.toLowerCase().includes("basic")
+            : !course.courseName.toLowerCase().includes("beginner") &&
+              !course.courseName.toLowerCase().includes("newbie") &&
+              !course.courseName.toLowerCase().includes("basic")
+        );
+        console.log(filteredCourses);
+      }
 
-    // Filter by Rating Range
-    if (ratingRange) {
-      const [min, max] = ratingRange.split(" to ").map(Number);
-      filteredCourses = filteredCourses.filter(
-        (course) => course.ratingInfo.avgRating >= min && course.ratingInfo.avgRating <= max
-      );
-    }
+      // Filter by Rating Range
+      if (ratingRange) {
+        const [min, max] = ratingRange.split(" to ").map(Number);
+        filteredCourses = filteredCourses.filter(
+          (course) => course.ratingInfo.avgRating >= min && course.ratingInfo.avgRating <= max
+        );
+      }
 
-    // Filter by Price Range
-    if (priceRange.length > 0) {
-      filteredCourses = filteredCourses.filter((course) =>
-        priceRange.some((range) => {
-          const [min, max] = range.split("-").map(Number);
+      // Filter by Price Range
+      if (priceRange) {
+        filteredCourses = filteredCourses.filter((course) => {
+          const [min, max] = priceRange.split("-").map(Number);
           return course.price >= min && course.price <= max;
-        })
-      );
-    }
+        });
+      }
 
-    return filteredCourses;
-  };
+      return filteredCourses;
+    };
 
-  const filteredCourses = filterCourses();
-  onFilteredCourses(filteredCourses);
-  },[checked, priceRange, categories, ratingRange, courseData])
- 
+    const filteredCourses = filterCourses();
+    onFilteredCourses(filteredCourses);
+  }, [checked, priceRange, categories, ratingRange, courseData]);
 
   return (
     <div className="block col-span-1 items-center">
       {/* sort */}
       <div className="block text-black font-medium pt-4 border-t-2 border-y-yellow-800">
         <p className="mb-4 text-lg">Sort by</p>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm ">
+        <div className="mb-3 cursor-pointer text-sm ">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
+            className="mr-2 cursor-pointer "
             type="radio"
             checked={checked === 1}
             onClick={() => handleChecked(1)}
             readOnly
-            name=""
-            id=""
           />
-          <label htmlFor="" onClick={() => handleChecked(1)}>
-            Best Seller
-          </label>
+          <label onClick={() => handleChecked(1)}>Best Seller</label>
         </div>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm ">
+        <div className="mb-3 cursor-pointer text-sm ">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
+            className="mr-2 cursor-pointer "
             checked={checked === 2}
             onClick={() => handleChecked(2)}
             readOnly
             type="radio"
-            name=""
-            id=""
           />
-          <label htmlFor="" onClick={() => handleChecked(2)}>
-            Star
-          </label>
+          <label onClick={() => handleChecked(2)}>Star</label>
         </div>
         <div className="border-b-2 border-y-yellow-800 pb-4"></div>
       </div>
       {/* categories */}
       <div className="block text-black font-medium pt-4">
         <p className="mb-4 text-lg">Categories</p>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm">
+        <div className="mb-3 cursor-pointer text-sm">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
-            type="checkbox"
-            checked={categories.includes("Beginner")}
-            onChange={() => handleCategoryChange("Beginner")}
-            name=""
-            id=""
+            className="mr-2 cursor-pointer "
+            type="radio"
+            checked={categories === "Beginner"}
+            onClick={() => handleCategoryChange("Beginner")}
           />
-          <label htmlFor="">Beginners</label>
+          <label>Beginners</label>
         </div>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm pb-4">
+        <div className="mb-3 cursor-pointer text-sm pb-4">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
-            type="checkbox"
-            checked={categories.includes("Expert")}
-            onChange={() => handleCategoryChange("Expert")}
-            name=""
-            id=""
+            className="mr-2 cursor-pointer"
+            type="radio"
+            checked={categories === "Expert"}
+            onClick={() => handleCategoryChange("Expert")}
           />
-          <label htmlFor="">Experts</label>
+          <label>Experts</label>
         </div>
         <div className="border-b-2 border-y-yellow-800"></div>
       </div>
@@ -171,12 +151,10 @@ export const Left = ({ onFilteredCourses }) => {
         <div className="block items-center pb-2 flex-wrap">
           <div className="flex items-center pb-3">
             <input
-              className="mr-2 cursor-pointer hover:text-third"
+              className="mr-2 cursor-pointer "
               checked={ratingRange === "4 to 5"}
               onClick={() => handleRatingRangeChange("4 to 5")}
               type="radio"
-              name=""
-              id=""
             />
             <span className="text-sm flex items-center gap-1">
               <div> 4.0 - 5.0</div>
@@ -192,12 +170,10 @@ export const Left = ({ onFilteredCourses }) => {
           </div>
           <div className="flex items-center pb-3">
             <input
-              className="mr-2 cursor-pointer hover:text-third"
+              className="mr-2 cursor-pointer "
               checked={ratingRange === "3 to 4"}
               onClick={() => handleRatingRangeChange("3 to 4")}
               type="radio"
-              name=""
-              id=""
             />
             <span className="text-sm flex items-center gap-1">
               <div> 3.0 - 4.0</div>
@@ -213,12 +189,10 @@ export const Left = ({ onFilteredCourses }) => {
           </div>
           <div className="flex items-center pb-3">
             <input
-              className="mr-2 cursor-pointer hover:text-third"
+              className="mr-2 cursor-pointer "
               checked={ratingRange === "Under 3"}
               onClick={() => handleRatingRangeChange("Under 3")}
               type="radio"
-              name=""
-              id=""
             />
             <span className="text-sm flex items-center gap-1">
               <div>Under 3.0</div>
@@ -238,38 +212,32 @@ export const Left = ({ onFilteredCourses }) => {
       {/* price */}
       <div className="block text-black font-medium pt-4">
         <p className="mb-4 text-lg">Price</p>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm">
+        <div className="mb-3 cursor-pointer text-sm">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
-            type="checkbox"
-            checked={priceRange.includes('200000-500000')}
-            onChange={() => handlePriceRangeChange('200000-500000')}
-            name=""
-            id=""
+            className="mr-2 cursor-pointer "
+            type="radio"
+            checked={priceRange === "200000-500000"}
+            onClick={() => handlePriceRangeChange("200000-500000")}
           />
-          <label htmlFor="">200.000vnd - 500.000vnd</label>
+          <label>200.000vnd - 500.000vnd</label>
         </div>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm">
+        <div className="mb-3 cursor-pointer text-sm">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
-            type="checkbox"
-            checked={priceRange.includes('500000-1000000')}
-            onChange={() => handlePriceRangeChange('500000-1000000')}
-            name=""
-            id=""
+            className="mr-2 cursor-pointer "
+            type="radio"
+            checked={priceRange === "500000-1000000"}
+            onClick={() => handlePriceRangeChange("500000-1000000")}
           />
-          <label htmlFor="">500.000vnd - 1.000.000vnd</label>
+          <label>500.000vnd - 1.000.000vnd</label>
         </div>
-        <div className="mb-3 cursor-pointer hover:text-third text-sm">
+        <div className="mb-3 cursor-pointer text-sm">
           <input
-            className="mr-2 cursor-pointer hover:text-third"
-            type="checkbox"
-            checked={priceRange.includes('1000000-5000000')}
-            onChange={() => handlePriceRangeChange('1000000-5000000')}
-            name=""
-            id=""
+            className="mr-2 cursor-pointer "
+            type="radio"
+            checked={priceRange === "1000000-5000000"}
+            onClick={() => handlePriceRangeChange("1000000-5000000")}
           />
-          <label htmlFor="">1.000.000vnd - 5.000.000vnd</label>
+          <label>1.000.000vnd - 5.000.000vnd</label>
         </div>
       </div>
     </div>
