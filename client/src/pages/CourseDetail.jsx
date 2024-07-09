@@ -14,7 +14,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
-import { getCourseById } from "../fetchData/Course";
+import { getCourseById, getStudents } from "../fetchData/Course";
 import GlobalLoading from "../components/common/GlobalLoading/GlobalLoading";
 import {
   formatCurrencyVND,
@@ -58,11 +58,11 @@ function CourseDetail() {
   const [showModal, setShowModal] = useState(false);
   const [selectedStar, setSelectedStar] = useState(null);
   const [filteredRatings, setFilteredRatings] = useState([]);
-
+  const [students, setStudents] = useState(0)
   const isLogin = useSelector(getIsLogin)
   const courseEnrolled = useSelector(getCourseEnrolled)
   const exist = courseEnrolled && courseEnrolled.includes(courseId) ? true : false
-  console.log(exist)
+
 
 
   const [initialSortedRatings, setInitialSortedRatings] = useState([]);
@@ -178,6 +178,7 @@ function CourseDetail() {
     }
   };
   useEffect(() => {
+    fetchStudents(courseId)
     fetchRattingCourse(courseId);
   }, [courseId]);
 
@@ -217,6 +218,13 @@ function CourseDetail() {
     navigate(`/learningCourse/${courseId}`)
   }
 
+  const fetchStudents = async (courseId) => {
+    const res = await getStudents(courseId)
+    if (res.status === 200) {
+      setStudents(res.data.total)
+    }
+  }
+
   return (
     <div className="relative courseDetail w-full ">
       <div className={` h-[300px] absolute bg-[#2d2f31]  z-0 w-full`}></div>
@@ -250,7 +258,7 @@ function CourseDetail() {
                     />
                   </div>}
                 <div className=' text-white text-sm'>
-                  90,817 students
+                  {students} students
                 </div>
 
               </div>

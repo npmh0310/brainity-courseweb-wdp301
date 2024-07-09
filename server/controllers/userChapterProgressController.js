@@ -120,9 +120,33 @@ const completeLesson =  async ( req, res) => {
     }
 }
 
+const completeCourse = async (req, res) => {
+    const userId = req.user.id;
+    const { courseId } = req.body;
+
+    try {
+        const updateLesson = await UserChapterProgress.findOneAndUpdate(
+            { user: userId, course: courseId },
+            { $set: { isCompleted: true } },
+            { new: true } // Option new: true để trả về bản ghi đã được cập nhật
+        );
+
+        if (updateLesson) {
+            res.status(200).send('Completed successfully');
+        } else {
+            res.status(404).send('Course progress not found');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Completion failed');
+    }
+}
+
+
 module.exports = {
     submitLesson,
     addProgress,
     getLessonsProgressUser,
-    completeLesson
+    completeLesson,
+    completeCourse
 }
