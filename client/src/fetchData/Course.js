@@ -59,9 +59,7 @@ const getCourseBySearch = (searchTerm) => {
   });
 };
 
-  const data = { action: "add", courseId }
-  return axios.post(`/favourite`, data)
-}
+
 const getStudents = (courseId) => {
   return axios.get("/course/getStudents/" + courseId)
 }
@@ -90,7 +88,7 @@ export {
   getFavouriteCourse,
   deleteCourseInFavourite,
   addCourseInFavourite,
-  getStudents
+  getStudents,
   createPayment,
   updatePayment,
   getCourseBySearch,
