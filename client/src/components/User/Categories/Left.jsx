@@ -34,7 +34,9 @@ export const Left = ({ onFilteredCourses }) => {
 
   // Handle category change
   const handleCategoryChange = (category) => {
-    setCategories((prevCategory) => (prevCategory === category ? "" : category));
+    setCategories((prevCategory) =>
+      prevCategory === category ? "" : category
+    );
   };
 
   // Handle rating range change
@@ -48,13 +50,17 @@ export const Left = ({ onFilteredCourses }) => {
 
       // Sort by Best Seller
       if (checked === 1) {
-        filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers > 2);
+        filteredCourses = filteredCourses.filter(
+          (course) => course.numOfEnrolledUsers > 2
+        );
         console.log(filteredCourses);
       }
 
       // Sort by Rating
       if (checked === 2) {
-        filteredCourses.sort((a, b) => b.ratingInfo.avgRating - a.ratingInfo.avgRating);
+        filteredCourses.sort(
+          (a, b) => b.ratingInfo.avgRating - a.ratingInfo.avgRating
+        );
         console.log(filteredCourses);
       }
 
@@ -76,7 +82,9 @@ export const Left = ({ onFilteredCourses }) => {
       if (ratingRange) {
         const [min, max] = ratingRange.split(" to ").map(Number);
         filteredCourses = filteredCourses.filter(
-          (course) => course.ratingInfo.avgRating >= min && course.ratingInfo.avgRating <= max
+          (course) =>
+            course.ratingInfo.avgRating >= min &&
+            course.ratingInfo.avgRating <= max
         );
       }
 
