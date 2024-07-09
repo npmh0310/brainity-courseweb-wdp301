@@ -27,5 +27,13 @@ const changePassword = (userId, data) => {
   });
 };
 
+const updateProfile = (formData) => {
+  return axios.put('/auth/profile' , formData)
+}
+const updateAvatar = (avatar) => {
+  return axios.put('/auth/updateAvatar' , avatar)
 
-export { onLogin, onRegister, onLogout, getProfile, updateUserProfile, changePassword  };
+}
+
+
+export { onLogin, onRegister, onLogout, getProfile, updateUserProfile, changePassword, updateProfile ,updateAvatar };

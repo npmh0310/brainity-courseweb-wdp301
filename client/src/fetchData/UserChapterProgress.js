@@ -8,3 +8,7 @@ export const getLessonProgressUser = (id) => {
 export const completedLesson = ({courseId, lessonId , isCompleted }) => {
     return axios.put(url + "/completedLesson" , {courseId, lessonId , isCompleted } )
 }
+
+export const completeCourse = (courseId) => {
+    return axios.put(url + "/completedCourse" , {courseId: courseId})
+}
