@@ -12,18 +12,17 @@ const purchaseSchema = new mongoose.Schema(
             min: 0
 
         },
-        paymentStatus: {
-            type: String,
-            required: true
-        },
         paymentMethod: {
             type: String,
             required: true
         },
-        purchaseDetail: {
-            courseId: String,
+        purchaseDetail: [{
+            courses: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Course',
+            },
             priceAtPaid: Number
-        }
+        }]
     }
 );
 

@@ -36,6 +36,8 @@ import PaymentSuccess from "./components/User/Payment/PaymentSuccess";
 import VideoChaper from "./components/User/LearningPage/VideoChapter/VideoChaper";
 import { getCart } from "./redux/features/cartSlice";
 import ChatBoxAdmin from "./pages/Admin/ChatBoxAdmin";
+import PaymentResult from "./components/User/Payment";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -47,9 +49,9 @@ function App() {
 
   useEffect(() => {
     if (isLogin) {
-      dispatch(getCart());
+      dispatch(getCart())
     }
-  }, [dispatch, isLogin]);
+  }, [dispatch, isLogin])
 
   return (
     <>
@@ -143,7 +145,6 @@ function App() {
                     <Route key={index} path={route.path} element={route.element} />
                   ))} */}
           </Route>
-
           {/* Route Admin*/}
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
           <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
@@ -156,7 +157,9 @@ function App() {
             <Route path="default" element={<Dashboard />} />
           </Route>
           {/* Route Payment Success*/}
-          <Route path="/paymentSuccess" element={<PaymentSuccess />}></Route>
+          <Route path="/paymentSuccess" element={<PaymentSuccess />}>
+          </Route>
+          <Route path="/payment" element={<PaymentResult />} />
         </Routes>
       </BrowserRouter>
     </>

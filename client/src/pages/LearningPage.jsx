@@ -22,7 +22,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { getCourseById } from "../fetchData/Course";
+import { getCourseById, getStudents } from "../fetchData/Course";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getGlobalLoading,
@@ -31,7 +31,7 @@ import {
 import GlobalLoading from "../components/common/GlobalLoading/GlobalLoading";
 import CourseReviewDialog from "../components/User/LearningPage/SubmitReview/CourseReviewDialog";
 import Toast from "../components/User/LearningPage/Toast/Toast";
-import { getLessonProgressUser } from "../fetchData/UserChapterProgress";
+import { completeCourse, getLessonProgressUser } from "../fetchData/UserChapterProgress";
 import { insertLessonProgress } from "../redux/features/learningSlice";
 import { calculateOverallCompletionPercent } from "../function/function";
 import VideoChaper from "./../components/User/LearningPage/VideoChapter/VideoChaper";
@@ -51,6 +51,7 @@ function LearningPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastSeverity, setToastSeverity] = useState("success");
   const [courseProgress, setCourseProgress] = useState();
+
   const navigate = useNavigate();
   const [overralCompletionPercent, setOverralCompletionPercent] = useState(0);
   // const [sectionsWithProgress, setSectionsWithProgress] = useState()
@@ -160,10 +161,14 @@ function LearningPage() {
   }, []);
 
   useEffect(() => {
-    setOverralCompletionPercent(
-      calculateOverallCompletionPercent(lessonsProgress)
-    );
-  }, [lessonsProgress]);
+    if(courseProgress && !courseProgress.isCompleted){
+      const overralCompletionPercent = calculateOverallCompletionPercent(lessonsProgress);
+      setOverralCompletionPercent(overralCompletionPercent);
+      if(overralCompletionPercent.overal == 100.00) {
+        const res = completeCourse(courseId)
+      }
+    }
+  }, [lessonsProgress , courseId]);
 
   // hash section
   const [section, setSection] = useState("overview");
@@ -185,6 +190,10 @@ function LearningPage() {
     };
   });
 
+
+
+  
+
   return (
     <div className="bg-white">
       <GlobalLoading />
@@ -195,7 +204,7 @@ function LearningPage() {
               <Logo />
             </a>
             <div className="ml-4 flex justify-start items-center w-8/12 uppercase ">
-              <a href="#"> {course.courseName} </a>
+              <Link to={`/course/${courseId}`}> {course.courseName} </Link>
             </div>
             <Popover
               id={id}
@@ -211,13 +220,17 @@ function LearningPage() {
                 horizontal: "center",
               }}
             >
-              <div className="p-4 flex flex-col gap-y-2 justify-center items-start text-sm">
-                <span className="font-bold">
-                  {overralCompletionPercent.completedLessons} of{" "}
-                  {overralCompletionPercent.totallesson} complete
-                </span>
-                <span>Finish course to get your certificate</span>
-              </div>
+              {courseProgress && overralCompletionPercent.overal != 100.00 && !courseProgress.isCompleted  ?
+                <div className="p-4 flex flex-col gap-y-2 justify-center items-start text-sm">
+                  <span className="font-bold">
+                    {overralCompletionPercent.completedLessons} of{" "}
+                    {overralCompletionPercent.totallesson} complete
+                  </span>
+                  <span>Finish course to get your certificate</span>
+                </div> :
+                <div className="p-4 flex flex-col gap-y-2 justify-center items-start text-sm">
+                  <span className="font-bold">You have completed the course</span>
+                </div>}
             </Popover>
             <div
               aria-describedby={id}
@@ -236,7 +249,9 @@ function LearningPage() {
                 <CircularProgress
                   size="md"
                   determinate
-                  value={overralCompletionPercent.overal}
+                  value={courseProgress && !courseProgress.isCompleted ? overralCompletionPercent.overal : 100}
+                  color={ (courseProgress && !courseProgress.isCompleted) && overralCompletionPercent.overal != 100.00  ? "danger" : "success"}
+                  
                 >
                   <Sparkle />
                 </CircularProgress>
@@ -296,9 +311,8 @@ function LearningPage() {
               </div>
 
               <div
-                className={`${
-                  !showCourse ? "lg:w-9/12" : "sm:w-full"
-                } px-4 mx-auto mb-6  flex flex-col`}
+                className={`${!showCourse ? "lg:w-9/12" : "sm:w-full"
+                  } px-4 mx-auto mb-6  flex flex-col`}
               >
                 <div className=" px-4 min-w-[880px]  flex border-b  justify-start items-center gap-4 ">
                   <NavLink
@@ -368,9 +382,8 @@ function LearningPage() {
             </div>
             {showCourse && (
               <div
-                className={`px-2 flex  flex-col overflow-y-auto fixed right-0 ${
-                  isScrolled ? "top-0" : ""
-                } h-screen w-3/12 z-10 bg-white border-x animate-transCourse `}
+                className={`px-2 flex  flex-col overflow-y-auto fixed right-0 ${isScrolled ? "top-0" : ""
+                  } h-screen w-3/12 z-10 bg-white border-x animate-transCourse `}
               >
                 <div className="flex justify-between items-center sticky top-0 bg-white z-10">
                   <h2 className="p-2 text-lg font-semibold text-start">

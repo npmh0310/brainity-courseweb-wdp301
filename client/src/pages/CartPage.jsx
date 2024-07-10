@@ -9,8 +9,13 @@ import {
   getCoursesInCart,
 } from "../redux/features/cartSlice";
 import { formatCurrencyVND } from "../function/function";
+
+import { createPayment } from "../fetchData/Course";
+import { redirect } from "react-router-dom";
+
 import cartEmpty from "../assets/images/cartEmpty.png";
 import { useNavigate } from "react-router-dom";
+
 function CartPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,6 +25,14 @@ function CartPage() {
     ? courseInCart.reduce((sum, data) => sum + data.course.price, 0)
     : 0;
 
+  const handleCheckout = async () => {
+    const res = await createPayment(total)
+    if (res) {
+      console.log(res.data)
+      window.open(res.data.url, "_self")
+    }
+  }
+
   return (
     <div className=" max-w-[1440px]  mx-auto px-10 pb-24  animate-open">
       <h1 className=" mt-8 text-4xl font-bold text-[#2d2f31] text-start">
@@ -27,9 +40,8 @@ function CartPage() {
       </h1>
       <div className=" flex flex-col lg:flex-row mb-4">
         <div
-          className={`${
-            courseInCart && courseInCart.length > 0 ? "lg:w-9/12" : "lg:w-full"
-          } w-full`}
+          className={`${courseInCart && courseInCart.length > 0 ? "lg:w-9/12" : "lg:w-full"
+            } w-full`}
         >
           <div className=" mt-8 flex flex-col gap-y-4">
             <h3 className=" font-semibold mb-2">
@@ -83,11 +95,10 @@ function CartPage() {
           </div>
         </div>
         <div
-          className={`${
-            courseInCart && courseInCart.length > 0
+          className={`${courseInCart && courseInCart.length > 0
               ? "lg:w-3/12 animate-transCourse"
               : " hidden animate-bounce"
-          }  lg:w-3/12 pl-6 w-full flex flex-col items-start py-4`}
+            }  lg:w-3/12 pl-6 w-full flex flex-col items-start py-4`}
         >
           <div className=" mt-8 mb-4 text-start">
             <h3 className=" text-third font-semibold mb-4">Total:</h3>
@@ -98,6 +109,7 @@ function CartPage() {
           <button
             className="px-4 py-3 rounded-none w-full bg-primary hover:bg-opacity-80 "
             color="success"
+            onClick={handleCheckout}
           >
             <span className=" text-white  font-bold tracking-wider uppercase ">
               Checkout

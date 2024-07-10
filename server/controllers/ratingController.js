@@ -196,6 +196,7 @@ const getRatingByCourseIdSortStar = async (req, res) => {
 };
 
 const getRatingCourse = async (req, res) => {
+
   const courseId = req.params.id;
 
   try {
@@ -212,7 +213,7 @@ const getRatingCourse = async (req, res) => {
     const totalRating = ratings.reduce((acc, curr) => acc + curr.rate, 0);
 
     // Calculate the average rating
-    const avgRating = totalRating / ratings.length;
+    const avgRating = (totalRating / ratings.length).toFixed(2);
 
     return res.status(200).json({
       avgRating,

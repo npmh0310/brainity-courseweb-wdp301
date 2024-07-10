@@ -16,6 +16,7 @@ import CartPage from "../pages/CartPage";
 import MyBlog from "../components/User/BlogPage/MyBlog";
 import SavedBlog from "../components/User/BlogPage/SavedBlog";
 import RequestToTeacher from "../components/User/ProfileUser/RequestToTeacher";
+import { SearchPage } from "../components/User/SearchPage/SearchPage";
 
 const routes = [
   { index: true, element: <HomePage />, state: "home" },
@@ -83,6 +84,10 @@ const routes = [
   {
     path: "/savedblog",
     element: <SavedBlog />,
+  },
+  {
+    path: "/searchpage",
+    element: <SearchPage />,
   },
 ];
 
