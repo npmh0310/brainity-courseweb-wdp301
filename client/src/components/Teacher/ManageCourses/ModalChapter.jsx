@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AwardIcon, Pen, Underline, Upload } from "lucide-react";
 import InputCustom from "../common/InputCustom";
 import { createSection } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
+import InputFocus from "../common/InputFocus";
 const ModalChapter = ({ handleClose, setStatus, courseId }) => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [data, setData] = useState({
-    sectionName: undefined
-  })
+    sectionName: undefined,
+  });
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
@@ -29,28 +30,35 @@ const ModalChapter = ({ handleClose, setStatus, courseId }) => {
 
   const handleCancelSubmit = (e) => {
     e.preventDefault();
-    handleClose()
-
+    handleClose();
   };
 
-  const handleChange = e => {
-    setData(prev => ({ ...prev, [e.target.id]: e.target.value }))
-  }
-
-  // console.log(courseId)
+  const handleChange = (e) => {
+    setData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
 
   const handleClick = async (e) => {
     e.preventDefault();
 
-    const res = await createSection(data, courseId)
+    const res = await createSection(data, courseId);
     if (res && res.status === 200) {
-      toast.success("Successfully created")
-      setStatus(true)
-      handleClose()
+      toast.success("Successfully created");
+      setStatus(true);
+      handleClose();
     } else {
-      toast.error("Failed to create")
+      toast.error("Failed to create");
     }
-  }
+  };
+
+  // focus
+  const inputRef = useRef(null);
+
+  const handleFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
 
   return (
     <div className="w-[40%] h-[330px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white">
@@ -66,12 +74,19 @@ const ModalChapter = ({ handleClose, setStatus, courseId }) => {
               <label className="font-medium text-sm" htmlFor="">
                 Section name:{" "}
               </label>
-              <span className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium ">
+              <span
+                className="flex items-center gap-x-2 text-sm cursor-pointer hover:font-medium "
+                onClick={handleFocus}
+              >
                 <Pen size={14} /> add name
               </span>
             </div>
-
-            <input className="w-full" type="text" id="sectionName" onChange={handleChange} />
+            <InputCustom
+              id="sectionName"
+              value="input price"
+              onChange={handleChange}
+              ref={inputRef}
+            />
           </div>
 
           {/* part 2 */}

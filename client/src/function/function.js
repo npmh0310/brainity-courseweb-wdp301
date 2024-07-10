@@ -60,7 +60,7 @@ export function formatCurrencyVND(amount) {
   const p = formatter.format(amount)
 
   // Format the amount
-  return `${p} VND`
+  return `${p}`
 }
 
 export function calculateOverallCompletionPercent(sections) {
