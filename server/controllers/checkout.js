@@ -110,4 +110,4 @@ const checkoutATM = async (req, res) => {
     res.status(result.status).json(result.data);
 };
 
-module.exports = { checkoutATM }
+module.exports = { checkoutATM, checkoutSuccess }
