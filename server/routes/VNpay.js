@@ -3,7 +3,8 @@ let express = require('express');
 let $ = require('jquery');
 const request = require('request');
 const moment = require('moment');
-const { checkoutATM } = require('../controllers/checkout');
+const { checkoutATM, checkoutSuccess } = require('../controllers/checkout');
+const { verifyUser } = require('../utils/verifyToken');
 const vnpayRoute = express.Router();
 
 vnpayRoute.post('/create_payment_url', function (req, res, next) {
@@ -65,7 +66,7 @@ vnpayRoute.post('/create_payment_url', function (req, res, next) {
     })
 });
 
-vnpayRoute.get('/vnpay_return', function (req, res, next) {
+vnpayRoute.get('/vnpay_return', verifyUser, function (req, res, next) {
     let vnp_Params = req.query;
 
     let secureHash = vnp_Params['vnp_SecureHash'];
@@ -95,8 +96,10 @@ vnpayRoute.get('/vnpay_return', function (req, res, next) {
     }
 });
 
-vnpayRoute.get('/vnpay_ipn', function (req, res, next) {
+vnpayRoute.get('/vnpay_ipn', verifyUser, function (req, res, next) {
     let vnp_Params = req.query;
+    const userId = req.user.id
+    console.log(userId)
     let secureHash = vnp_Params['vnp_SecureHash'];
 
     let orderId = vnp_Params['vnp_TxnRef'];
@@ -128,7 +131,7 @@ vnpayRoute.get('/vnpay_ipn', function (req, res, next) {
                         //paymentStatus = '1'
                         // Ở đây cập nhật trạng thái giao dịch thanh toán thành công vào CSDL của bạn
                         // console.log("vailz duoc lun ne")
-                        checkoutATM();
+                        checkoutSuccess(userId);
                         res.status(200).json({ RspCode: '00', Message: 'Success' })
                     }
                     else {
