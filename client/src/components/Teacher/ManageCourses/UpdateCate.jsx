@@ -12,9 +12,7 @@ const UpdateCate = ({ label, inputId, idCourse, setStatus, cateData }) => {
 
     useEffect(() => {
         getAllCategory().then(res => {
-
             const dataCate = res.data.data
-
             const formattedOptions = dataCate.map(cate => ({
                 value: cate._id,
                 label: cate.categoryName
@@ -114,10 +112,10 @@ const UpdateCate = ({ label, inputId, idCourse, setStatus, cateData }) => {
                         classNamePrefix="select"
                     />
                 ) : (
-                    <div className="flex justify-start items-center gap-3 w-full">
+                    <div className="flex justify-start items-center gap-3 my-2 w-full">
 
                         {cateData && cateData.map((data, index) => (
-                            <span className="p-2 bg-third bg-opacity-10 rounded-3xl" key={index}>{data.categoryName}</span>
+                            <span className="px-4 text-sm py-2 bg-third bg-opacity-10 rounded-3xl" key={index}>{data.categoryName}</span>
                         ))}
                     </div>
                 )}
