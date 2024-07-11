@@ -51,11 +51,13 @@ const Header = () => {
     setSearchQuery(e.target.value);
   };
 
+// xử lý search
+
   return (
     <header
       className={`${bg ? "bg-[white] shadow-md shadow-bottom " : "bg-none"} ${
         scrollDirection === "up" ? "show-header" : "hidden-header"
-      } fixed header left-0 w-full z-50 transition-all duration-200`}
+      } fixed header left-0 w-full z-40 transition-all duration-200`}
     >
       <div className="flex items-center justify-around">
         <div className="flex items-center justify-between gap-x-10">
@@ -78,14 +80,15 @@ const Header = () => {
           </nav>
         </div>
 
-        <div className="flex items-center justify-around gap-x-14 h-[76px]">
-          <div className="items-center hidden lg:flex">
+        <div className="flex items-center justify-around gap-x-14  h-[76px]">
+          <div className="items-center hidden lg:flex w-[450px] justify-end">
             <input
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="w-[240px] h-[42px] border-2 border-gray-200 px-8 py-3 text-xs rounded-l-full focus:outline-none"
+              className="w-[200px] h-[42px] border-2 border-gray-200 px-8 py-3 text-xs rounded-l-full focus:outline-none focus:border-blue-300 focus:w-[300px] focus:flex-grow transition-all"
               placeholder="Search anything..."
+             
             />
             <Link
               to={`/searchpage?q=${encodeURIComponent(searchQuery)}`}
