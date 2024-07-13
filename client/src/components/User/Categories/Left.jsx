@@ -48,7 +48,7 @@ export const Left = ({ onFilteredCourses }) => {
 
       // Sort by Best Seller
       if (checked === 1) {
-        filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers > 2);
+        filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers >= 2);
         console.log(filteredCourses);
       }
 
@@ -190,8 +190,8 @@ export const Left = ({ onFilteredCourses }) => {
           <div className="flex items-center pb-3">
             <input
               className="mr-2 cursor-pointer "
-              checked={ratingRange === "Under 3"}
-              onClick={() => handleRatingRangeChange("Under 3")}
+              checked={ratingRange === "0 to 3"}
+              onClick={() => handleRatingRangeChange("0 to 3")}
               type="radio"
             />
             <span className="text-sm flex items-center gap-1">
