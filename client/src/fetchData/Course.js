@@ -52,12 +52,13 @@ const addCourseInFavourite = (courseId) => {
 };
 
 const getCourseBySearch = (searchTerm) => {
-  return axios.get(`/course/search`, {
+  return axios.get(`/course/search/getCourseBySearch`, {
     params: {
-      city: searchTerm,
+      courseName: searchTerm,
     },
   });
 };
+
 
 
 const getStudents = (courseId) => {
