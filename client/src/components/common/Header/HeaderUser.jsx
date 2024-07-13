@@ -82,7 +82,7 @@ function HeaderUser() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    // Cleanup event listener on component unmount
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -140,7 +140,7 @@ function HeaderUser() {
               </>
             </Popover>
             <div
-              className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-50"
+              className="cursor-pointer w-12 h-12 justify-center flex items-center relative z-[80]"
               onClick={handleCartClick}
               onDoubleClick={handleNavigateCart}
             >
@@ -156,7 +156,7 @@ function HeaderUser() {
             </div>
             <Popover
               style={{
-                zIndex: 60,
+                zIndex: 40,
                 // zIndex: 100,
                 marginTop: "7px",
                 marginLeft: "22px",

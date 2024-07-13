@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import "./GlobalLoading.css";
-import logoTest from '../../../assets/images/logoBrain.svg'
+import logoTest from '../../../assets/images/logo_noBg.png'
 import { getGlobalLoading, setGlobalLoading } from "../../../redux/features/globalLoadingSlice";
 
 const GlobalLoading = () => {
