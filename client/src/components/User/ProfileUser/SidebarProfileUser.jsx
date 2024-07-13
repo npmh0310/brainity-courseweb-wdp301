@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { User, Shield, FolderHeart, Handshake } from "lucide-react";
 import { Link as Link2 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { updateUserProfile } from "../../../fetchData/User";
+import { updateAvatar, updateUserProfile } from "../../../fetchData/User";
+import { validateToken } from "../../../redux/features/authSlice";
 
 const SidebarProfileUser = () => {
   const [activeItem, setActiveItem] = useState("");
@@ -16,6 +17,7 @@ const SidebarProfileUser = () => {
   const [imagePreview, setImagePreview] = useState("");
   const fileInputRef = React.useRef(null);
   const [userData, setUserData] = useState({});
+  const dispatch = useDispatch()
   const handleActiveItem = (item) => {
     setActiveItem(item);
   };
@@ -74,10 +76,10 @@ const SidebarProfileUser = () => {
       const linkImg = {
         avatar: res.data.secure_url,
       };
-      console.log(linkImg);
-      const resUpdate = await updateUserProfile(user._id, linkImg);
+      const resUpdate = await updateAvatar(linkImg)
      
       if (resUpdate && resUpdate.status === 200) {
+        dispatch(validateToken())
         toast.success("Updated success");
        
       } else {

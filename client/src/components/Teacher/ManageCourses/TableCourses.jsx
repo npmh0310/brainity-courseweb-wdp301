@@ -7,8 +7,12 @@ import ButtonAdd from "../common/ButtonAdd";
 
 import Modal from "@mui/material/Modal";
 import ModalCourse from "./ModalCourse";
-import { deleteCourse, getCourseOfTeacher } from "../../../fetchData/TeacherCourse";
+import {
+  deleteCourse,
+  getCourseOfTeacher,
+} from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
+import { formatCurrencyVND } from "../../../function/function";
 
 const TableCourses = () => {
   const navigate = useNavigate();
@@ -46,13 +50,12 @@ const TableCourses = () => {
 
   const handleDelete = async () => {
     console.log("Deleting course id:", selectedCourseId);
-    const res = await deleteCourse(selectedCourseId)
+    const res = await deleteCourse(selectedCourseId);
     if (res.status === 200) {
-      toast.success('Deleted successfully')
-      setStatus(true)
-    }
-    else {
-      toast.error('Delete failed')
+      toast.success("Deleted successfully");
+      setStatus(true);
+    } else {
+      toast.error("Delete failed");
     }
     setDeleteOpen(false);
   };
@@ -71,6 +74,8 @@ const TableCourses = () => {
   const handlePageClick = (page) => {
     setPage(page);
   };
+
+
 
   return (
     <div className=" mt-6 px-10">
@@ -102,7 +107,7 @@ const TableCourses = () => {
                   <th
                     key={index}
                     scope="col"
-                    className="w-10 h-10 border-b-2 border-gray-200 bg-primary text-left  font-semibold text-white  "
+                    className="w-10 h-10 border-b-2 pl-6 border-gray-200 bg-primary text-left  font-semibold text-white  "
                   >
                     {item}
                   </th>
@@ -114,8 +119,9 @@ const TableCourses = () => {
               {courses?.map((course, index) => (
                 <tr
                   key={index + 1}
-                  className={`hover:bg-gray-100 cursor-pointer text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    }`}
+                  className={`hover:bg-gray-100 cursor-pointer text-sm ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  }`}
                   onClick={() => handleRowClick(course)}
                 >
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -124,9 +130,15 @@ const TableCourses = () => {
                     </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      {course.price}
-                    </p>
+                    {course.price === 0 ? (
+                      <h1 className="px-2 py-[6px] text-xs w-20 text-center rounded-2xl bg-yellow-400">
+                        Free
+                      </h1>
+                    ) : (
+                      <p className="text-gray-900 px-2   whitespace-no-wrap">
+                        {formatCurrencyVND(course.price)}
+                      </p>
+                    )}
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     <span className="relative">
@@ -135,8 +147,9 @@ const TableCourses = () => {
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     <h1
-                      className={`${course.isPublic ? "bg-green-400" : "bg-red-400"
-                        }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
+                      className={`${
+                        course.isPublic ? "bg-green-400" : "bg-red-400"
+                      }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >
                       {course.isPublic ? "Public" : "Private"}
                     </h1>
@@ -165,8 +178,9 @@ const TableCourses = () => {
           return (
             <button
               key={index}
-              className={`px-4 py-2 mx-1 rounded-full ${page === index ? "bg-primary" : ""
-                }`}
+              className={`w-11 h-11 mx-1 rounded-full ${
+                page === index ? "bg-primary" : ""
+              }`}
               onClick={() => handlePageClick(index)}
             >
               {pageNumber}

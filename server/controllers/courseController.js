@@ -1,4 +1,5 @@
 var Course = require("../models/course");
+const UserChapterProgress = require("../models/UserChapterProgress");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
@@ -121,7 +122,7 @@ const deleteCourseById = async (req, res) => {
 
   try {
     const deleteCourseById = await Course.findOneAndDelete({
-      _id: id
+      _id: id,
     });
 
     res.status(200).json({
@@ -211,7 +212,7 @@ const getCourseById = async (req, res) => {
         },
       })
       .populate("categories")
-      .populate("instructor")
+      .populate("instructor");
 
     res.status(200).json({
       success: true,
@@ -285,14 +286,17 @@ const getProCourse = async (req, res) => {
 };
 
 const getCourseBySearch = async (req, res) => {
-  const search = new RegExp(req.query.city, "i");
+  const search = new RegExp(req.query.courseName, "i");
 
   try {
-    const getCourses = await Course.find({ search }).populate("categories");
+    const getCourses = await Course.find({ courseName: search })
+      .populate("categories")
+      .populate("instructor");
 
     res.status(200).json({
       success: true,
-      message: "Successfully",
+      message: "Successfully fetched courses",
+      count: getCourses.length,
       data: getCourses,
     });
   } catch (err) {
@@ -403,6 +407,19 @@ const checkCourseStatus = async (req, res) => {
   // get course enrolled number
 };
 
+const getStudents = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Use countDocuments to count the number of documents that match the query
+    const total = await UserChapterProgress.countDocuments({ course: id });
+
+    return res.status(200).json({ total });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createCourse,
   deleteCourseById,
@@ -420,4 +437,5 @@ module.exports = {
   getCourseOfTeacher,
   getCourseByName,
   getEnrolledCourses,
+  getStudents,
 };

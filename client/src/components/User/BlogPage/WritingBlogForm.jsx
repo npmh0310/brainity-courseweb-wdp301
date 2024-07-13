@@ -29,7 +29,7 @@ export default function Index() {
           type="text"
           name=""
           id=""
-          class="block h-16 w-full text-base rounded-md border-0 py-1.5 pl-7 pr-20 text-third ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+          className="block h-16 w-full text-base rounded-md border-0 py-1.5 pl-7 pr-20 text-third ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
           placeholder="Write your content here..."
         />
       </div>

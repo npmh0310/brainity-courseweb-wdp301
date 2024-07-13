@@ -49,13 +49,10 @@ const courseSchema = new mongoose.Schema(
       },
     ],
     isFree: {
-        type: Boolean,
-        default: false
-    }
-    // featured: {
-    //     type: Boolean,
-    //     default: false
-    // },
+      type: Boolean,
+      default: true,
+    },
+
   },
   { timestamps: true }
 );

@@ -7,35 +7,6 @@ import moment from "moment";
 const ModalNotification = ({ notifications }) => {
   const navigate = useNavigate();
 
-  // const notificationConfig = {
-  //   passwordChangeNotification: {
-  //     imgSrc:
-  //       "https://media.istockphoto.com/id/1416937202/vector/settings-or-gear-icon-cog-setting-vector-illustration.jpg?s=612x612&w=0&k=20&c=3vVNW4ssuNPwKUMT5HSMEbUlknZmp5FeEBF1eZTzJYA=",
-  //     getMessage: (message) => (
-  //       <h1 className="">
-  //         Your password <span className="font-medium">{message}</span>
-  //       </h1>
-  //     ),
-  //   },
-  //   system: {
-  //     imgSrc: imgSystem,
-  //     getMessage: (message) => (
-  //       <h1 className="">
-  //         <span className="font-semibold text-third">Brainity:</span>{" "}
-  //         <span className=" ">{message}</span>
-  //       </h1>
-  //     ),
-  //   },
-  //   lessonAdded: {
-  //     imgSrc: "https://example.com/lesson_added.png",
-  //     getMessage: (message) => (
-  //       <h1 className="">
-  //         New lesson <span className="font-medium">{message}</span> has been
-  //         added
-  //       </h1>
-  //     ),
-  //   },
-  // };
 
   return (
     <div className=" mx-auto">

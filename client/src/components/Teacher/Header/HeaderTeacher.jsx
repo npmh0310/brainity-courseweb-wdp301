@@ -79,7 +79,7 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
       </div>
       <div className="w-1/5 flex justify-center ">
         <img
-          className="w-10 rounded-full transition-all duration-200 ease-in-out transform hover:scale-110 hover:opacity-80"
+          className="w-10 h-10 rounded-full transition-all duration-200 ease-in-out transform hover:scale-110 hover:opacity-80"
           src={user.avatar}
           alt=""
           onClick={handleClick}
