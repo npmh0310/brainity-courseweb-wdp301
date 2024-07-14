@@ -3,14 +3,26 @@ import avatar2 from "../../../assets/images/Avatar/CGakpo2023.jpg";
 import avatar from "../../../assets/images/Avatar/CGakpo2023.jpg";
 import { Info, Search } from "lucide-react";
 import Logo from "../../../assets/images/logo_noBg.png";
+import { getMessagesByRoomName } from "../../../fetchData/Message";
 import { SendHorizontal, Paperclip, X } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 const ContentChatBox = () => {
-  const { roomId } = useParams();
+  const { roomName } = useParams();
+  const [messages, setMessages] = useState([]);
+  const user = useSelector((state) => state.auth.user);
+
+  console.log(user)
 
   // XỬ LÝ API
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  useEffect(() => {}, [roomId]);
+  useEffect(() => {
+        getMessagesByRoomName(roomName).then((response) => {
+          const data = Object.values(response.data.data);
+          setMessages(data[0]);
+          console.log(messages.messages)
+        });
+    }, [roomName]);
+
   // XỬ LÝ API
 
   const chatRooms = [
@@ -50,11 +62,8 @@ const ContentChatBox = () => {
     },
     // Các phòng chat khác
   ];
-  const selectedFetchRoom = chatRooms.find(
-    (room) => room.id === parseInt(roomId)
-  );
 
-  if (!selectedFetchRoom) {
+  if (!roomName) {
     return (
       <div className="w-full lg:w-3/4 h-full border-r-2  flex flex-col ">
         <div className="flex-grow text-center flex items-center justify-center flex-col border-b-2 border-gray-200">
@@ -71,10 +80,10 @@ const ContentChatBox = () => {
         <div className="flex flex-row items-center gap-x-5">
           <img
             className="w-11 h-11 rounded-full"
-            src={selectedFetchRoom.avatarSrc}
+            src={messages.avatarSrc}
             alt=""
           />
-          <h1 className="font-medium">{selectedFetchRoom.name}</h1>
+          <h1 className="font-medium">{messages.name}</h1>
         </div>
         <div className="flex flex-row items-center gap-x-8 text-gray-500">
           <Search className="hover:text-black" />
@@ -84,7 +93,7 @@ const ContentChatBox = () => {
       {/* MESSAGE CONTENT */}
       <div className="h-[78vh] flex-grow text-center flex flex-col-reverse overflow-y-auto scrollbar-custom ">
         <div className=" flex flex-col px-3 py-5 space-y-8">
-          {selectedFetchRoom.messages?.map((message, index) => (
+          {messages.messages?.map((message, index) => (
             <div
               key={index}
               className={`flex items-end ${
@@ -93,9 +102,9 @@ const ContentChatBox = () => {
             >
               {message.type === "their" && (
                 <img
-                  src={message.imgSrc}
+                  src={messages.avatarSrc}
                   className="w-9 h-9 rounded-full order-1"
-                  alt={message.name}
+                  alt={messages.name}
                 />
               )}
               <div
@@ -110,7 +119,7 @@ const ContentChatBox = () => {
                     <span
                       className={`px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-200 text-gray-600 text-left break-words`}
                     >
-                      {message.text}
+                      {message.content}
                     </span>
                   </div>
                 ) : (
@@ -118,7 +127,7 @@ const ContentChatBox = () => {
                     <span
                       className={`px-4 py-2 rounded-lg inline-block bg-gray-200 text-gray-600 text-left break-words`}
                     >
-                      {message.text}
+                      {message.content}
                     </span>
                   </div>
                 )}

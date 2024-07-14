@@ -8,13 +8,17 @@ const messageSchema = new mongoose.Schema(
             // required: true
         },
         chatRoom: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'ChatRoom',
+            type: String,
         },
         content: {
             type: String
-        }
-    }
+        },
+        read: {
+            type: Boolean,
+            default: false    
+        },
+    },
+  { timestamps: true }
 );
 
 var Message = mongoose.model("Message", messageSchema);

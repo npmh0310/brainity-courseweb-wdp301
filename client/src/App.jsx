@@ -146,7 +146,7 @@ function App() {
 
           {/* Route Admin*/}
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
-          <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
+          <Route path="/admin/messageAdmin/:roomName" element={<ChatBoxAdmin />} />
         
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="" element={<Navigate to="default" replace />} />

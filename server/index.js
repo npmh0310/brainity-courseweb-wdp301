@@ -23,6 +23,9 @@ const ratingRoute = require('./routes/rating');
 const notificationRoute = require('./routes/notification');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
 const userRouter = require('./routes/user')
+const messageRouter = require('./routes/message')
+const Message = require('./models/message');
+
 
 dotenv.config();
 const app = express();
@@ -135,6 +138,7 @@ app.use('/api/v1/cloudinary', cloudinaryRoute)
 app.use('/api/v1/rating', ratingRoute)
 app.use('/api/v1/user' , userRouter)
 app.use('/api/v1/notification', notificationRoute)
+app.use('/api/v1/message', messageRouter)
 
 
 //Oauth2
@@ -150,19 +154,19 @@ const io = require("socket.io")(server, {
     cors : {
         origin: "http://localhost:3000", // Allow requests from this origin and my frontend port = 5173
         methods: ["GET", "POST"], // Allow these HTTP methods
-
     }
 })
 
 let adminSockets = [];
-let roomsWithUsers = [];
+let roomsUsersOnline = [];
  
 io.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected`);
     socket.on('disconnect', () => {
-        console.log('A user disconnected');
+        console.log('A user with socket' , socket.id, ' disconnected');
         // Xóa socket của admin ra khỏi danh sách khi admin disconnect
         adminSockets = adminSockets.filter(adminSocket => adminSocket !== socket);
+        // xóa room online nếu user disconnect
     });
 
     // Xử lý sự kiện admin kết nối
@@ -171,51 +175,52 @@ io.on('connection', (socket) => {
         adminSockets.push(socket);
 
         // Gửi lại danh sách các phòng đã có user join vào cho admin mới
-        roomsWithUsers.forEach(room => {
+        // tối ưu lại sau ( đang bị n^n)
+        console.log("Existing room chat: " + roomsUsersOnline);
+        roomsUsersOnline.forEach(room => {
             socket.emit('userRequestChatAdmin', room);
         });
+
     });
 
 
     // Thông báo cho admin rằng user đã join vào room
-
-
     socket.on('joinRoom', (room) => {
+        // specify socket join the room
+        // user + admin 
         socket.join(room); // Join the client to the specified room
-        console.log(`User joined room: ${room}`);
-        
-        // Lưu trạng thái phòng vào danh sách
-        if (!roomsWithUsers.includes(room)) {
-            roomsWithUsers.push(room);
+        if(!adminSockets.includes(socket) && !roomsUsersOnline.includes(room)) {
+            console.log("👤User login and join room success: ", room)
+        } else {
+            console.log("🅰️  Admin know room chat: ", room)
         }
 
-        if((room+"").includes("chatWithAdmin_")) {
-            adminSockets.forEach(adminSocket => {
-                adminSocket.emit('userRequestChatAdmin', room);
-            });
+        // while user first create and join room 
+        if((room+"").includes("chatWithAdmin_") && !adminSockets.includes(socket)) {
+            // Lưu trạng thái phòng vào danh sách
+            if (!roomsUsersOnline.includes(room)) {
+                roomsUsersOnline.push(room);
+            }
+            console.log("Existing room from user: " + roomsUsersOnline)
+            /// có thể set điều kiện ở đây nếu adminsocket = 0, nghĩa là phân loại user waiiting and inprogress
+            // báo cho các admin khác biết
+            adminSockets.forEach((adminSocket) => {
+                adminSocket.emit('userRequestChatAdmin', room)
+            })
         }
     });
 
     socket.on('sendMessage', ({ room, message }) => {
+        console.log("message: ", message, "from room ", room)
         io.to(room).emit('receiveMessage', message);
-        console.log("message: " + message)     
         // Lưu tin nhắn vào cơ sở dữ liệu
-        // const newMessage = new Message({
-        //   sender: message.senderId,
-        //   content: message.content,
-        // });
-    
-        // newMessage.save().then((savedMessage) => {
-        //   ChatRoom.findOneAndUpdate(
-        //     { users: { $all: [message.senderId, 'admin_id'] } },
-        //     { $push: { messages: savedMessage._id } },
-        //     { new: true, upsert: true },
-        //     (err, chatRoom) => {
-        //       if (err) console.error(err);
-        //       else console.log('Chat room updated:', chatRoom);
-        //     }
-        //   );
-        // });
+        const newMessage = new Message({
+          sender: message.senderId,
+          content: message.content,
+          chatRoom: room
+        });
+        newMessage.save()
+                             
     });
 
 });

@@ -96,7 +96,7 @@ const Navbar = (props) => {
         {/* Profile & Dropdown */}
         <div
           className="cursor-pointer w-12 h-12 flex justify-center items-center relative "
-          onClick={() => navigate("/admin/messageAdmin/1")}
+          onClick={() => navigate("/admin/messageAdmin/")}
         >
           <div className="w-[18px] h-[18px] rounded-full absolute  top-1 right-0 flex justify-center items-center text-xs font-semibold bg-primary z-20">
             2

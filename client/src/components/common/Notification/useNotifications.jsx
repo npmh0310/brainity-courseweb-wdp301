@@ -18,8 +18,6 @@ const useNotifications = (userId) => {
     });
   }, []);
 
-  console.log("user: " + user.role)
-
   useEffect(() => {
 
     // const socket = io("http://localhost:4000");
