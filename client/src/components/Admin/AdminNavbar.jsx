@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiAlignJustify } from "react-icons/fi";
 import avatar from "../../assets/images/Avatar/0_Mikel-Arteta.jpg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaFacebookMessenger } from "react-icons/fa";
 
 // Hàm hook để xử lý việc nhấn ra ngoài dropdown
 function useOutsideClick(ref, onClose) {
@@ -26,6 +28,7 @@ function useOutsideClick(ref, onClose) {
 const Dropdown = ({ button, children, classNames, animation }) => {
   // Tạo một ref để tham chiếu đến element của dropdown
   const wrapperRef = useRef(null);
+
   // State để quản lý việc mở/đóng dropdown
   const [isOpen, setIsOpen] = useState(false);
 
@@ -42,7 +45,8 @@ const Dropdown = ({ button, children, classNames, animation }) => {
       {/* Nội dung dropdown */}
       <div
         className={`${classNames} absolute z-10 ${
-          animation || "origin-top-right transition-all duration-300 ease-in-out"
+          animation ||
+          "origin-top-right transition-all duration-300 ease-in-out"
         } ${isOpen ? "scale-100" : "scale-0"}`}
       >
         {children}
@@ -53,7 +57,7 @@ const Dropdown = ({ button, children, classNames, animation }) => {
 
 const Navbar = (props) => {
   const { onOpenSidenav, brandText } = props;
-
+  const navigate = useNavigate();
   return (
     <nav className="sticky top-0 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 md:px-24 px-0 pt-8 mx-0 lg:mx-12 mt-5 backdrop-blur-xl">
       <div className="ml-[6px]">
@@ -73,26 +77,35 @@ const Navbar = (props) => {
             to="#"
           >
             {brandText}
-          </Link>     
+          </Link>
         </div>
         <p className="shrink text-[33px] capitalize text-navy-700 ">
-          <Link
-            to="#"
-            className="font-bold capitalize hover:text-navy-700"
-          >
+          <Link to="#" className="font-bold capitalize hover:text-navy-700">
             {brandText}
           </Link>
         </p>
       </div>
 
-      <div className="relative mt-[3px] flex items-center gap-2 rounded-full px-2 py-2">
-      <span
+      <div className="relative mt-[3px] flex items-center gap-x-10 rounded-full px-2 py-2">
+        <span
           className="flex cursor-pointer text-xl text-gray-600 xl:hidden"
           onClick={onOpenSidenav}
         >
           <FiAlignJustify className="h-5 w-5" />
         </span>
         {/* Profile & Dropdown */}
+        <div
+          className="cursor-pointer w-12 h-12 flex justify-center items-center relative "
+          onClick={() => navigate("/admin/messageAdmin/1")}
+        >
+          <div className="w-[18px] h-[18px] rounded-full absolute  top-1 right-0 flex justify-center items-center text-xs font-semibold bg-primary z-20">
+            2
+          </div>
+          <FaFacebookMessenger
+            className=" transition-transform  duration-200 ease-in-out transform   hover:scale-110"
+            size={24}
+          />
+        </div>
         <Dropdown
           button={
             <img
@@ -113,16 +126,10 @@ const Navbar = (props) => {
               <div className="h-px w-full bg-gray-200 " />
 
               <div className="flex flex-col p-4">
-                <a
-                  href=" "
-                  className="text-sm text-gray-800 "
-                >
+                <a href=" " className="text-sm text-gray-800 ">
                   Profile Settings
                 </a>
-                <a
-                  href=" "
-                  className="mt-3 text-sm text-gray-800"
-                >
+                <a href=" " className="mt-3 text-sm text-gray-800">
                   Newsletter Settings
                 </a>
                 <a
