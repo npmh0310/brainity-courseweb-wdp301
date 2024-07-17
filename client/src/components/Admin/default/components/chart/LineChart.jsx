@@ -24,15 +24,18 @@ const LineChart = () => {
     chart: {
       type: 'line',
       fontFamily: 'Saira',
+      toolbar: {
+        show: false,
+      },
     },
-    colors: ["#4bbfbb", "#9966ff", "#ff9f40"], // Chỉnh màu sắc ở đây
+    colors: ["#4bbfbb", "#9966ff", "#ff9f40"],
     title: {
       text: "Monthly Sales Comparison",
       align: "center",
       style: {
         fontSize: '20px',
         fontFamily: 'Saira',
-      }
+      },
     },
     legend: {
       show: true,
@@ -44,26 +47,21 @@ const LineChart = () => {
       labels: {
         style: {
           fontFamily: 'Poppins',
-        }
-      }
+        },
+      },
     },
     yaxis: {
       labels: {
         style: {
           fontFamily: 'Poppins',
-        }
-      }
-    },
-    toolbar: {
-        show: false, // Đặt show: false ở đây
+        },
       },
+    },
   };
 
   return (
-    <div>
-      <div className="max-w-xl pt-2">
-        <Chart options={options} series={data.series} type="line" height={450} />
-      </div>
+    <div className="w-full max-w-2xl h-96 mx-auto">
+      <Chart options={options} series={data.series} type="line" height="100%" />
     </div>
   );
 };

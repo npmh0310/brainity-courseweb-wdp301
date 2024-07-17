@@ -7,7 +7,7 @@ import Widget from "./components/widget/Widget"
 import LineChart from "./components/chart/LineChart";
 const Dashboard = () => {
   return (
-    <div className=" lg:px-36 px-0">
+    <div className=" lg:px-36 px-6">
     <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
     <Widget
       icon={<MdBarChart className="h-7 w-7" />}
