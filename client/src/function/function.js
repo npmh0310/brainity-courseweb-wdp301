@@ -80,3 +80,15 @@ export function calculateOverallCompletionPercent(sections) {
       overal:completionPercent.toFixed(2)
   } // Định dạng thành hai chữ số thập phân
 }
+
+
+export function generateSlug(title) {
+  const slug = title
+    .toLowerCase() // Convert the title to lowercase
+    .replace(/\s+/g, "-") // Replace spaces with dashes
+    .replace(/[^\w\-]+/g, "") // Remove non-word characters except dashes
+    .replace(/\-\-+/g, "-") // Replace multiple consecutive dashes with a single dash
+    .replace(/^\-+/, "") // Remove dashes from the beginning
+    .replace(/\-+$/, ""); // Remove dashes from the end
+  return slug;
+}

@@ -1,5 +1,5 @@
 import { CgProfile } from "react-icons/cg";
-
+import parse from "html-react-parser";
 import { Link, useParams } from "react-router-dom";
 import {
   Eye,
@@ -12,9 +12,25 @@ import {
 } from "lucide-react";
 import BlogBg from "../../../assets/images/Blog/blogbg2.jpg";
 import { BlogData } from "./BlogData";
+import { getBlogById } from "../../../fetchData/Blog";
+import { useEffect, useState } from "react";
+import { formatDate2 } from "../../../function/function";
 
 function BlogDetail() {
+
+  const [blog, setBlog] = useState()
   const { id } = useParams();
+
+  const fetchData = async (id) => {
+    const res = await getBlogById(id)
+    if (res.status === 200) {
+      setBlog(res.data.data)
+    }
+
+  }
+  useEffect(() => {
+    fetchData(id)
+  }, [id])
 
   return (
     <div className="bg-white text-third">
@@ -54,92 +70,81 @@ function BlogDetail() {
           </div>
 
           <div>
-            {BlogData.filter((blog) => blog.id === parseInt(id)).map(
-              (blog, index) => (
-                <div key={index}>
-                  <div className="flex lg:flex-row justify-between mb-4 lg:mb-8">
-                    <div className="flex items-center gap-3 mb-4 lg:mb-0">
-                      <CgProfile className="text-2xl lg:text-4xl mr-2" />
-                      <div className="flex gap-2 lg:gap-4 text-xs lg:text-sm">
-                        <li className="list-none">Admin</li>
-                        <li>May 21, 2024</li>
-                        <li>1 min</li>
-                      </div>
-                    </div>
-                    <div className="">
-                      <Share2
-                        size="16px"
-                        className="lg:size-20px mr-0 lg:mr-20"
-                      />
+            {blog && 
+              <div>
+                <div className="flex lg:flex-row justify-between mb-4 lg:mb-8">
+                  <div className="flex items-center gap-3 mb-4 lg:mb-0">
+                  <img src={blog.author.avatar} className=" w-10 h-10 object-cover rounded-full" alt="" />
+                    <div className="flex gap-2 lg:gap-4 text-xs lg:text-sm">
+                      <li className="list-none">{blog.author.name}</li>
+                      <li>{formatDate2(blog.createdAt)}</li>
                     </div>
                   </div>
-
-                  <div className="block pt-8">
-                    <div className="pb-8 border-b-2">
-                      <h1 className="font-bold text-3xl lg:text-5xl pb-4 lg:pb-8 text-left italic">
-                        {blog.content}
-                      </h1>
-                      <p className="font-medium text-base lg:text-xl pb-4 lg:pb-8 text-left">
-                        Welcome to our e-learning course! Learn at your own
-                        pace, anytime, anywhere. Let's get started!
-                      </p>
-                      <img
-                        src={blog.image}
-                        alt="img"
-                        className="w-full lg:w-1/2 h-auto mx-auto pb-4 lg:pb-8"
-                      />
-                      <p className="font-bold text-xl lg:text-3xl text-left italic pb-4 lg:pb-8">
-                        {blog.script}
-                      </p>
-                      <p className="pb-4 lg:pb-8 text-sm lg:text-base">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Temporibus, optio dolor eligendi perferendis
-                        eveniet unde in? Blanditiis, porro sequi eaque illum
-                        quod aut impedit explicabo dolorum, tenetur nulla cumque
-                        odit. Lorem ipsum dolor sit amet consectetur adipisicing
-                        elit. Numquam sunt voluptatum magnam ratione temporibus
-                        deleniti harum. Illum possimus accusamus repellat ea
-                        aspernatur officia dignissimos, obcaecati quisquam
-                        doloremque, sed, laborum alias!
-                      </p>
-                      <h3 className="font-bold text-xl lg:text-3xl text-left italic pb-4 lg:pb-8">
-                        Next content
-                      </h3>
-                      <p className="pb-4 lg:pb-8 text-sm lg:text-base">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Temporibus, optio dolor eligendi perferendis
-                        eveniet unde in? Blanditiis, porro sequi eaque illum
-                        quod aut impedit explicabo dolorum, tenetur nulla cumque
-                        odit.Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Alias ad provident laborum quod ducimus eligendi
-                        consequatur aperiam! Libero ratione ut quibusdam
-                        doloremque deserunt illo sapiente perspiciatis hic,
-                        laborum laboriosam saepe.
-                      </p>
-                    </div>
-                    {/* blogFooter */}
-                    <div className="flex  justify-between border-b-2 mt-4 pb-4">
-                      <div className="flex gap-4 mb-4 lg:mb-0">
-                        <Facebook size="20px" fill="blue" stroke="0" />
-                        <Twitter size="20px" strokeWidth={2} />
-                        <Link2 size="20px" strokeWidth={2} />
-                      </div>
-                      <div className="flex gap-2 lg:gap-4 text-xs lg:text-base">
-                        <li className="list-none">Feature</li>
-                        <li>Feature</li>
-                      </div>
-                    </div>
-                    {/* blogShare */}
-                    <div className="flex py-4 justify-between">
-                      <ul className="flex gap-2 lg:gap-4 text-xs lg:text-base">
-                        <li>0 views</li>
-                        <li>0 comments</li>
-                      </ul>
-                    </div>
+                  <div className="">
+                    <Share2
+                      size="16px"
+                      className="lg:size-20px mr-0 lg:mr-20"
+                    />
                   </div>
                 </div>
-              )
-            )}
+
+                <div className="block pt-8">
+                  <div className="pb-8 border-b-2">
+                    <h1 className="font-bold text-1xl lg:text-3xl pb-4 lg:pb-8 text-left italic">
+                      {blog.title}
+                      {/* {parse(blog.content)} */}
+                    </h1>
+                    <p className="font-medium text-base lg:text-lg pb-4 lg:pb-8 text-left">
+                      {blog.description}
+                    </p>
+                    <img
+                      src={blog.imgUrl}
+                      alt="img"
+                      className="w-full lg:w-1/2 h-auto mx-auto pb-4 lg:pb-8"
+                    />
+                    {/* <p className="font-bold text-lg lg:text-1xl text-left italic pb-4 lg:pb-8">
+                      {parse(blog.content)}
+                    </p> */}
+                    <p className="pb-4 lg:pb-8 text-sm lg:text-base">
+                    {parse(blog.content)}
+                    </p>
+                    {/* <h3 className="font-bold text-xl lg:text-3xl text-left italic pb-4 lg:pb-8">
+                      Next content
+                    </h3>
+                    <p className="pb-4 lg:pb-8 text-sm lg:text-base">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing
+                      elit. Temporibus, optio dolor eligendi perferendis
+                      eveniet unde in? Blanditiis, porro sequi eaque illum
+                      quod aut impedit explicabo dolorum, tenetur nulla cumque
+                      odit.Lorem ipsum, dolor sit amet consectetur adipisicing
+                      elit. Alias ad provident laborum quod ducimus eligendi
+                      consequatur aperiam! Libero ratione ut quibusdam
+                      doloremque deserunt illo sapiente perspiciatis hic,
+                      laborum laboriosam saepe.
+                    </p> */}
+                  </div>
+                  {/* blogFooter */}
+                  <div className="flex  justify-between border-b-2 mt-4 pb-4">
+                    <div className="flex gap-4 mb-4 lg:mb-0">
+                      <Facebook size="20px" fill="blue" stroke="0" />
+                      <Twitter size="20px" strokeWidth={2} />
+                      <Link2 size="20px" strokeWidth={2} />
+                    </div>
+                    <div className="flex gap-2 lg:gap-4 text-xs lg:text-base">
+                      <li className="list-none">Feature</li>
+                      <li>Feature</li>
+                    </div>
+                  </div>
+                  {/* blogShare */}
+                  <div className="flex py-4 justify-between">
+                    <ul className="flex gap-2 lg:gap-4 text-xs lg:text-base">
+                      <li>0 views</li>
+                      <li>0 comments</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
