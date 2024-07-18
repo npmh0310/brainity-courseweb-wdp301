@@ -26,12 +26,12 @@ function CartPage() {
     : 0;
 
   const handleCheckout = async () => {
-    const res = await createPayment(total)
+    const res = await createPayment(total, "cartne", "hongcocourseIddau");
     if (res) {
-      console.log(res.data)
-      window.open(res.data.url, "_self")
+      console.log(res.data);
+      window.open(res.data.url, "_self");
     }
-  }
+  };
 
   return (
     <div className=" max-w-[1440px]  mx-auto px-10 pb-24  animate-open">
@@ -40,8 +40,9 @@ function CartPage() {
       </h1>
       <div className=" flex flex-col lg:flex-row mb-4">
         <div
-          className={`${courseInCart && courseInCart.length > 0 ? "lg:w-9/12" : "lg:w-full"
-            } w-full`}
+          className={`${
+            courseInCart && courseInCart.length > 0 ? "lg:w-9/12" : "lg:w-full"
+          } w-full`}
         >
           <div className=" mt-8 flex flex-col gap-y-4">
             <h3 className=" font-semibold mb-2">
@@ -95,10 +96,11 @@ function CartPage() {
           </div>
         </div>
         <div
-          className={`${courseInCart && courseInCart.length > 0
+          className={`${
+            courseInCart && courseInCart.length > 0
               ? "lg:w-3/12 animate-transCourse"
               : " hidden animate-bounce"
-            }  lg:w-3/12 pl-6 w-full flex flex-col items-start py-4`}
+          }  lg:w-3/12 pl-6 w-full flex flex-col items-start py-4`}
         >
           <div className=" mt-8 mb-4 text-start">
             <h3 className=" text-third font-semibold mb-4">Total:</h3>
