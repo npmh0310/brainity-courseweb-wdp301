@@ -420,6 +420,85 @@ const getStudents = async (req, res) => {
   }
 };
 
+// Các hàm để admin confirm hay reject
+const getAllCourseForConfirm = async (req, res) => {
+  try {
+    const courses = await Course.find({})
+      .populate('instructor') 
+      .populate('categories')
+      .populate({
+        path: 'sections',
+        populate: {
+          path: 'lessons'
+        }
+      })
+      .sort({ createdAt: -1 });//Sort theo createdAt
+    res.status(200).json({
+      success: true,
+      count: courses.length,
+      data: courses
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching courses: ' + error.message
+    });
+  }
+};
+
+// Xác nhận khóa học
+const confirmCourse = async (req, res) => {
+  const { courseId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ success: false, message: 'Invalid courseId' });
+  }
+
+  try {
+    const course = await Course.findByIdAndUpdate(courseId, {
+      isConfirm: true,
+      isRejected: false
+    }, { new: true });
+
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Course not found' });
+    }
+
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error confirming course: ' + error.message
+    });
+  }
+};
+
+// Từ chối khóa học
+const rejectCourse = async (req, res) => {
+  const { courseId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ success: false, message: 'Invalid courseId' });
+  }
+
+  try {
+    const course = await Course.findByIdAndUpdate(courseId, {
+      isConfirm: false,
+      isRejected: true
+    }, { new: true });
+
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Course not found' });
+    }
+
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error rejecting course: ' + error.message
+    });
+  }
+};
+
+
 module.exports = {
   createCourse,
   deleteCourseById,
@@ -438,4 +517,7 @@ module.exports = {
   getCourseByName,
   getEnrolledCourses,
   getStudents,
+  getAllCourseForConfirm,
+  confirmCourse,
+  rejectCourse,
 };

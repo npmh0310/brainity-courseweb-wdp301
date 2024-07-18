@@ -75,7 +75,6 @@ const createPayment = (amount) => {
 const updatePayment = (param) => {
   return axios.get(`/vnpay/vnpay_ipn${param}`);
 };
-
 export {
   getAllCourse,
   getCourseInHomePage,

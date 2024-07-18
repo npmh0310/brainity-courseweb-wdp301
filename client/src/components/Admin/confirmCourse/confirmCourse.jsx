@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { formatDate2 } from "../../../function/function";
 
 const ConfirmCourseTable = ({ courses }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +16,7 @@ const ConfirmCourseTable = ({ courses }) => {
     const delayDebounceFn = setTimeout(() => {
       setFilteredCourses(
         courses.filter((course) =>
-          course.name.toLowerCase().includes(searchTerm.toLowerCase())
+          course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     }, 300);
@@ -25,7 +26,7 @@ const ConfirmCourseTable = ({ courses }) => {
 
   const handleRowClick = (id) => {
     console.log(id);
-    navigate(`/admin/confirmCourse/${id}`);
+    navigate(`${id}`);
   };
 
   return (
@@ -62,7 +63,7 @@ const ConfirmCourseTable = ({ courses }) => {
                     scope="col"
                     className="px-5 py-3 border-b-2 border-gray-200 bg-primary text-left text-sm font-semibold text-white uppercase tracking-wider"
                   >
-                    Category
+                    Date Created
                   </th>
                   <th
                     scope="col"
@@ -91,25 +92,25 @@ const ConfirmCourseTable = ({ courses }) => {
                     className={`hover:bg-gray-100 cursor-pointer ${
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
-                    onClick={() => handleRowClick(course.id)}
+                    onClick={() => handleRowClick(course._id)}
                   >
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <div className="flex items-center">
                         <img
-                          src={course.img}
-                          alt={course.name}
+                          src={course.imageUrl}
+                          alt={course.courseName}
                           className="w-10 h-10 rounded-full mr-3"
                         />
                         <div className="ml-3">
                           <p className="text-gray-900 whitespace-no-wrap">
-                            {course.name}
+                            {course.courseName}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {course.category}
+                      {formatDate2(course.createdAt)}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -119,15 +120,15 @@ const ConfirmCourseTable = ({ courses }) => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {course.uploadBy}
+                        {course.instructor.username}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <span
                         className={`relative inline-block px-3 py-1 font-medium leading-tight ${
-                          course.status === "Confirmed"
+                          course.isConfirm
                             ? "text-green-900"
-                            : course.status === "Rejected"
+                            : course.isRejected
                             ? "text-black"
                             : "text-gray-900"
                         }`}
@@ -135,14 +136,20 @@ const ConfirmCourseTable = ({ courses }) => {
                         <span
                           aria-hidden
                           className={`absolute inset-0 ${
-                            course.status === "Confirmed"
+                            course.isConfirm
                               ? "bg-primary"
-                              : course.status === "Rejected"
+                              : course.isRejected
                               ? "bg-red-600"
                               : "bg-gray-200"
                           } opacity-50 rounded-full`}
                         ></span>
-                        <span className="relative">{course.status}</span>
+                        <span className="relative">
+                          {course.isConfirm
+                            ? "Confirm"
+                            : course.isRejected
+                            ? "Rejected"
+                            : "Pending"}
+                        </span>
                       </span>
                     </td>
                   </tr>
