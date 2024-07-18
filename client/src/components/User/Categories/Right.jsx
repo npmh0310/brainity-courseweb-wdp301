@@ -22,7 +22,6 @@ export const Right = ({ filteredCourses }) => {
     }
   }, [courseView, filteredCourses]);
 
-  console.log("right component", courseList);
   return (
     <div ref={courseRef} className="col-span-5 block">
       <div

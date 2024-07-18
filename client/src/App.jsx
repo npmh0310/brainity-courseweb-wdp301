@@ -38,7 +38,6 @@ import { getCart } from "./redux/features/cartSlice";
 import ChatBoxAdmin from "./pages/Admin/ChatBoxAdmin";
 import PaymentResult from "./components/User/Payment";
 
-
 function App() {
   const dispatch = useDispatch();
   const isLogin = useSelector(getIsLogin);
@@ -49,9 +48,9 @@ function App() {
 
   useEffect(() => {
     if (isLogin) {
-      dispatch(getCart())
+      dispatch(getCart());
     }
-  }, [dispatch, isLogin])
+  }, [dispatch, isLogin]);
 
   return (
     <>
@@ -147,18 +146,19 @@ function App() {
           </Route>
           {/* Route Admin*/}
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
-          <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
-        
+          <Route
+            path="/admin/messageAdmin/:roomId"
+            element={<ChatBoxAdmin />}
+          />
+
           <Route path="/admin/*" element={<AdminLayout />}>
-            <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
             <Route path="confirmCourse" element={<ConfirmCourseTable />} />
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
           </Route>
           {/* Route Payment Success*/}
-          <Route path="/paymentSuccess" element={<PaymentSuccess />}>
-          </Route>
+          <Route path="/paymentSuccess" element={<PaymentSuccess />}></Route>
           <Route path="/payment" element={<PaymentResult />} />
         </Routes>
       </BrowserRouter>
