@@ -25,15 +25,13 @@ const PieChart = () => {
           }
         }
       },
-      colors: ["#04DDB2", "#81eed8", "#029a7c"], // Chỉnh màu sắc ở đây
+      colors: ["#04DDB2", "#81eed8", "#029a7c"],
     },
   };
 
   return (
-    <div>
-      <div className="max-w-xl">
-        <Chart options={data.options} series={data.series} type="pie" className='text-center' />
-      </div>
+    <div className="w-full max-w-2xl h-96 mx-auto">
+      <Chart options={data.options} series={data.series} type="pie" height="100%" />
     </div>
   );
 };

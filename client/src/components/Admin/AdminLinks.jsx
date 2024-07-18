@@ -19,26 +19,17 @@ export function SidebarLinks({ routes }) {
 
         return (
           <Link key={index} to={`${route.layout}/${route.path}`}>
-            <div className="relative mb-3 flex hover:cursor-pointer my-4">
-              <li className="mb-3 flex cursor-pointer items-center px-8">
-                <span
-                  className={`${
-                    isActive ? "font-bold text-primary" : "font-medium text-gray-600"
-                  }`}
-                >
+            <div className={`relative pb-3 block hover:cursor-pointer 
+            hover:bg-primary hover:bg-opacity-15 transition-all
+              py-4 ${isActive ? "bg-primary bg-opacity-15 border-r-4 border-primary" : ""}`}>
+              <li className="mb-3 flex cursor-pointer justify-center items-center px-8">
+                <span className={`${isActive ? "font-bold text-primary" : "font-medium text-gray-600"}`}>
                   {route.icon ? route.icon : <IoMdHome />}
                 </span>
-                <p
-                  className={`leading-1 ml-2 flex text-xl ${
-                    isActive ? "font-bold text-navy-700 " : "font-medium text-gray-600"
-                  }`}
-                >
+                <p className={`leading-1 ml-2 flex ${isActive ? "font-bold text-primary" : "font-medium text-gray-600"}`}>
                   {route.name}
                 </p>
               </li>
-              {isActive && (
-                <div className="absolute right-0 top-px h-7 w-1 rounded-lg bg-primary" />
-              )}
             </div>
           </Link>
         );

@@ -246,7 +246,7 @@ function HeaderUser() {
                 <ul className="text-sm">
                   <li className="hover:text-black mb-4">
                     <Link
-                      to="/"
+                      to="/blogform"
                       className="block py-2"
                       onClick={() => handleUserClose()}
                     >
@@ -255,7 +255,7 @@ function HeaderUser() {
                   </li>
                   <li className="hover:text-black mb-4">
                     <Link
-                      to="/"
+                      to="/myblog"
                       className="block py-2"
                       onClick={() => handleUserClose()}
                     >

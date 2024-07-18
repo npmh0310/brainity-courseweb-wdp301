@@ -15,10 +15,21 @@ const getCourseById = (courseId) => {
   const getSectionById = (sectionId) => {
     return axios.get(`/section/${sectionId}`);
   };
+  const getAllCourseForConfirm = () => {
+    return axios.get("/course/confirm/getCourse");
+  }
+  const confirmCourse = (id) => {
+    return axios.put(`/course/confirm/${id}`);
+  }
+  const rejectCourse = (id) => {
+    return axios.put(`/course/reject/${id}`);
+  }
 export{
     getAllCourses,
     getAllCategories,
     getCourseById,
-    getSectionById
-
+    getSectionById,
+    getAllCourseForConfirm,
+    confirmCourse,
+    rejectCourse
 }
