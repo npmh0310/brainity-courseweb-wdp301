@@ -150,12 +150,13 @@ function App() {
           {/* Route Admin*/}
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
           <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
-        <Route path="/admin/confirmCourse/:id" element={<ConfirmCourseDetail />} />
+       
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
-            <Route path="confirmCourse" element={<ConfirmCourseLayout />} />
-
+            <Route path="confirmCourse/*" element={<ConfirmCourseLayout />} >
+             <Route path=":id" element={<ConfirmCourseDetail />} />
+            </Route>
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
           </Route>

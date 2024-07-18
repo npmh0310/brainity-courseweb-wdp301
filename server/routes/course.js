@@ -2,7 +2,7 @@ var express = require('express');
 const { createCourse,getCourseInHomePage, getAllCourse, getCourseById, updateCourse, deleteCourseById, getCourseCount,
     getCourseBySearch, getFeaturedCourse, getFreeCourse, getProCourse, getCourseOfTeacher,
     getCourseByName, enrollCourse, 
-    getStudents} = require('../controllers/courseController');
+    getStudents,getAllCourseForConfirm, confirmCourse, rejectCourse} = require('../controllers/courseController');
 const { verify } = require('jsonwebtoken');
 const { verifyAdmin, verifyTeacher, verifyUser } = require('../utils/verifyToken');
 
@@ -25,5 +25,8 @@ courseRoute.post("/teacher/", verifyTeacher, createCourse);
 courseRoute.put("/teacher/:id", verifyTeacher, updateCourse);
 courseRoute.delete("/teacher/:id", verifyTeacher, deleteCourseById);
 courseRoute.post("/getCourseByName", getCourseByName)
-
+//admin
+courseRoute.get("/confirm/getCourse", getAllCourseForConfirm);
+courseRoute.put("/confirm/:courseId", confirmCourse);
+courseRoute.put("/reject/:courseId",rejectCourse);
 module.exports = courseRoute;
