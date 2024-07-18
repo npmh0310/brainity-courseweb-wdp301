@@ -107,13 +107,17 @@ const completeLesson =  async ( req, res) => {
     const {courseId, lessonId , isCompleted } = req.body;  
 
     try {
-        const updateLesson = await UserChapterProgress.findOneAndUpdate(
-            {user : userId, course: courseId , "lessonsProgress.lesson": lessonId},
-            {
-                $set: { 'lessonsProgress.$.isCompleted': isCompleted }
-            }
-        )
-        res.status(200).send('complete successfull')
+        const userCourse = await UserChapterProgress.findOne({user: userId, course: courseId})
+        if(!userCourse.isCompleted){
+            const updateLesson = await UserChapterProgress.findOneAndUpdate(
+                {user : userId, course: courseId , "lessonsProgress.lesson": lessonId},
+                {
+                    $set: { 'lessonsProgress.$.isCompleted': isCompleted }
+                }
+            )
+            res.status(200).send('complete successfull')
+        }
+        
 
     } catch (error) {
         res.status(500).send('complete faild')

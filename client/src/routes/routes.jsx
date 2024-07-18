@@ -17,6 +17,8 @@ import MyBlog from "../components/User/BlogPage/MyBlog";
 import SavedBlog from "../components/User/BlogPage/SavedBlog";
 import RequestToTeacher from "../components/User/ProfileUser/RequestToTeacher";
 import { SearchPage } from "../components/User/SearchPage/SearchPage";
+import CreateBlog from "../components/User/BlogPage/CreateBlog";
+import ReviewBlog from "../components/User/BlogPage/ReviewBlog";
 
 const routes = [
   { index: true, element: <HomePage />, state: "home" },
@@ -71,15 +73,19 @@ const routes = [
   },
   {
     path: "/blogform",
-    element: <DraftEditor />,
+    element: <CreateBlog />,
   },
   {
     path: "cart",
     element: <CartPage />,
   },
   {
-    path: "/myblog",
+    path: "/myblog/*",
     element: <MyBlog />,
+  },
+  {
+    path: "/myblog/:id",
+    element: <ReviewBlog />,
   },
   {
     path: "/savedblog",

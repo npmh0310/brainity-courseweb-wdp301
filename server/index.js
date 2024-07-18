@@ -22,6 +22,7 @@ const favouriteRoute = require('./routes/favourite');
 const ratingRoute = require('./routes/rating');
 const notificationRoute = require('./routes/notification');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
+const blogRoute = require('./routes/blog')
 
 const checkout = require('./routes/checkout');
 // const zalopayRoute = require('./routes/zaloPay');
@@ -146,6 +147,7 @@ app.use('/api/v1/vnpay', vnpayRoute)
 
 app.use('/api/v1/user' , userRouter)
 app.use('/api/v1/notification', notificationRoute)
+app.use('/api/v1/blogs', blogRoute)
 
 
 
