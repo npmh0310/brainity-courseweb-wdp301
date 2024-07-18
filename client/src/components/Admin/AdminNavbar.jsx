@@ -59,7 +59,7 @@ const Navbar = (props) => {
   const { onOpenSidenav, brandText } = props;
   const navigate = useNavigate();
   return (
-    <nav className="sticky top-0 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 md:px-24 px-0 pt-8 mx-0 lg:mx-12 mt-5 backdrop-blur-xl">
+    <nav className="top-0 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 md:px-24 px-0 pt-8 mx-0 lg:mx-12 mt-5 backdrop-blur-xl">
       <div className="ml-[6px]">
         <div className="h-6 w-[224px] pt-1">
           <a

@@ -20,6 +20,7 @@ import { GlobalStyles } from "@mui/material";
 import Dashboard from "./components/Admin/default/Dashboard";
 import ConfirmTeacherTable from "./components/Admin/confirmTeacher/confirmTeacher";
 import ConfirmCourseTable from "./components/Admin/confirmCourse/confirmCourse";
+import ConfirmCourseDetail from "./components/Admin/confirmCourse/ConfirmCourseDetail"
 import ConfirmBlogTable from "./components/Admin/confirmBlog/confirmBlog";
 import ProfileUserPage from "./pages/ProfileUserPage";
 import TeacherPage from "./pages/Teacher/TeacherPage";
@@ -37,6 +38,7 @@ import VideoChaper from "./components/User/LearningPage/VideoChapter/VideoChaper
 import { getCart } from "./redux/features/cartSlice";
 import ChatBoxAdmin from "./pages/Admin/ChatBoxAdmin";
 import PaymentResult from "./components/User/Payment";
+import ConfirmCourseLayout from "./components/Admin/confirmCourse/ConfirmCourseLayout";
 
 
 function App() {
@@ -148,11 +150,13 @@ function App() {
           {/* Route Admin*/}
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
           <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
-        
+       
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
-            <Route path="confirmCourse" element={<ConfirmCourseTable />} />
+            <Route path="confirmCourse/*" element={<ConfirmCourseLayout />} >
+             <Route path=":id" element={<ConfirmCourseDetail />} />
+            </Route>
             <Route path="confirmBlog" element={<ConfirmBlogTable />} />
             <Route path="default" element={<Dashboard />} />
           </Route>

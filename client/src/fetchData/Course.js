@@ -51,9 +51,9 @@ const addCourseInFavourite = (courseId) => {
 };
 
 const getCourseBySearch = (searchTerm) => {
-  return axios.get(`/course/search`, {
+  return axios.get(`/course/search/getCourseBySearch`, {
     params: {
-      city: searchTerm,
+      courseName: searchTerm,
     },
   });
 };
@@ -75,7 +75,6 @@ const createPayment = (amount, type, courseId) => {
 const updatePayment = (param) => {
   return axios.get(`/vnpay/vnpay_ipn${param}`);
 };
-
 export {
   getAllCourse,
   getCourseInHomePage,
