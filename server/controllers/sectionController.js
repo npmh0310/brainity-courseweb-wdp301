@@ -7,19 +7,22 @@ const Lesson = require('../models/lesson');
 // teacher
 const createChapterInCourse = async (req, res) => {
     const courseId = req.params.courseId;
-    const newChapter = new Section({ ...req.body })
+    const newChapters = req.body
+    // console.log(newChapters)
 
     try {
-        const savedChapter = await newChapter.save()
+        const savedChapters = await Section.insertMany(newChapters);
+
+        const sectionIds = savedChapters.map(chapter => chapter._id);
 
         await Course.findByIdAndUpdate(courseId, {
-            $push: { sections: savedChapter._id }
-        })
+            $push: { sections: { $each: sectionIds } }
+        });
 
         res.status(200).json({
             success: true,
             message: "Successfully Section submitted",
-            data: savedChapter
+            data: savedChapters
         })
     } catch (err) {
         res.status(500).json({
