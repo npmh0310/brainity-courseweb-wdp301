@@ -9,28 +9,75 @@ import {
   Facebook,
   Twitter,
   Link2,
+  SendHorizontal,
 } from "lucide-react";
 import BlogBg from "../../../assets/images/Blog/blogbg2.jpg";
 import { BlogData } from "./BlogData";
 import { getBlogById } from "../../../fetchData/Blog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { formatDate2 } from "../../../function/function";
 
 function BlogDetail() {
-
-  const [blog, setBlog] = useState()
+  const [blog, setBlog] = useState();
   const { id } = useParams();
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [commentText, setCommentText] = useState(
+    "Very straight-to-point article. Really worth time reading. Thank you! But tools are just the instruments for the UX designers. The knowledge of the design tools are as important as the creation of the design strategy."
+  );
+
+  const textareaRef = useRef(null);
+
+  const toggleDropdown = (dropdownId) => {
+    setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setOpenDropdown(null); // Close the dropdown
+  };
+
+  const handleInputChange = (e) => {
+    setCommentText(e.target.value);
+  };
+
+  const handleInputKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent new line on Enter
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    // Optionally reset commentText to its initial value if needed
+  };
+
+  // Prevent textarea from exiting edit mode when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (textareaRef.current && !textareaRef.current.contains(event.target)) {
+        // Do nothing, keep the textarea open
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isEditing]);
 
   const fetchData = async (id) => {
-    const res = await getBlogById(id)
+    const res = await getBlogById(id);
     if (res.status === 200) {
-      setBlog(res.data.data)
+      setBlog(res.data.data);
     }
+  };
 
-  }
   useEffect(() => {
-    fetchData(id)
-  }, [id])
+    fetchData(id);
+  }, [id]);
 
   return (
     <div className="bg-white text-third">
@@ -70,11 +117,15 @@ function BlogDetail() {
           </div>
 
           <div>
-            {blog && 
+            {blog && (
               <div>
                 <div className="flex lg:flex-row justify-between mb-4 lg:mb-8">
                   <div className="flex items-center gap-3 mb-4 lg:mb-0">
-                  <img src={blog.author.avatar} className=" w-10 h-10 object-cover rounded-full" alt="" />
+                    <img
+                      src={blog.author.avatar}
+                      className=" w-10 h-10 object-cover rounded-full"
+                      alt=""
+                    />
                     <div className="flex gap-2 lg:gap-4 text-xs lg:text-sm">
                       <li className="list-none">{blog.author.name}</li>
                       <li>{formatDate2(blog.createdAt)}</li>
@@ -106,7 +157,7 @@ function BlogDetail() {
                       {parse(blog.content)}
                     </p> */}
                     <p className="pb-4 lg:pb-8 text-sm lg:text-base">
-                    {parse(blog.content)}
+                      {parse(blog.content)}
                     </p>
                     {/* <h3 className="font-bold text-xl lg:text-3xl text-left italic pb-4 lg:pb-8">
                       Next content
@@ -144,7 +195,7 @@ function BlogDetail() {
                   </div>
                 </div>
               </div>
-            }
+            )}
           </div>
         </div>
       </div>
@@ -194,6 +245,106 @@ function BlogDetail() {
         <p className="font-bold text-lg lg:text-xl text-left text-pretty italic border-b-2 pb-2">
           Comments
         </p>
+        {/* comment has been posted */}
+        <div className="text-third">
+          <article className="p-6 text-base bg-white rounded-lg">
+            <footer className="relative flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                  <img
+                    className="mr-2 w-6 h-6 rounded-full"
+                    src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                    alt="Michael Gough"
+                  />
+                </p>
+                <p className="text-sm text-third">
+                  <time
+                    pubdate
+                    datetime="2022-02-08"
+                    title="February 8th, 2022"
+                  >
+                    Feb. 8, 2022
+                  </time>
+                </p>
+              </div>
+              <div className="relative">
+                <button
+                  id="dropdownComment1Button"
+                  className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                  type="button"
+                  onClick={() => toggleDropdown("dropdownComment1")}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 16 3"
+                  >
+                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                  </svg>
+                  <span className="sr-only">Comment settings</span>
+                </button>
+                <div
+                  id="dropdownComment1"
+                  className={`${
+                    openDropdown === "dropdownComment1" ? "block" : "hidden"
+                  } absolute right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow`}
+                >
+                  <ul
+                    className="py-1 text-sm text-gray-700"
+                    aria-labelledby="dropdownMenuIconHorizontalButton"
+                  >
+                    <li>
+                      <button
+                        onClick={handleEditClick}
+                        className="block py-2 px-4 hover:bg-gray-100 w-full text-left"
+                      >
+                        Edit
+                      </button>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="block py-2 px-4 text-red-500 hover:bg-gray-100"
+                      >
+                        Remove
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </footer>
+            {isEditing ? (
+              <div className="flex flex-col relative">
+                <textarea
+                  ref={textareaRef}
+                  type="text"
+                  value={commentText}
+                  onChange={handleInputChange}
+                  onKeyPress={handleInputKeyPress}
+                  className="w-full h-20 p-2 border border-gray-300 rounded text-base"
+                  autoFocus
+                />
+                <div className="self-end items-center flex gap-2 mt-2">
+                  <button
+                    onClick={handleCancelEdit}
+                    className="w-fit text-center h-fit bg-red-400 hover:bg-red-300 text-white px-3 py-1 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex "
+                  >
+                    Cancel
+                  </button>
+                  <button className="w-fit h-fit bg-primary hover:bg-[#03ecbe] text-white px-4 py-2 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex ">
+                    <SendHorizontal size="16px" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-third text-base">{commentText}</p>
+            )}
+          </article>
+        </div>
+        {/* postComment */}
+
         <div className="w-full pt-4 lg:pt-8 pb-10 lg:pb-20 px-2">
           <form className="mb-6">
             <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border-2">
