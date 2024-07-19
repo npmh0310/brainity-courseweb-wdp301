@@ -48,6 +48,7 @@ import {
   getIsLogin,
   validateToken,
 } from "../redux/features/authSlice";
+
 function CourseDetail() {
   const { id: courseId } = useParams();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -227,6 +228,7 @@ function CourseDetail() {
     }
   };
 
+
   const handleBuyNow = async () => {
     const res = await createPayment(course.price, "buynowne", courseId);
     if (res) {
@@ -234,6 +236,7 @@ function CourseDetail() {
       window.open(res.data.url, "_self");
     }
   };
+
 
   return (
     <div className="relative courseDetail w-full ">
@@ -637,10 +640,14 @@ function CourseDetail() {
                                 <Heart size={14} />
                               </div>
                             </div>
+
+                            <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
+
                             <div
                               className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
                               onClick={handleBuyNow}
                             >
+
                               Buy now
                             </div>
                           </div>
