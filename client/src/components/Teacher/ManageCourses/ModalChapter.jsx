@@ -8,9 +8,12 @@ const ModalChapter = ({ handleClose, setStatus, courseId }) => {
   const fileInputRef = React.useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [data, setData] = useState({
-    sectionName: "",
-  });
+  const [data, setData] = useState([
+    {
+      sectionName: "",
+    },
+  ]);
+  const [sections, setSections] = useState([{ sectionName: "" }]);
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
@@ -42,7 +45,9 @@ const ModalChapter = ({ handleClose, setStatus, courseId }) => {
   const handleClick = async (e) => {
     e.preventDefault();
 
-    const res = await createSection(data, courseId);
+    console.log(sections);
+
+    const res = await createSection(sections, courseId);
     if (res && res.status === 200) {
       toast.success("Successfully created");
       setStatus(true);
@@ -53,7 +58,6 @@ const ModalChapter = ({ handleClose, setStatus, courseId }) => {
   };
 
   // create more input
-  const [sections, setSections] = useState([{ sectionName: "" }]);
   const inputRefs = useRef([]);
 
   const handleAddSection = (e) => {

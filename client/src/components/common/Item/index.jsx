@@ -14,7 +14,6 @@ function Item(props) {
 
   return (
     <div className="py-7 px-6 bg-white w-[98%] rounded-md  relative border border-gray-200 hover:border-primary min-h-[430px] hover:-translate-y-2 transition-all ease-in-out duration-500">
-
       <Link
         className="absolute top-0 bottom-0 left-0 right-0 z-20"
         to={`/course/${data._id}`}
@@ -26,7 +25,6 @@ function Item(props) {
           <img
             className="w-full rounded-md h-48 object-cover"
             src={data.imageUrl}
-
             alt={data.courseName}
           />
         )}
@@ -49,21 +47,24 @@ function Item(props) {
               </h2>
             )}
             <div className="flex flex-row items-center gap-x-1">
-              <span className="text-sm">{data.ratingInfo.avgRating}</span>
-              <Rating
-                className="mb-[2px]"
-                name="half-rating-read"
-                defaultValue={data.ratingInfo.avgRating}
-                precision={0.5}
-                readOnly
-                size="small"
-              />
-              <span className="text-sm text-gray-500">
-                ({data.numOfEnrolledUsers})
-              </span>
+              {data.ratingInfo && (
+                <>
+                  <span className="text-sm">{data.ratingInfo.avgRating}</span>
+                  <Rating
+                    className="mb-[2px]"
+                    name="half-rating-read"
+                    defaultValue={data.ratingInfo.avgRating}
+                    precision={0.5}
+                    readOnly
+                    size="small"
+                  />
+                </>
+              )}
             </div>
             <div className="flex flex-row gap-x-2 items-center">
-              <span className="font-medium">{formatCurrencyVND(data.price)}</span>
+              <span className="font-medium">
+                {formatCurrencyVND(data.price)}
+              </span>
               <span className="text-gray-400 text-sm line-through">
                 120000 VND
               </span>
