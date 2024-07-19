@@ -14,7 +14,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
-import { getCourseById, getStudents } from "../fetchData/Course";
+import { createPayment, getCourseById, getStudents } from "../fetchData/Course";
 import GlobalLoading from "../components/common/GlobalLoading/GlobalLoading";
 import {
   formatCurrencyVND,
@@ -227,6 +227,16 @@ function CourseDetail() {
       setStudents(res.data.total);
     }
   };
+
+
+  const handleBuyNow = async () => {
+    const res = await createPayment(course.price, "buynowne", courseId);
+    if (res) {
+      console.log(res.data);
+      window.open(res.data.url, "_self");
+    }
+  };
+
 
   return (
     <div className="relative courseDetail w-full ">
@@ -630,7 +640,14 @@ function CourseDetail() {
                                 <Heart size={14} />
                               </div>
                             </div>
+
                             <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
+
+                            <div
+                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
+                              onClick={handleBuyNow}
+                            >
+
                               Buy now
                             </div>
                           </div>

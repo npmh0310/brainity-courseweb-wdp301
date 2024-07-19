@@ -5,11 +5,11 @@ import avatarTeacher from "../../../assets/images/Avatar/0_Mikel-Arteta.jpg";
 import ImgLogin from "../../../assets/images/logo_noBg.png";
 import { useSelector } from "react-redux";
 import Popover from "@mui/material/Popover";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
-
+  const navigate  = useNavigate()
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -43,9 +43,10 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
         } flex flex-row gap-x-3 items-center md:w-1/3 lg:w-1/5 h-full `}
       >
         <div
+          onClick={() => navigate('/')}
           className={`${
             hiddenSidebar ? "hidden" : "flex"
-          }   items-center transition-all `}
+          }   items-center transition-all cursor-pointer `}
         >
           <img
             src={ImgLogin}

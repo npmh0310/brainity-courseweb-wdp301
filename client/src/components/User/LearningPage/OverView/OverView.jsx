@@ -32,8 +32,10 @@ function OverView(props) {
 
     
     useEffect(() => {
-        fetchStudents(course._id)
-        fetchRattingCourse(course._id);
+        if(course._id && course._id !== '' && course._id !== null) {
+            fetchStudents(course._id)
+            fetchRattingCourse(course._id);
+        }
     }, [course._id]);
 
     return (
