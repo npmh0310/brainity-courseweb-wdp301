@@ -10,6 +10,9 @@ const blogSchema = new mongoose.Schema(
         title: {
             type: String
         },
+        description: {
+            type: String
+        },
         content: {
             type: String,
             required: true
@@ -25,7 +28,12 @@ const blogSchema = new mongoose.Schema(
             },
             content: String
         }
-    }
+        ,
+        imgUrl: {
+            type:String
+        }
+    },
+    { timestamps: true }
 );
 
 var Blog = mongoose.model("Blog", blogSchema);

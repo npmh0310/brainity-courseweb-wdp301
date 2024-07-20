@@ -46,7 +46,6 @@ const deleteCourseInFavourite = (courseId) => {
 };
 
 const addCourseInFavourite = (courseId) => {
-
   const data = { action: "add", courseId };
   return axios.post(`/favourite`, data);
 };
@@ -59,23 +58,23 @@ const getCourseBySearch = (searchTerm) => {
   });
 };
 
-
-
 const getStudents = (courseId) => {
-  return axios.get("/course/getStudents/" + courseId)
-}
-
+  return axios.get("/course/getStudents/" + courseId);
+};
 
 // checkout
-const createPayment = (amount) => {
+const createPayment = (amount, type, courseId) => {
   // const amount = 10000;
-  return axios.post(`/vnpay/create_payment_url`, { amount: amount });
+  return axios.post(`/vnpay/create_payment_url`, {
+    amount: amount,
+    type: type,
+    courseId: courseId,
+  });
 };
 
 const updatePayment = (param) => {
   return axios.get(`/vnpay/vnpay_ipn${param}`);
 };
-
 export {
   getAllCourse,
   getCourseInHomePage,

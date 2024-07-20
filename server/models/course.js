@@ -52,7 +52,10 @@ const courseSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-
+    isRejected: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
