@@ -4,7 +4,7 @@
     --tooltip-height: 35px;
     --tooltip-width: 90px;
     --gap-between-tooltip-to-button: 18px;
-    --button-color: #1163ff;
+    --button-color: #04ddb2;
     --tooltip-color: #fff;
     width: var(--width);
     height: var(--height);
@@ -90,7 +90,7 @@
 }
 
 .buttonDown:hover {
-    background: #6c18ff;
+    background: #7ad380;
 }
 
 .buttonDown:hover .text {
@@ -117,13 +117,13 @@
 
 
 .buttonSend {
-    height: 2.5em;
+    height: 2.6em;
 
     border-radius: 1em;
     border: 0.1rem solid transparent;
     background-color: #04ddb2;
     transition: 0.3s;
-    font-size: 1em;
+    font-size: 0.9em;
 }
 
 .buttonSend:hover {
