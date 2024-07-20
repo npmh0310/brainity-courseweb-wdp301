@@ -11,14 +11,25 @@ const RequestToTeacher = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const user = useSelector((state) => state.auth.user);
 
-  const handleDownload = () => {
-    const fileUrl = "../../../assets/file/Request-to-teacher.rar";
-    const a = document.createElement("a");
-    a.href = fileUrl;
-    a.download = "Request-to-teacher.rar";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const handleDownload = async () => {
+    const fileUrl = "/file/Request-to-teacher.rar";
+    try {
+      const response = await fetch(fileUrl, { method: "HEAD" });
+      if (response.ok) {
+        const a = document.createElement("a");
+        a.href = fileUrl;
+        a.download = "Request-to-teacher.rar";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        console.log('success');
+      } else {
+        alert("File not available on the server.");
+      }
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+      alert("An error occurred while trying to download the file.");
+    }
   };
 
   const handleFileChange = (event) => {
@@ -70,9 +81,8 @@ const RequestToTeacher = () => {
                   <p className="">
                     <strong>Spam Prevention:</strong> To minimize spam, response
                     times for spam-like requests/emails will be extended based
-                    on the following rule: If you send N requests/emails (N>1)
-                    for the same issue, the response time will be within Nx48
-                    hours.
+                    on the following rule: If you send N requests/emails for the
+                    same issue, the response time will be within Nx48 hours.
                   </p>
                   <p className="">
                     <strong>Recommendation:</strong> Consider the content
@@ -90,13 +100,13 @@ const RequestToTeacher = () => {
                 <h1 className="uppercase text-sm">Upload your file</h1>
                 <div className="p-2">
                   <input
-                    className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none "
+                    className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none"
+                    id="formFileSm"
                     type="file"
-                    id="formFile"
                   />
                 </div>
               </div>
-              <div className="w-1/2 flex flex-col items-center gap-y-4">
+              <div className="w-1/2 flex flex-col items-center gap-y-4" >
                 <h1 className="text-sm uppercase">Download word files</h1>
                 <div
                   className="buttonDown"
@@ -118,9 +128,9 @@ const RequestToTeacher = () => {
                         <path
                           fill="none"
                           stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"
                         ></path>
                       </svg>
@@ -130,7 +140,7 @@ const RequestToTeacher = () => {
               </div>
             </div>{" "}
             <div className="flex justify-center mt-6">
-              <button class="w-1/4 buttonSend text-white">Send</button>
+              <button className="w-1/5 buttonSend text-white">Send</button>
             </div>
           </form>
         </div>
