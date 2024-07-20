@@ -228,7 +228,6 @@ function CourseDetail() {
     }
   };
 
-
   const handleBuyNow = async () => {
     const res = await createPayment(course.price, "buynowne", courseId);
     if (res) {
@@ -236,7 +235,6 @@ function CourseDetail() {
       window.open(res.data.url, "_self");
     }
   };
-
 
   return (
     <div className="relative courseDetail w-full ">
@@ -620,10 +618,10 @@ function CourseDetail() {
                     {!exist ? (
                       <>
                         {!course.isFree ? (
-                          <div className=" w-full flex flex-col gap-y-2 items-start">
-                            <div className=" w-full flex justify-between items-center ">
+                          <div className="w-full flex flex-col gap-y-2 items-start">
+                            <div className="w-full flex justify-between items-center">
                               <div
-                                className=" p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out "
+                                className="p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out"
                                 onClick={handleButtonAdd}
                               >
                                 {loading ? (
@@ -636,27 +634,23 @@ function CourseDetail() {
                                   </>
                                 )}
                               </div>
-                              <div className=" p-3  flex items-center justify-center  w-2/12 border border-black ">
+                              <div className="p-3 flex items-center justify-center w-2/12 border border-black">
                                 <Heart size={14} />
                               </div>
                             </div>
 
-                            <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
-
                             <div
-                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
+                              className="p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black"
                               onClick={handleBuyNow}
                             >
-
                               Buy now
                             </div>
                           </div>
                         ) : (
                           <div
-                            className=" w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out "
+                            className="w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out"
                             onClick={handleButtonEnroll}
                           >
-                            {" "}
                             Enroll now
                           </div>
                         )}
