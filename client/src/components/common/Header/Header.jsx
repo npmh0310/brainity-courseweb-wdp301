@@ -149,7 +149,7 @@ const Header = () => {
                   onChange={handleSearch}
                   onBlur={handleBlur}
                   onFocus={handleFocus}
-                  className="w-[200px] h-[42px] border-2 border-gray-200 px-8 py-3 text-xs rounded-l-full focus:outline-none  focus:border-blue-300 focus:w-[300px] focus:flex-grow transition-all"
+                  className="w-[200px] h-[42px] border border-gray-400 px-8 py-3 text-xs rounded-l-full focus:outline-none focus:border-blue-300 focus:w-[300px] focus:flex-grow transition-all"
                   placeholder="Search anything..."
                 />
                 <Link
