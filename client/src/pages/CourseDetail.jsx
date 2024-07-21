@@ -272,8 +272,6 @@ function CourseDetail() {
   }, []);
 
   const isCourseInList = courseList.some((c) => c._id === course._id);
-
-
   const handleBuyNow = async () => {
     const res = await createPayment(course.price, "buynowne", courseId);
     if (res) {
@@ -281,7 +279,6 @@ function CourseDetail() {
       window.open(res.data.url, "_self");
     }
   };
-
 
   return (
     <div className="relative courseDetail w-full ">
@@ -665,8 +662,8 @@ function CourseDetail() {
                     {!exist ? (
                       <>
                         {!course.isFree ? (
-                          <div className=" w-full flex flex-col gap-y-2 items-start">
-                            <div className=" w-full flex justify-between items-center ">
+                          <div className="w-full flex flex-col gap-y-2 items-start">
+                            <div className="w-full flex justify-between items-center">
                               <div
                                 className={` p-3 ${
                                   isLogin ? "w-9/12" : "w-full"
@@ -708,10 +705,8 @@ function CourseDetail() {
                               </div>
                             </div>
 
-                            <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
-
                             <div
-                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
+                              className="p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black"
                               onClick={handleBuyNow}
                             >
                               Buy now
@@ -719,10 +714,9 @@ function CourseDetail() {
                           </div>
                         ) : (
                           <div
-                            className=" w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out "
+                            className="w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out"
                             onClick={handleButtonEnroll}
                           >
-                            {" "}
                             Enroll now
                           </div>
                         )}
