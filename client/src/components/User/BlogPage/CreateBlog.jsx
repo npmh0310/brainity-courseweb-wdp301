@@ -7,19 +7,23 @@ import "react-quill/dist/quill.snow.css";
 import { getAllCategory } from "../../../fetchData/TeacherCourse";
 import Select from "react-select";
 import axios from "axios";
-import toast from "react-hot-toast";
-import { createBlog } from "../../../fetchData/Blog";
+
+import toast from 'react-hot-toast';
+import { createBlog } from '../../../fetchData/Blog';
+import { useNavigate } from 'react-router-dom';
 function CreateBlog() {
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [content, setContent] = useState("");
-  const [selectedOption, setSelectedOption] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [cate, setCate] = useState([]);
-  const [imgUrl, setImgUrl] = useState();
-  const handleDropdownChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
+    const [title, setTitle] = useState("");
+    const [slug, setSlug] = useState("");
+    const [description, setDescription] = useState("");
+    const [content, setContent] = useState("");
+    const [selectedOption, setSelectedOption] = useState([]);
+    const [categories, setCategories] = useState([])
+    const [cate, setCate] = useState([]);
+    const [imgUrl, setImgUrl] = useState()
+    const navigate = useNavigate()
+    const handleDropdownChange = (selectedOption) => {
+        setSelectedOption(selectedOption);
+
 
     const selectedValues = selectedOption.map((option) => option.value);
     setCategories(selectedValues);
@@ -38,27 +42,33 @@ function CreateBlog() {
       .catch((err) => console.error(err));
   }, []);
 
-  function handleTitle(e) {
-    const newTitle = e.target.value;
-    setTitle(newTitle);
-    const autoSlug = generateSlug(newTitle);
-    setSlug(autoSlug);
-  }
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const newBlog = {
-      title,
-      description,
-      content,
-      categories,
-      imgUrl,
-    };
-    console.log(newBlog);
-    const res = await createBlog(newBlog);
-    if (res.status === 200) {
-      toast.success("Create blog successfull");
-    } else {
-      toast.error("Faild to create blog");
+
+    function handleTitle(e) {
+        const newTitle = e.target.value;
+        setTitle(newTitle);
+        const autoSlug = generateSlug(newTitle);
+        setSlug(autoSlug);
+    }
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const newBlog = {
+            title,
+            description,
+            content,
+            categories,
+            imgUrl
+        };
+        console.log(newBlog);
+        const res = await createBlog(newBlog);
+        if(res.status === 200) {
+            toast.success("Create blog successfull")
+            setTimeout(() => {
+                navigate('/myblog')
+            }, 1000);
+        }else {
+            toast.error("Faild to create blog");
+        }
+
     }
   }
 
