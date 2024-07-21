@@ -27,9 +27,7 @@ const ManageCourses = () => {
                 Pages / Manage courses
                
               </span>
-              <h1 className="font-bold uppercase text-third text italic text-3xl">
-                Manage Courses
-              </h1>
+             
             </div>
             <div className="flex flex-row items-center ">
               {showTableCourses ? (
