@@ -102,7 +102,7 @@ function LearningPage() {
       } else {
         setShowCourse(true);
         setInnerWidth(true);
-        navigate("#overview");
+        // navigate("#overview");
       }
     };
 
@@ -277,7 +277,7 @@ function LearningPage() {
             >
               <div className=" relative bg-black video w-full h-[600px]">
                 <Routes>
-                  {course.sections &&
+                  {/* {course.sections &&
                     course.sections.length > 0 &&
                     course.sections.map(
                       (section, sectionIndex) =>
@@ -296,8 +296,8 @@ function LearningPage() {
                             }
                           />
                         ))
-                    )}
-                  {/* <Route path='lesson/:lessonId' element={<VideoChaper />} /> */}
+                    )} */}
+                  <Route path='lesson/:lessonId' element={<VideoChaper courseProgress={courseProgress} courseId={courseId}/>} />
                 </Routes>
                 {!showCourse && innerWidth && (
                   <Link
@@ -347,7 +347,7 @@ function LearningPage() {
                   >
                     Overview
                   </NavLink>
-                  <NavLink
+                  {/* <NavLink
                     to={`#exercise`}
                     className={
                       section === "exercise"
@@ -356,7 +356,7 @@ function LearningPage() {
                     }
                   >
                     Exercise
-                  </NavLink>
+                  </NavLink> */}
                   {/* <NavLink to='learning tool' className={section === 'search' ? 'py-4 px-1 text-center font-semibold text-lg border-b-2 border-black cursor-pointer' : "py-4 px-1 text-center font-semibold text-lg cursor-pointer"}>Learning tool</NavLink> */}
                   <NavLink
                     to={`#notes`}
@@ -375,7 +375,7 @@ function LearningPage() {
                   )}
                   {section === "search" && <SearchContent course={course} />}
                   {section === "overview" && <OverView course={course} />}
-                  {section === "exercise" && <Exercise course={course} />}
+                  {/* {section === "exercise" && <Exercise course={course} />} */}
                 </div>
               </div>
               <Footer />

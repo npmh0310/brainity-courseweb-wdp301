@@ -620,7 +620,7 @@ function CourseDetail() {
                           <div className=" w-full flex flex-col gap-y-2 items-start">
                             <div className=" w-full flex justify-between items-center ">
                               <div
-                                className=" p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out "
+                                className=" p-3 w-9/12 text-sm font-semibold text-white text-center bg-primary border hover:scale-105 hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out "
                                 onClick={handleButtonAdd}
                               >
                                 {loading ? (
@@ -637,12 +637,12 @@ function CourseDetail() {
                                 <Heart size={14} />
                               </div>
                             </div>
-                            <div
-                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
+                            {!statusCourse && <div
+                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black cursor-pointer hover:bg-opacity-65 hover:scale-105 transition-all ease-in-out "
                               onClick={handleBuyNow}
                             >
                               Buy now
-                            </div>
+                            </div>}
                           </div>
                         ) : (
                           <div

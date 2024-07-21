@@ -69,7 +69,7 @@ function HeaderUser() {
   const handleLogout = () => {
     onLogout();
     dispatch(logout());
-    redirect('/');
+
   };
 
   useEffect(() => {
@@ -278,9 +278,9 @@ function HeaderUser() {
                 <hr className="my-2" />
                 <ul className="text-sm">
                   <li className="hover:text-black mb-2">
-                    <div className="block py-2 cursor-pointer" onClick={handleLogout}>
+                    <Link to='/' className="block py-2 cursor-pointer" onClick={handleLogout}>
                       Log Out
-                    </div>
+                    </Link>
                   </li>
                 </ul>
               </div>

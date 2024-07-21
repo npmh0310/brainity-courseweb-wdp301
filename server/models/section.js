@@ -13,13 +13,21 @@ const sectionSchema = new mongoose.Schema(
     }, { timestamps: true }
 );
 
-sectionSchema.pre('findByIdAndDelete', async function (next) {
-    try {
-        await Lesson.deleteMany({ _id: { $in: this.lessons } });
-        next();
-    } catch (error) {
-        next(error);
+
+sectionSchema.post('findOneAndDelete', async function (doc ) {
+    
+    if (doc) {
+        console.log('section to be removed:', doc.lessons);
+        const lessonsRemove = doc.lessons;
+        try {
+            for (const lesson of lessonsRemove) {
+                await Lesson.findByIdAndDelete(lesson);
+            }
+        } catch (error) {
+            console.error('Error removing lessons:', error);
+        }
     }
+    
 });
 
 const Section = mongoose.model('Section', sectionSchema);
