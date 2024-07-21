@@ -1,39 +1,45 @@
-var mongoose = require('mongoose')
+var mongoose = require('mongoose');
 
-const blogSchema = new mongoose.Schema(
-    {
-        author: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            // required: true
-        },
-        title: {
-            type: String
-        },
-        description: {
-            type: String
-        },
-        content: {
-            type: String,
-            required: true
-        },
-        categories: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Category'
-        }],
-        comments: {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-            content: String
-        }
-        ,
-        imgUrl: {
-            type:String
-        }
+// Define the comment schema with timestamps
+const commentSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    { timestamps: true }
+    content: String,
+  },
+  { timestamps: true }
+);
+
+// Define the blog schema
+const blogSchema = new mongoose.Schema(
+  {
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      // required: true
+    },
+    title: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    categories: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+    }],
+    comments: [commentSchema], // Use the comment schema
+    imgUrl: {
+      type: String,
+    },
+  },
+  { timestamps: true }
 );
 
 var Blog = mongoose.model("Blog", blogSchema);

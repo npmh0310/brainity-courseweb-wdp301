@@ -6,6 +6,8 @@ import { Right } from "../Categories/Right";
 import { useLocation } from "react-router-dom";
 import Item from "../../common/Item";
 import CategoriesBg from "../../../assets/images/Categories/bg1.jpg";
+import { useDebounce } from "use-debounce";
+import { getCourseBySearch } from "../../../fetchData/Course";
 
 export const SearchPage = () => {
   const [courseList, setCourseList] = useState([]);
@@ -18,42 +20,68 @@ export const SearchPage = () => {
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
+  const searchQuery = new URLSearchParams(location.search).get("query");
+
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [debouncedSearchTerm] = useDebounce(searchQuery, 300);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchSearchResults = async () => {
+      if (debouncedSearchTerm.trim() === "") {
+        setSearchResults([]);
+        return;
+      }
+      setIsSearching(true);
       try {
-        // Function to parse the query string and extract the 'q' parameter
-        const searchParams = new URLSearchParams(location.search);
-        const searchQuery = searchParams.get("q");
-
-        // Fetch all courses if component is in view
-        if (courseView) {
-          const response = await getAllCourse();
-          const courses = response.data.data;
-
-          setCourseList(courses);
-
-          // Filter courses based on search query if available
-          if (searchQuery) {
-            const filtered = courses.filter(
-              (course) =>
-                course.courseName &&
-                course.courseName
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase())
-            );
-            setFilteredCourses(filtered);
-          } else {
-            setFilteredCourses(courses); // Set all courses initially
-          }
-        }
+        const response = await getCourseBySearch(debouncedSearchTerm);
+        setSearchResults(response.data.data);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("khong tim thay", error);
+      } finally {
+        setIsSearching(false);
       }
     };
 
-    fetchCourses();
-  }, [location.search, courseView]);
+    fetchSearchResults();
+  }, [debouncedSearchTerm]);
+
+  // useEffect(() => {
+  //   const fetchCourses = async () => {
+  //     try {
+  //       // Function to parse the query string and extract the 'q' parameter
+  //       const searchParams = new URLSearchParams(location.search);
+  //       const searchQuery = searchParams.get("q");
+
+  //       // Fetch all courses if component is in view
+  //       if (courseView) {
+  //         const response = await getAllCourse();
+  //         const courses = response.data.data;
+
+  //         setCourseList(courses);
+
+  //         // Filter courses based on search query if available
+  //         if (searchQuery) {
+  //           const filtered = courses.filter(
+  //             (course) =>
+  //               course.courseName &&
+  //               course.courseName
+  //                 .toLowerCase()
+  //                 .includes(searchQuery.toLowerCase())
+  //           );
+  //           setFilteredCourses(filtered);
+  //         } else {
+  //           setFilteredCourses(courses); // Set all courses initially
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching courses:", error);
+  //     }
+  //   };
+
+  //   fetchCourses();
+  // }, [location.search, courseView]);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -102,10 +130,12 @@ export const SearchPage = () => {
     <div ref={courseRef} className="container bg-white px-0 mx-auto pb-20">
       <div>
         <div className="border-b-2 py-4 text-3xl font-semibold">
-          <p className="flex gap-2">
-            <p>{filteredCourses && filteredCourses.length}</p>
-            results for "{new URLSearchParams(location.search).get("q") || ""}"
-          </p>
+          <div className="flex gap-2">
+            <p>
+              {searchResults && searchResults.length} result(s) for "
+              {searchQuery}"
+            </p>
+          </div>
         </div>
         <div className="flex justify-between mt-4 mb-8 items-center">
           <div className="relative inline-block text-left items-center gap-2">
@@ -174,11 +204,11 @@ export const SearchPage = () => {
 
         {/* Right component */}
         <div ref={courseRef} className="col-span-5 block">
-          {filteredCourses.length === 0 ? (
+          {searchResults.length === 0 ? (
             <p className="text-center text-xl text-gray-600">No Course Found</p>
           ) : (
             <div className="grid justify-items-center grid-cols-1 gap-y-10 sm:grid-cols-2  lg:grid-cols-3 ">
-              {filteredCourses.map((data) => (
+              {searchResults.map((data) => (
                 <Item key={data.id} data={data} loading={loading} />
               ))}
             </div>

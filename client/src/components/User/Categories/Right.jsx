@@ -23,6 +23,7 @@ export const Right = ({ filteredCourses }) => {
     }
   }, [courseView, filteredCourses]);
 
+
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
   const currentCourses = courseList.slice(indexOfFirstCourse, indexOfLastCourse);
