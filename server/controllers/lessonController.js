@@ -141,6 +141,7 @@ const deleteLessonById = async (req, res) => {
     try {
         const deleteLessonById = await Lesson.findByIdAndDelete(id)
 
+
         res.status(200).json({
             success: true,
             message: "Successfully deleted",
