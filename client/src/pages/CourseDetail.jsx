@@ -61,7 +61,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartFilled } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faHeartOutline } from "@fortawesome/free-solid-svg-icons";
 
-
 function CourseDetail() {
   const { id: courseId } = useParams();
   const [isScrolled, setIsScrolled] = useState(false);
