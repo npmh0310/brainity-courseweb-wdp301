@@ -14,6 +14,7 @@ import ModalSearch from "./ModalSearch.jsx";
 import { useDebounce } from "use-debounce";
 import { Search, CircleX } from "lucide-react";
 import { CircularProgress } from "@mui/material";
+import { NotificationsProvider } from "../Notification/useNotifications.jsx";
 const Header = () => {
   const [bg, setBg] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
@@ -154,7 +155,7 @@ const Header = () => {
                 />
                 <Link
                   to={`/searchpage?query=${encodeURIComponent(inputSearch)}`}
-                  className="w-12 h-[42px] border-2 border-gray-200 border-l-0 rounded-r-full flex items-center justify-center relative"
+                  className="w-12 h-[42px]  border border-gray-400 border-l-0 rounded-r-full flex items-center justify-center relative"
                 >
                   <FontAwesomeIcon
                     className="text-third w-4 transition-transform duration-700 ease-in-out hover:scale-125"
@@ -197,8 +198,12 @@ const Header = () => {
               )}
             </div>
           </div>
+          {/* use useContext */}
           {user ? (
-            <HeaderUser />
+            <NotificationsProvider userId={user._id}>
+              <HeaderUser />
+          
+            </NotificationsProvider>
           ) : (
             <Link
               to="/signin"

@@ -62,7 +62,7 @@ export const Categories = () => {
 
   return (
     <div ref={courseRef} className="container bg-white px-0 mx-auto pb-20">
-      <div className="flex justify-center   gap-3 text-5xl pt-12 pb-20 uppercase font-third font-semibold">
+      <div className="flex justify-center  gap-3 text-5xl pt-12 pb-20 uppercase font-third font-semibold">
         <p className="">E-learning Courses</p>
       </div>
       <div>

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 import {
   addCourseInFavourite,
+  createPayment,
   deleteCourseInFavourite,
   getCourseById,
   getFavouriteCourse,
@@ -59,7 +60,6 @@ import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartFilled } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faHeartOutline } from "@fortawesome/free-solid-svg-icons";
-
 
 function CourseDetail() {
   const { id: courseId } = useParams();
@@ -273,7 +273,6 @@ function CourseDetail() {
 
   const isCourseInList = courseList.some((c) => c._id === course._id);
 
-
   const handleBuyNow = async () => {
     const res = await createPayment(course.price, "buynowne", courseId);
     if (res) {
@@ -281,7 +280,6 @@ function CourseDetail() {
       window.open(res.data.url, "_self");
     }
   };
-
 
   return (
     <div className="relative courseDetail w-full ">
@@ -671,7 +669,7 @@ function CourseDetail() {
                                 className={` p-3 ${
                                   isLogin ? "w-9/12" : "w-full"
                                 } text-sm font-semibold text-white text-center bg-primary border hover:bg-[#03cba3] hover:font-bold cursor-pointer transition-all ease-in-out `}
-                               onClick={handleButtonAdd}
+                                onClick={handleButtonAdd}
                               >
                                 {loading ? (
                                   <CircularProgress color="inherit" />
@@ -701,17 +699,8 @@ function CourseDetail() {
                                 </div>
                               )}
                             </div>
-                            <div className=" p-3 text-sm w-full font-semibold text-black text-center bg-[#eceb98] border border-black ">
-
-                              <div className=" p-3  flex items-center justify-center  w-2/12 border border-black ">
-                                <Heart size={14} />
-                              </div>
-                            </div>
-
-                            <div className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black ">
-
                             <div
-                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
+                              className="cursor-pointer p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
                               onClick={handleBuyNow}
                             >
                               Buy now

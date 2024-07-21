@@ -21,9 +21,21 @@ const notificationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
+    link: {
+      type: String,
+      required: true,
+    },
+    read:{
+      type: Boolean,
+      default: false,
+    },
     type: {
       type: String,
-      enum: ["interact", "comment", "blog", "course", "profile"],
+      enum: ["interact", "comment", "blog", "course", "profile", "system"],
     },
   },
   { timestamps: true }
