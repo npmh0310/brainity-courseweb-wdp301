@@ -39,6 +39,8 @@ import { getCart } from "./redux/features/cartSlice";
 import ChatBoxAdmin from "./pages/Admin/ChatBoxAdmin";
 import PaymentResult from "./components/User/Payment";
 import ConfirmCourseLayout from "./components/Admin/confirmCourse/ConfirmCourseLayout";
+import ForgotPassWord from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +79,8 @@ function App() {
         <Routes>
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgotPassword" element={<ForgotPassWord />} />
+          <Route path="/reset_password/:token" element={<ResetPassword />} />
           <Route path="/teacher" element={<TeacherPage />}>
             {teacherRoutes.map((route, index) => (
               <Route key={index} path={route.path} element={route.element}>

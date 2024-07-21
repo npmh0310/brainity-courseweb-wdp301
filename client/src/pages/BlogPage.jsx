@@ -102,8 +102,7 @@ function BlogPage() {
                     {/* Footer Blog */}
                     <div className="flex pt-2 justify-between">
                       <ul className="flex gap-2 lg:gap-4 text-xs lg:text-base">
-                        <li>0 views</li>
-                        <li>0 comments</li>
+                      <li>{blog.comments.length} comments</li>
                       </ul>
                     </div>
                   </div>

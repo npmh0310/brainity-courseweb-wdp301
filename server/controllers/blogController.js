@@ -93,6 +93,7 @@ const getAllBlog = async (req, res) => {
                 select: "name avatar"
             }
         );
+        blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         res.status(200).json({
             blogs: blogs
         })

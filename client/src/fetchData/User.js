@@ -35,5 +35,14 @@ const updateAvatar = (avatar) => {
 
 }
 
+const forgotPassword = (email) => {
+  return axios.post('/auth/forgotPassword' , {email: email})
+}
 
-export { onLogin, onRegister, onLogout, getProfile, updateUserProfile, changePassword, updateProfile ,updateAvatar };
+const resetPassword = (form) => {
+  
+  return axios.post('/auth/resetPassword' , form)
+}
+
+
+export { onLogin, onRegister, onLogout, getProfile, updateUserProfile, changePassword, updateProfile ,updateAvatar,forgotPassword, resetPassword };
