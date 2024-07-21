@@ -128,10 +128,108 @@ const getBlogByUser = async (req, res) => {
   }
 };
 
-module.exports = {
-  createBlog,
-  deleteBlogById,
-  getBlogById,
-  getAllBlog,
-  getBlogByUser,
+// Comment
+const addComment = async (req, res) => {
+    try {
+        const { id } = req.params; 
+        const userId = req.user.id;
+        const { content } = req.body;
+
+        const blog = await Blog.findById(id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog post not found' });
+        }
+
+        blog.comments.push({ user : userId, content });
+        await blog.save();
+        const updatedBlog = await Blog.findById(id).populate(
+            {
+                path: "comments.user",
+                select: "username"
+            }
+        );
+        res.status(201).json(updatedBlog);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
+const getComments = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+        const blog = await Blog.findById(id).populate(
+            {
+                path: "comments",
+                populate : {
+                    path: "user",
+                    model: "User"
+                }
+            }
+        ); // Adjust the 'name' field as per your User model
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog post not found' });
+        }
+
+        res.status(200).json(blog.comments);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const updateComment = async (req, res) => {
+    try {
+        const { id, commentId } = req.params; // Blog ID and Comment ID
+        const { content } = req.body;
+
+        const blog = await Blog.findById(id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog post not found' });
+        }
+
+        const comment = blog.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        comment.content = content;
+        await blog.save();
+
+        res.status(200).json(comment);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const deleteComment = async (req, res) => {
+    try {
+        const { id, commentId } = req.params; // Blog ID and Comment ID
+
+        const blog = await Blog.findById(id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog post not found' });
+        }
+
+        const comment = blog.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        // Remove the comment using the pull method
+        blog.comments.pull(commentId);
+        await blog.save();
+
+        res.status(200).json({ message: 'Comment deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = {
+    createBlog,
+    deleteBlogById,
+    getBlogById,
+    getAllBlog,
+    getBlogByUser,
+    addComment,
+    getComments,
+    updateComment,
+    deleteComment
+}

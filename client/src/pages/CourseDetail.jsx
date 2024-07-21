@@ -272,7 +272,6 @@ function CourseDetail() {
   }, []);
 
   const isCourseInList = courseList.some((c) => c._id === course._id);
-
   const handleBuyNow = async () => {
     const res = await createPayment(course.price, "buynowne", courseId);
     if (res) {
@@ -663,13 +662,13 @@ function CourseDetail() {
                     {!exist ? (
                       <>
                         {!course.isFree ? (
-                          <div className=" w-full flex flex-col gap-y-2 items-start">
-                            <div className=" w-full flex justify-between items-center ">
+                          <div className="w-full flex flex-col gap-y-2 items-start">
+                            <div className="w-full flex justify-between items-center">
                               <div
                                 className={` p-3 ${
                                   isLogin ? "w-9/12" : "w-full"
-                                } text-sm font-semibold text-white text-center bg-primary border hover:bg-[#03cba3] hover:font-bold cursor-pointer transition-all ease-in-out `}
-                                onClick={handleButtonAdd}
+                                } text-sm uppercase font-semibold text-white text-center bg-primary border hover:bg-[#03cba3] hover:font-bold hover:scale-105 cursor-pointer transition-all ease-in-out `}
+                               onClick={handleButtonAdd}
                               >
                                 {loading ? (
                                   <CircularProgress color="inherit" />
@@ -699,19 +698,24 @@ function CourseDetail() {
                                 </div>
                               )}
                             </div>
-                            <div
-                              className="cursor-pointer p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black "
+                            {/* <div className=" p-3 text-sm w-full font-semibold text-black text-center bg-[#eceb98] border border-black ">
+
+                              <div className=" p-3  flex items-center justify-center  w-2/12 border border-black ">
+                                <Heart size={14} />
+                              </div>
+                            </div> */}
+                            {!statusCourse && <div
+                              className=" p-3 w-full text-lg font-semibold text-black text-center bg-[#eceb98] border border-black cursor-pointer hover:bg-opacity-65 hover:scale-105 transition-all ease-in-out "
                               onClick={handleBuyNow}
                             >
                               Buy now
-                            </div>
+                            </div>}
                           </div>
                         ) : (
                           <div
-                            className=" w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out "
+                            className="w-full p-4 text-sm font-semibold text-white text-center bg-purple-600 border hover:bg-opacity-70 hover:font-bold cursor-pointer transition-all ease-in-out"
                             onClick={handleButtonEnroll}
                           >
-                            {" "}
                             Enroll now
                           </div>
                         )}
