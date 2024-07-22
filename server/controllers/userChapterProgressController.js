@@ -171,6 +171,10 @@ const getProgress = async (courseId, userId) => {
     return 0;
   }
 
+  if (progress.isCompleted) {
+    return 100;
+  }
+
   const completedLessons = progress.lessonsProgress.filter(
     (lesson) => lesson.isCompleted
   ).length;

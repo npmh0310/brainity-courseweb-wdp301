@@ -39,9 +39,11 @@ const MyBlog = () => {
         <p className="font-semibold">My blog</p>
       </div>
       {blogs.length === 0 ? (
-        <div className="block text-black text-center text-xl pb-8">
+        <div className="block text-black text-center pb-8">
           <img className="w-80 h-80 mx-auto" src={EmptyBlog} alt="img" />
-          <p className="font-normal pb-2">You haven't wrote any blogs</p>
+          <p className="font-normal pb-2 mb-6 text-base">
+            You haven't wrote any blogs
+          </p>
 
           <div className="flex  justify-center items-center">
             <button

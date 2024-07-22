@@ -10,19 +10,28 @@ import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getAllCourseEnrolled } from "../fetchData/User";
 import { getLessonProgressUser } from "../fetchData/UserChapterProgress";
+import { useSelector } from "react-redux";
 
 // LinearProgressWithLabel component
 const LinearProgressWithLabel = (props) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
-      </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
-      </Box>
+      {Math.round(props.value) == 100 ? (
+        <Box sx={{ width: "100%", mr: 1, mt: 1 }}>
+          <LinearProgress variant="success" {...props} color="success" />
+        </Box>
+      ) : (
+        <>
+          <Box sx={{ width: "100%", mr: 1 }}>
+            <LinearProgress variant="determinate" {...props} />
+          </Box>
+          <Box sx={{ minWidth: 35 }}>
+            <Typography variant="body2" color="text.secondary">{`${Math.round(
+              props.value
+            )}%`}</Typography>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
@@ -30,6 +39,7 @@ const LinearProgressWithLabel = (props) => {
 const MyLearningCourse = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [courseProgressData, setCourseProgressData] = useState({});
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     getAllCourseEnrolled()
@@ -56,10 +66,14 @@ const MyLearningCourse = () => {
         >
           <div className="absolute top-56 left-24 flex items-end">
             <div className="rounded-full p-2 bg-white">
-              <img className="rounded-full w-40" src={avatar} alt="Avatar" />
+              <img
+                className="rounded-full w-40"
+                src={user.avatar}
+                alt="Avatar"
+              />
             </div>
             <div className="mb-8 ml-5">
-              <h1 className="text-3xl font-semibold">Nguyen Phuoc Minh Hieu</h1>
+              <h1 className="text-3xl font-semibold">{user.name}</h1>
             </div>
           </div>
         </div>
