@@ -73,6 +73,10 @@ function SignInPage() {
 
   const user = useSelector((state) => state.auth.isLogin);
 
+  if(user){
+    navigate("/")
+  }
+
  
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));

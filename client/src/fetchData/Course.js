@@ -75,6 +75,18 @@ const createPayment = (amount, type, courseId) => {
 const updatePayment = (param) => {
   return axios.get(`/vnpay/vnpay_ipn${param}`);
 };
+
+const getTeacherRequest = () => {
+  return axios.get(`/teacherRequest/`); 
+}
+
+const updateStatusTeacherRequest = (requestId, status) => {
+  return axios.put(`/teacherRequest/approveRequest`, {
+    requestId: requestId,
+    status: status
+  }); 
+}
+
 export {
   getAllCourse,
   getCourseInHomePage,
@@ -92,4 +104,6 @@ export {
   createPayment,
   updatePayment,
   getCourseBySearch,
+  getTeacherRequest,
+  updateStatusTeacherRequest,
 };
