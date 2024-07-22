@@ -3,6 +3,7 @@ var dotenv = require('dotenv');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');
+const path = require("path");
 
 const passport = require('passport');
 const cookieSession = require('cookie-session');
@@ -30,6 +31,7 @@ const checkout = require('./routes/checkout');
 const vnpayRoute = require("./routes/VNpay");
 
 const userRouter = require("./routes/user");
+const multerRoute = require('./routes/configs/multer');
 
 dotenv.config();
 const app = express();
@@ -146,6 +148,9 @@ app.use('/api/v1/vnpay', vnpayRoute)
 app.use('/api/v1/user' , userRouter)
 app.use('/api/v1/notification', notificationRoute)
 app.use('/api/v1/blogs', blogRoute)
+
+app.use('/multer', multerRoute)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //Oauth2
 app.use("/auth", oauth2Route);

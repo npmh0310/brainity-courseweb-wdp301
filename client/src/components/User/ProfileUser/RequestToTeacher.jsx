@@ -4,10 +4,11 @@ import PasswordInput from "./PasswordInput";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import "./buttonRequest.css";
+import { toast } from "react-hot-toast";
+
 const RequestToTeacher = () => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const user = useSelector((state) => state.auth.user);
 
@@ -35,6 +36,33 @@ const RequestToTeacher = () => {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    if (!selectedFile) {
+      toast.error('Please select a file first!');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const res = await axios.post('http://localhost:4000/multer/upload', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if(res && res.status === 200){
+        console.log(res);
+        toast.success('Your information has been sent to admin');
+      }
+    } catch (err) {
+      // console.log(err)
+      toast.error(err.response.data.message);
+    }
+  }
 
   return (
     <div className="w-full md:w-[65%]  bg-white mt-8  border py-8 px-8 border-gray-200 rounded-md">
@@ -97,12 +125,14 @@ const RequestToTeacher = () => {
           <form className="mx-2 mt-6 mb-0">
             <div className="flex flex-col lg:flex-row pb-6 mb-8 border-b-2 border-b-primary border-dashed">
               <div className="w-1/2  flex flex-col items-center gap-y-4">
-                <h1 className="uppercase text-sm">Upload your file</h1>
+                <h1 className="uppercase text-sm">Upload your file (.pdf or .doc)</h1>
                 <div className="p-2">
                   <input
                     className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none"
                     id="formFileSm"
                     type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
                   />
                 </div>
               </div>
@@ -140,7 +170,7 @@ const RequestToTeacher = () => {
               </div>
             </div>{" "}
             <div className="flex justify-center mt-6">
-              <button className="w-1/5 buttonSend text-white">Send</button>
+              <button onClick={handleSubmit} className="w-1/5 buttonSend text-white">Send</button>
             </div>
           </form>
         </div>

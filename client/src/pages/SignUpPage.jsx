@@ -65,6 +65,7 @@ const SignUpPage = () => {
   if (user) {
     navigate("/");
   }
+  
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
