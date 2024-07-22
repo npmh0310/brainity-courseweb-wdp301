@@ -4,6 +4,7 @@ const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const { getAvgRatingByCourseId } = require("./ratingController");
+const { createNotification } = require("./notificationController");
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
@@ -343,7 +344,7 @@ const getCourseNumOfEnrolled = async (courseId) => {
 const enrollCourse = async (req, res) => {
   const userId = req.user.id;
   const courseId = req.body.courseId;
-
+  
   try {
     const user = await User.findById(userId);
 

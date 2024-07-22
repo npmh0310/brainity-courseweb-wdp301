@@ -17,20 +17,18 @@ const FavoriteCourses = () => {
   const [courseList, setCourseList] = useState([]);
 
   const handleFavorite = (courseId, favouriteStatus) => {
-    if(!favouriteStatus) {
-      deleteCourseInFavourite(courseId)
-      .then(res => {
-        toast.success("Remove favourite course")
+    if (!favouriteStatus) {
+      deleteCourseInFavourite(courseId).then((res) => {
+        toast.success("Remove favourite course");
         // const data = Object.values(res.data.data)
         // setCourseList(data)
-      })
+      });
     } else {
-      addCourseInFavourite(courseId)
-      .then(res => {
-        toast.success("Undo remove favourite course")
+      addCourseInFavourite(courseId).then((res) => {
+        toast.success("Undo remove favourite course");
         // const data = Object.values(res.data.data)
         // setCourseList(data)
-      })
+      });
     }
     setFavorite((prevFavorite) => ({
       ...prevFavorite, // prevFavorite là trạng thái trc đó của favorites
@@ -38,17 +36,16 @@ const FavoriteCourses = () => {
     }));
   };
 
-
   useEffect(() => {
     getFavouriteCourse()
-      .then(response => {
+      .then((response) => {
         const data = Object.values(response.data.data);
         setCourseList(data);
       })
-      .catch(error => {
-        console.error('Error while fetching favourite courses: ', error);
+      .catch((error) => {
+        console.error("Error while fetching favourite courses: ", error);
       });
-  }, [])
+  }, []);
 
   return (
     <div className="w-full md:w-[65%]  bg-white mt-8  border py-8 px-8 border-gray-200 rounded-md">
@@ -80,10 +77,14 @@ const FavoriteCourses = () => {
             <div className="flex flex-col gap-y-3 md:flex-row gap-x-10 pt-4 justify-center items-center w-full relative">
               <Link
                 className="absolute top-0 bottom-0 left-0 right-0 z-20"
-                to={"/"}
+                to={`/course/${item._id}`}
               ></Link>
               <div className="w-[55%] pt-3 md:pt-0 md:w-2/5 flex justify-center relative">
-                <img className="w-full " src="https://res.cloudinary.com/duy0uzjug/image/upload/v1718126688/scazq2t1vclkdp4eo7xu.jpg" alt="" />
+                <img
+                  className="w-full h-36 object-cover"
+                  src={item.imageUrl}
+                  alt=""
+                />
               </div>
               <div className="flex w-full items-center text-center md:items-start md:text-left flex-col gap-y-2 md:w-3/5  ">
                 <h2 className=" font-semibold  text-lg text-third ">
@@ -91,13 +92,15 @@ const FavoriteCourses = () => {
                 </h2>
                 <span className="text-sm italic">{item.description}</span>
 
-                <span className="text-xs text-gray-600">{item.instructor.name}</span>
+                <span className="text-xs text-gray-600">
+                  {item.instructor.name}
+                </span>
                 <div className="flex flex-row items-center gap-x-1">
                   <span className="text-sm">{item.rating}</span>
                   <Rating
                     className="mb-[1px]"
                     name="half-rating-read"
-                    defaultValue={item.ratingInfo.avgRating} 
+                    defaultValue={item.ratingInfo.avgRating}
                     precision={0.5}
                     readOnly
                     size="small"

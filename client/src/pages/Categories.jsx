@@ -109,11 +109,11 @@ console.log("max page",maxPage);
 
   return (
     <div ref={courseRef} className="container bg-white px-0 mx-auto pb-20">
-      <div className="flex justify-center gap-3 text-4xl pt-8 pb-16">
-        <p className="font-semibold">E-learning Courses</p>
+      <div className="flex justify-center  gap-3 text-5xl pt-12 pb-20 uppercase font-third font-semibold">
+        <p className="">E-learning Courses</p>
       </div>
       <div>
-        <div className="border-b-2 pb-4 text-3xl font-semibold">
+        <div className="border-b-2 pb-4 text-3xl ">
           <p>All E-learning courses</p>
         </div>
         <div className="flex justify-between mt-4 mb-8 items-center">

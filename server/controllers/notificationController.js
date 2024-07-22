@@ -63,7 +63,8 @@ const createNotification = async (
 const getAllNotificationByUserId = async (req, res) => {
   const userId = req.user.id;
   try {
-    const allNotification = await UserNotification.find({
+    // Lấy tất cả thông báo của người dùng
+    const allNotifications = await UserNotification.find({
       user: userId,
     })
       .populate({
@@ -71,16 +72,25 @@ const getAllNotificationByUserId = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
+    // Đếm số lượng thông báo chưa đọc
+    const unreadCount = await UserNotification.countDocuments({
+      user: userId,
+      read: false,
+    });
+
     res.status(200).json({
       success: true,
-      message: "Successfully get all notification",
-      count: allNotification.length,
-      data: allNotification,
+      message: "Successfully retrieved notifications and unread count",
+      count: {
+        total: allNotifications.length,
+        unread: unreadCount,
+      },
+      data: allNotifications,
     });
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Failed to get all notification. Try again",
+      message: "Failed to get notifications and unread count. Try again",
     });
   }
 };
@@ -168,7 +178,7 @@ const markOneNotiAsRead = async (req, res) => {
 
     notification.read = true;
     await notification.save();
-
+    
     return res.json({ message: "Notification marked as read" });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
