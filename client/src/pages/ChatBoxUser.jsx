@@ -17,6 +17,7 @@ const ChatBoxUser = () => {
     if(!user) return; 
       if(user._id) {
         socket.emit("joinRoom", 'chatWithAdmin_'+ user._id);
+        console.log("user join room success")
       }
       return () => {
         disconnectWebSocket();

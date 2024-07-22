@@ -12,6 +12,5 @@ export const getAllPreviewMessages = (options) => {
 }
 
 export const getMessagesByRoomName = (roomName) => {
-    console.log(roomName)
     return axios.get(baseUrl + "/" + roomName)
 }

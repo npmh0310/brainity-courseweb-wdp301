@@ -7,61 +7,58 @@ import { getMessagesByRoomName } from "../../../fetchData/Message";
 import { SendHorizontal, Paperclip, X } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getWebSocket, initializeWebSocket } from "../../../utils/websocketManager";
 const ContentChatBox = () => {
+  const socket = initializeWebSocket() || getWebSocket();
+  const [message, setMessage] = useState("");
   const { roomName } = useParams();
   const [messages, setMessages] = useState([]);
   const user = useSelector((state) => state.auth.user);
 
-  console.log(user)
-
+  // console.log(user)
   // XỬ LÝ API
   useEffect(() => {
         getMessagesByRoomName(roomName).then((response) => {
+          console.log(roomName)
           const data = Object.values(response.data.data);
           setMessages(data[0]);
           console.log(messages.messages)
         });
-    }, [roomName]);
+
+        
+    socket.on("receiveMessage", (message) => {
+      console.log("admin")
+      console.log(user._id === message.senderId )
+      if(roomName.includes(message.senderId) || user._id === message.senderId) {
+        renewMessages(roomName)
+      }
+    });
+    
+    const renewMessages = (roomName) => {
+      getMessagesByRoomName(roomName).then((response) => {
+        const data = Object.values(response.data.data);
+        setMessages(data[0]);
+      });
+    }
+  }, [roomName]);
 
   // XỬ LÝ API
 
-  const chatRooms = [
-    {
-      id: 1,
-      avatarSrc:
-        "https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/274961617_1031354217755700_9193705406630906752_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=1&ccb=1-7&_nc_sid=f4b9fd&_nc_ohc=UYqoziiUPaIQ7kNvgHAzk8W&_nc_ht=scontent.fdad3-6.fna&oh=00_AYAHun75S1iUv6auh-p1rAzPdUs5YCY8wYkwB6f2NT8QqQ&oe=668F258E",
-      name: "John Doe",
-      messages: [
-        {
-          type: "their",
-          text: "Xin chào! Bạn khỏe không? Mình có một số câu hỏi về sản phẩm của bạn.",
-          imgSrc: Logo,
-        },
-        {
-          type: "my",
-          text: "Chào bạn! Mình khỏe, cảm ơn bạn đã hỏi. Bạn cần hỏi về điều gì?",
-        },
-      ],
-    },
-    {
-      id: 2,
-      avatarSrc: avatar2,
-      name: "Minh Hieu",
-      messages: [
-        {
-          type: "their",
-          text: "Mình muốn biết thêm về tính năng mới của sản phẩm. Bạn có thể giải thích chi tiết hơn không?",
-          imgSrc: Logo,
-        },
-        {
-          type: "my",
-          text: "Chắc chắn rồi! Tính năng mới cho phép bạn tùy chỉnh giao diện người dùng một cách dễ dàng hơn và tích hợp với nhiều dịch vụ khác nhau.",
-        },
-        // Các tin nhắn khác
-      ],
-    },
-    // Các phòng chat khác
-  ];
+  const sendMessage = (e) => {
+    console.log("room: ", roomName)
+    e.preventDefault();
+    if (message.trim()) {
+      const newMessage = {
+          senderId: user._id,
+          content: message,
+        };
+        socket.emit("sendMessage", {
+          room: roomName,
+          message: newMessage,
+        });
+      }
+    setMessage("");
+  };
 
   if (!roomName) {
     return (
@@ -83,7 +80,7 @@ const ContentChatBox = () => {
             src={messages.avatarSrc}
             alt=""
           />
-          <h1 className="font-medium">{messages.name}</h1>
+          <h1 className="font-medium">{messages.otherUsername}</h1>
         </div>
         <div className="flex flex-row items-center gap-x-8 text-gray-500">
           <Search className="hover:text-black" />
@@ -147,11 +144,15 @@ const ContentChatBox = () => {
           </label>
           <input id="file-upload" type="file" className="hidden" />
           <input
+            onChange={(e) => setMessage(e.target.value)}
             className="w-full px-3 border-none outline-none text-sm "
             type="text"
+            value={message}
             placeholder="Ask a question..."
           />
-          <button className="flex justify-center items-center  hover:text-primary cursor-pointer ">
+          <button 
+          onClick={sendMessage}
+          className="flex justify-center items-center  hover:text-primary cursor-pointer ">
             <SendHorizontal className=" " size={20} />
           </button>
         </div>

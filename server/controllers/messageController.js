@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Message = require('../models/message');
-
+const User = require('../models/user');
 
 const getLatestMessages = async (req, res) => {
     try {
@@ -33,6 +33,38 @@ const getLatestMessages = async (req, res) => {
                 $unwind: '$latestMessage.sender' // Unwind the sender array
             },
             {
+                $addFields: {
+                    otherUserId: {
+                        $convert: {
+                            input: { $arrayElemAt: [{ $split: ['$_id', '_'] }, 1] },
+                            to: 'objectId',
+                            onError: null,
+                            onNull: null
+                        }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'otherUserId',
+                    foreignField: '_id',
+                    as: 'otherUserDetails'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$otherUserDetails',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $addFields: {
+                    avatarSrc: '$otherUserDetails.avatar',
+                    otherUserUsername: '$otherUserDetails.username'
+                }
+            },
+            {
                 $project: {
                     _id: 0,
                     chatRoom: '$_id', // Include the chatRoom identifier
@@ -45,7 +77,9 @@ const getLatestMessages = async (req, res) => {
                         avatar: '$latestMessage.sender.avatar',
                         username: '$latestMessage.sender.username'
                     },
-                    unreadCount: 1 // Include unreadCount in the projection
+                    unreadCount: 1, // Include unreadCount in the projection
+                    avatarSrc: 1, // Include avatarSrc in the projection
+                    otherUserUsername: 1 // Include otherUserUsername in the projection
                 }
             }
         ]);
@@ -59,7 +93,9 @@ const getLatestMessages = async (req, res) => {
                 content: msg.content,
                 createdAt: msg.createdAt,
                 chatRoom: msg.chatRoom,
-                unreadCount: msg.unreadCount // Include unreadCount in the response data
+                unreadCount: msg.unreadCount, // Include unreadCount in the response data
+                avatarSrc: msg.avatarSrc, // Include avatarSrc in the response data
+                otherUserUsername: msg.otherUserUsername // Include otherUserUsername in the response data
             }))
         });
     } catch (error) {
@@ -69,28 +105,10 @@ const getLatestMessages = async (req, res) => {
 };
 
 
-
-// const getMessagesByRoomName = async (req, res) => {
-//     const { roomName } = req.params;
-
-//     try {
-//         // Query messages by roomName
-//         const messages = await Message.find({ chatRoom: roomName })
-//             .populate('sender', 'username avatar') // Assuming sender is referenced and you want username and avatar
-//             .sort({ createdAt: -1 }) // Sort by creation date descending
-//             .exec();
-
-//         res.status(200).json(messages);
-//     } catch (error) {
-//         console.error('Error fetching messages by room name:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
-
 const getMessagesByRoomName = async (req, res) => {
     const { roomName } = req.params;
-    const userId = req.user.id;
-    console.log("userId: ", userId);
+    const senderId = new mongoose.Types.ObjectId(req.user.id); // Convert senderId to ObjectId
+    const otherUserId = new mongoose.Types.ObjectId(roomName.split('_')[1]); 
 
     try {
         const latestMessages = await Message.aggregate([
@@ -117,7 +135,7 @@ const getMessagesByRoomName = async (req, res) => {
             {
                 $addFields: {
                     type: {
-                        $cond: { if: { $eq: ['$sender', userId] }, then: 'my', else: 'their' }
+                        $cond: { if: { $eq: ['$sender', senderId] }, then: 'my', else: 'their' }
                     }
                 }
             },
@@ -125,7 +143,6 @@ const getMessagesByRoomName = async (req, res) => {
                 $group: {
                     _id: '$chatRoom',
                     roomName: { $first: '$chatRoom' },
-                    avatarSrc: { $first: '$senderDetails.avatar' },
                     name: { $first: '$senderDetails.username' },
                     messages: {
                         $push: {
@@ -140,12 +157,22 @@ const getMessagesByRoomName = async (req, res) => {
                 $project: {
                     _id: 0,
                     roomName: 1,
-                    avatarSrc: 1,
                     name: 1,
-                    messages: { $reverseArray: '$messages' } 
+                    messages: { $reverseArray: '$messages' } // Reverse the messages array
                 }
             }
         ]);
+
+        // Fetch avatarSrc and otherUsername from the other user
+        const otherUser = await User.findById(otherUserId).select('avatar username');
+        const avatarSrc = otherUser ? otherUser.avatar : '';
+        const otherUsername = otherUser ? otherUser.username : '';
+
+        // Add avatarSrc and otherUsername to the result
+        if (latestMessages.length > 0) {
+            latestMessages[0].avatarSrc = avatarSrc;
+            latestMessages[0].otherUsername = otherUsername;
+        }
 
         res.status(200).json({
             success: true,
@@ -157,6 +184,39 @@ const getMessagesByRoomName = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+const markRoomChatAtRead = async (req, res) => {
+    const { roomName } = req.params;
+
+    try {
+        const result = await Message.updateMany(
+            { 
+                chatRoom: roomName,
+                read: false
+            },
+            { 
+                $set: { read: true } 
+            }
+        );
+
+        if (result.nModified > 0) {
+            res.status(200).json({
+                success: true,
+                message: `Marked ${result.nModified} messages as read in room ${roomName}`,
+            });
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'No messages to mark as read',
+            });
+        }
+    } catch (error) {
+        console.error('Error marking messages as read:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 module.exports = {

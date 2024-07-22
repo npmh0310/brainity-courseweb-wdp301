@@ -20,6 +20,7 @@ const SlideBarChatBox = ({previewMessages}) => {
   const handleRoomIdClick = (roomName) => {
     navigate(`/admin/messageAdmin/${roomName}`);
   };
+  
   return (
     <div className="lg:w-1/4 w-24 h-full  pt-7 bg-gray-50 border-x-2 flex flex-col gap-y-6">
       <div className="flex flex-row items-center justify-center lg:justify-start gap-x-3 lg:px-6">
@@ -65,12 +66,12 @@ const SlideBarChatBox = ({previewMessages}) => {
               >
                 <img
                   className="w-12 h-12 rounded-full object-cover"
-                  src={message.sender.avatar}
+                  src={message.avatarSrc}
                   alt=""
                 />
                 <div className="w-4/5 hidden lg:flex flex-col flex-grow gap-y-[6px] pr-1">
                   <div className="flex flex-row justify-between items-center">
-                    <h1 className="font-medium">{message.sender.username}</h1>
+                    <h1 className="font-medium">{message.otherUserUsername}</h1>
                     <h1 className="text-xs text-gray-400">
                       {moment(message.createdAt).fromNow()}
                     </h1>

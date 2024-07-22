@@ -200,8 +200,10 @@ io.on('connection', (socket) => {
             // Lưu trạng thái phòng vào danh sách
             if (!roomsUsersOnline.includes(room)) {
                 roomsUsersOnline.push(room);
+                console.log("New roomsUsersOnline: " + roomsUsersOnline)
+            } else {
+                console.log("Existing room from user: " + roomsUsersOnline)
             }
-            console.log("Existing room from user: " + roomsUsersOnline)
             /// có thể set điều kiện ở đây nếu adminsocket = 0, nghĩa là phân loại user waiiting and inprogress
             // báo cho các admin khác biết
             adminSockets.forEach((adminSocket) => {

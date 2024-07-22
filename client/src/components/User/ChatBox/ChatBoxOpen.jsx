@@ -18,7 +18,7 @@ const ChatBoxOpen = ({ handleCloseBox, room}) => {
       console.log("come recieve: ", message)
       setMessages((prevMessages) => [...prevMessages, 
         {
-          type: user._id == message.senderId ? "my" : "their",
+          type: user._id === message.senderId ? "my" : "their",
           text: message.content,
         },
       ]);

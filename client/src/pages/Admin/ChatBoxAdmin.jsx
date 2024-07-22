@@ -13,7 +13,6 @@ const ChatBoxAdmin = () => {
   const [previewMessages, setPreviewMessages] = useState([]);
   const [activeRoom, setActiveRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => { 
     socket.emit("adminJoin");
@@ -51,6 +50,7 @@ const ChatBoxAdmin = () => {
     
     const renewPreviewMessage = () => {
       getAllPreviewMessages().then((response) => {
+        console.log("Has changed")
         const data = Object.values(response.data.data);
         setPreviewMessages(data);
       });
