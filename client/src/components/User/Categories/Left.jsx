@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Rating } from "@mui/material";
 import { getAllCourse } from "../../../fetchData/Course";
 
-export const Left = ({ onFilteredCourses }) => {
+export const Left = ({ onFilteredCourses, setTotalPages, totalPages }) => {
   const [courseData, setCourseData] = useState([]);
   const [checked, setChecked] = useState("");
   const [priceRange, setPriceRange] = useState("");
@@ -47,43 +47,80 @@ export const Left = ({ onFilteredCourses }) => {
   useEffect(() => {
     const filterCourses = () => {
       let filteredCourses = [...courseData];
+      let totalFilteredCourses = 0;
 
+      if (!checked && !categories && !priceRange && !ratingRange){
+        console.log("unac");
+        setTotalPages(totalPages);
+      }
       // Sort by Best Seller
       if (checked === 1) {
         filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers >= 2);
-        console.log(filteredCourses);
+        console.log("filter cho nay",filteredCourses);
+        totalFilteredCourses = filteredCourses.length;
+        setTotalPages(Math.ceil(totalFilteredCourses / 9));
       }
+      // else {
+      //   console.log("unac");
+      //   setTotalPages(totalPages);
+      // }
       // Sort by Rating
       if (checked === 2) {
         filteredCourses.sort(
           (a, b) => b.ratingInfo.avgRating - a.ratingInfo.avgRating
         );
-        console.log(filteredCourses);
+        console.log("filter cho nay",filteredCourses);
+        totalFilteredCourses = filteredCourses.length;
+        setTotalPages(Math.ceil(totalFilteredCourses / 9));
       }
+      // else {
+      //   console.log("unac");
+      //   setTotalPages(totalPages);
+      // }
 
       // Filter by Categories
       if (categories) {
         filteredCourses = filteredCourses.filter((course) =>
           categories === "Beginner"
             ? course.courseName.toLowerCase().includes("beginner") ||
-              course.courseName.toLowerCase().includes("newbie") ||
-              course.courseName.toLowerCase().includes("basic")
+            course.courseName.toLowerCase().includes("newbie") ||
+            course.courseName.toLowerCase().includes("basic")
             : !course.courseName.toLowerCase().includes("beginner") &&
-              !course.courseName.toLowerCase().includes("newbie") &&
-              !course.courseName.toLowerCase().includes("basic")
+            !course.courseName.toLowerCase().includes("newbie") &&
+            !course.courseName.toLowerCase().includes("basic")
         );
-        console.log(filteredCourses);
+        console.log("filter cho nay",filteredCourses);
+        totalFilteredCourses = filteredCourses.length;
+        console.log(totalFilteredCourses);
+        setTotalPages(Math.ceil(totalFilteredCourses / 9));
       }
+      // else {
+      //   console.log("unac");
+      //   setTotalPages(totalPages);
+      // }
 
       // Filter by Rating Range
       if (ratingRange) {
         const [min, max] = ratingRange.split(" to ").map(Number);
+        let i = 0;
         filteredCourses = filteredCourses.filter(
-          (course) =>
-            course.ratingInfo.avgRating >= min &&
-            course.ratingInfo.avgRating <= max
+          (course) => {
+            if (course.ratingInfo.avgRating >= min &&
+              course.ratingInfo.avgRating <= max) {
+              i++;
+              console.log(i);
+            }
+            return course.ratingInfo.avgRating >= min &&
+              course.ratingInfo.avgRating <= max
+          }
         );
-      }
+        console.log("active");
+        setTotalPages(Math.ceil(i / 9));
+      } 
+      // else {
+      //   console.log("unac");
+      //   setTotalPages(totalPages);
+      // }
 
       // Filter by Price Range
       if (priceRange) {
@@ -91,7 +128,14 @@ export const Left = ({ onFilteredCourses }) => {
           const [min, max] = priceRange.split("-").map(Number);
           return course.price >= min && course.price <= max;
         });
+        console.log("filter cho nay",filteredCourses);
+        totalFilteredCourses = filteredCourses.length;
+        setTotalPages(Math.ceil(totalFilteredCourses / 9));
       }
+      // else {
+      //   console.log("unac");
+      //   setTotalPages(totalPages);
+      // }
 
       return filteredCourses;
     };
