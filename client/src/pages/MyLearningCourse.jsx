@@ -7,8 +7,11 @@ import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import { getAllCourseEnrolled } from "../fetchData/User";
+import { getLessonProgressUser } from "../fetchData/UserChapterProgress";
 
+// LinearProgressWithLabel component
 const LinearProgressWithLabel = (props) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -26,7 +29,7 @@ const LinearProgressWithLabel = (props) => {
 
 const MyLearningCourse = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [progress, setProgress] = useState(10);
+  const [courseProgressData, setCourseProgressData] = useState({});
 
   useEffect(() => {
     getAllCourseEnrolled()
@@ -37,8 +40,6 @@ const MyLearningCourse = () => {
       .catch((error) => {
         console.error("Error fetching courses:", error.message);
       });
-
-    setProgress(30); // set progress
   }, []);
 
   return (
@@ -110,7 +111,7 @@ const MyLearningCourse = () => {
                   >
                     <Link
                       className="md:w-1/2 w-full"
-                      to={`/course/${course._id}`}
+                      to={`/learningCourse/${course._id}`}
                     >
                       <img
                         className="rounded-lg w-full h-auto md:h-44"
@@ -120,7 +121,7 @@ const MyLearningCourse = () => {
                     </Link>
                     <div className="w-full md:w-1/2 block">
                       <h2 className="font-bold text-lg mb-2 ">
-                        <Link to={`/course/${course._id}`}>
+                        <Link to={`/learningCourse/${course._id}`}>
                           {course.courseName}
                         </Link>
                       </h2>
@@ -147,8 +148,9 @@ const MyLearningCourse = () => {
                           </>
                         )}
                       </div>
+
                       <div>
-                        <LinearProgressWithLabel value={40} />
+                        <LinearProgressWithLabel value={course.progress} />
                       </div>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Course = require("../models/course");
 const UserChapterProgress = require("../models/UserChapterProgress");
 const { getAvgRatingByCourseId } = require("./ratingController");
+const { getProgress } = require("./userChapterProgressController");
 
 const enrollCourse = async (req, res) => {
   const userId = req.user.id;
@@ -69,11 +70,12 @@ const getAllCourseEnrolled = async (req, res) => {
     const coursesWithRatingInfo = await Promise.all(
       coursesEnrolled.map(async (course) => {
         const ratingInfo = await getAvgRatingByCourseId(course._id);
-        return { ...course.toObject(), ratingInfo };
+        const progress = await getProgress(course._id, userId);
+        console.log("Progress: " + progress);
+        return { ...course.toObject(), ratingInfo, progress };
       })
     );
 
-    // Trả về kết quả
     return res.status(200).json({
       ...user.toObject(),
       coursesEnrolled: coursesWithRatingInfo,

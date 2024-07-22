@@ -4,6 +4,7 @@ const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const { getAvgRatingByCourseId } = require("./ratingController");
+const { getProgress } = require("./userChapterProgressController");
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
@@ -514,35 +515,34 @@ const rejectCourse = async (req, res) => {
   }
 };
 
-const getAllCourseEnrolled = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await User.findById(userId)
-      .select("coursesEnrolled")
-      .populate("coursesEnrolled");
+// const getAllCourseEnrolled = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const user = await User.findById(userId)
+//       .select("coursesEnrolled")
+//       .populate("coursesEnrolled");
 
-    // Lấy danh sách các khóa học mà người dùng đã đăng ký
-    const coursesEnrolled = user.coursesEnrolled;
+//     const coursesEnrolled = user.coursesEnrolled;
 
-    // Thêm thông tin đánh giá cho từng khóa học
-    const coursesWithRatingInfo = await Promise.all(
-      coursesEnrolled.map(async (course) => {
-        const ratingInfo = await getAvgRatingByCourseId(course._id);
-        return { ...course.toObject(), ratingInfo };
-      })
-    );
+//     const coursesWithRatingInfo = await Promise.all(
+//       coursesEnrolled.map(async (course) => {
+//         const ratingInfo = await getAvgRatingByCourseId(course._id);
+//         const progress = await getProgress(course._id, userId);
+//         console.log(progress);
+//         return { ...course.toObject(), ratingInfo };
+//       })
+//     );
 
-    // Trả về kết quả
-    return res.status(200).json({
-      ...user.toObject(),
-      coursesEnrolled: coursesWithRatingInfo,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+//     return res.status(200).json({
+//       ...user.toObject(),
+//       coursesEnrolled: coursesWithRatingInfo,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
 module.exports = {
   createCourse,
