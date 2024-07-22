@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import learningImg from "../assets/images/wallpaperflare.com_wallpaper.jpg";
 import avatar from "../assets/images/6298053d43cd1.jpg";
-import { getAllCourse } from "../fetchData/Course";
 import { HiUserGroup, HiCursorClick } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import LinearProgress, {
-  LinearProgressProps,
-} from "@mui/material/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
+import { getAllCourseEnrolled } from "../fetchData/User";
 
 const LinearProgressWithLabel = (props) => {
   return (
@@ -27,16 +25,17 @@ const LinearProgressWithLabel = (props) => {
 };
 
 const MyLearningCourse = () => {
-  const [enrollCourse, setEnrollCourse] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [progress, setProgress] = useState(10);
 
   useEffect(() => {
-    getAllCourse()
+    getAllCourseEnrolled()
       .then((res) => {
-        setEnrollCourse(res.data.data);
+        console.log("Fetched Courses Data:", res.data.coursesEnrolled);
+        setEnrolledCourses(res.data.coursesEnrolled);
       })
       .catch((error) => {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching courses:", error.message);
       });
 
     setProgress(30); // set progress
@@ -103,44 +102,53 @@ const MyLearningCourse = () => {
               }}
             >
               <h1 className="text-lg font-medium">Courses attended</h1>
-              {Array.isArray(enrollCourse) && enrollCourse.length > 0 ? (
-                enrollCourse.map((item, index) => (
+              {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 ? (
+                enrolledCourses.map((course, index) => (
                   <div
                     key={index}
                     className="flex flex-col md:flex-row gap-4 mx-1 pb-7 border-b-[1px] border-b-gray-300 last:border-none last:pb-0"
                   >
-                    <Link className="md:w-1/2 w-full" to={"/"}>
+                    <Link
+                      className="md:w-1/2 w-full"
+                      to={`/course/${course._id}`}
+                    >
                       <img
                         className="rounded-lg w-full h-auto md:h-44"
-                        src={item.imageUrl}
-                        alt={item.name}
+                        src={course.imageUrl}
+                        alt={course.name}
                       />
                     </Link>
                     <div className="w-full md:w-1/2 block">
                       <h2 className="font-bold text-lg mb-2 ">
-                        <Link to={"/"}>{item.courseName}</Link>
+                        <Link to={`/course/${course._id}`}>
+                          {course.courseName}
+                        </Link>
                       </h2>
                       <div className="text-sm mb-2 mt-2">
-                        {item.description}
+                        {course.description}
                       </div>
                       <div className="text-sm mb-2 mt-2">
                         Learned 3 months ago
                       </div>
-                      <div className="flex flex-row items-center gap-x-1 mt-2 mb-2">
-                        <span className="text-sm">
-                          {Math.round(item.ratingInfo.avgRating)}
-                        </span>
-                        <Rating
-                          className="mb-[2px]"
-                          name="half-rating-read"
-                          defaultValue={item.ratingInfo.avgRating}
-                          precision={0.5}
-                          readOnly
-                          size="small"
-                        />
+                      <div className="flex flex-row items-center gap-x-1">
+                        {course.ratingInfo && (
+                          <>
+                            <span className="text-sm">
+                              {course.ratingInfo.avgRating}
+                            </span>
+                            <Rating
+                              className="mb-[2px]"
+                              name="half-rating-read"
+                              defaultValue={course.ratingInfo.avgRating}
+                              precision={0.5}
+                              readOnly
+                              size="small"
+                            />
+                          </>
+                        )}
                       </div>
                       <div>
-                        <LinearProgressWithLabel value={progress} />
+                        <LinearProgressWithLabel value={40} />
                       </div>
                     </div>
                   </div>

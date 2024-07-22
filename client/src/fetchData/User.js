@@ -23,17 +23,29 @@ const updateUserProfile = (userId, data) => {
 const changePassword = (userId, data) => {
   return axios.put(`/auth/changePassword`, {
     userId,
-    ...data
+    ...data,
   });
 };
 
 const updateProfile = (formData) => {
-  return axios.put('/auth/profile' , formData)
-}
+  return axios.put("/auth/profile", formData);
+};
 const updateAvatar = (avatar) => {
-  return axios.put('/auth/updateAvatar' , avatar)
+  return axios.put("/auth/updateAvatar", avatar);
+};
 
-}
+const getAllCourseEnrolled = () => {
+  return axios.get("/user/courseEnrolled");
+};
 
-
-export { onLogin, onRegister, onLogout, getProfile, updateUserProfile, changePassword, updateProfile ,updateAvatar };
+export {
+  onLogin,
+  onRegister,
+  onLogout,
+  getProfile,
+  updateUserProfile,
+  changePassword,
+  updateProfile,
+  updateAvatar,
+  getAllCourseEnrolled,
+};

@@ -46,7 +46,6 @@ const deleteCourseInFavourite = (courseId) => {
 };
 
 const addCourseInFavourite = (courseId) => {
-
   const data = { action: "add", courseId };
   return axios.post(`/favourite`, data);
 };
@@ -59,12 +58,9 @@ const getCourseBySearch = (searchTerm) => {
   });
 };
 
-
-
 const getStudents = (courseId) => {
-  return axios.get("/course/getStudents/" + courseId)
-}
-
+  return axios.get("/course/getStudents/" + courseId);
+};
 
 // checkout
 const createPayment = (amount) => {
