@@ -63,14 +63,25 @@ const getStudents = (courseId) => {
 };
 
 // checkout
-const createPayment = (amount) => {
+const createPayment = (amount, type, courseId) => {
   // const amount = 10000;
-  return axios.post(`/vnpay/create_payment_url`, { amount: amount });
+  return axios.post(`/vnpay/create_payment_url`, {
+    amount: amount,
+    type: type,
+    courseId: courseId,
+  });
 };
 
 const updatePayment = (param) => {
   return axios.get(`/vnpay/vnpay_ipn${param}`);
 };
+const getCourseByPagination = async (page) => {
+  return axios.get(`/course/page/getCoursePage?page=${page}`
+  );
+};
+const getAllCourseNoLimit = () => {
+  return axios.get("/course/getCourse/noLimit");
+}
 export {
   getAllCourse,
   getCourseInHomePage,
@@ -88,4 +99,6 @@ export {
   createPayment,
   updatePayment,
   getCourseBySearch,
+  getCourseByPagination,
+  getAllCourseNoLimit
 };

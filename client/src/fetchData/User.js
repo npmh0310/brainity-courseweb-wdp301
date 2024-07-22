@@ -38,6 +38,14 @@ const getAllCourseEnrolled = () => {
   return axios.get("/user/courseEnrolled");
 };
 
+const forgotPassword = (email) => {
+  return axios.post("/auth/forgotPassword", { email: email });
+};
+
+const resetPassword = (form) => {
+  return axios.post("/auth/resetPassword", form);
+};
+
 export {
   onLogin,
   onRegister,
@@ -47,5 +55,7 @@ export {
   changePassword,
   updateProfile,
   updateAvatar,
+  forgotPassword,
+  resetPassword,
   getAllCourseEnrolled,
 };

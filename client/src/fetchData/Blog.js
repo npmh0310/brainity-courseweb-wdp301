@@ -15,7 +15,18 @@ export const getBlogById = (id) => {
 export const getBlogUser = () => {
     return axios.get(baseUrl + "/blogUser")
 }
-
 export const deleteBlog = (id) => {
     return axios.delete(baseUrl + '/' + id)
 }
+export const createComment = (blogId, newComment) => {
+    return axios.post(`${baseUrl}/${blogId}/comments`, newComment);
+};
+export const getComments = (blogId) => {
+    return axios.get(`${baseUrl}/${blogId}/comments`);
+};
+export const updateComment = (blogId, commentId, updatedComment) => {
+    return axios.put(`${baseUrl}/${blogId}/comments/${commentId}`, updatedComment);
+};
+export const deleteComment = (blogId, commentId) => {
+    return axios.delete(`${baseUrl}/${blogId}/comments/${commentId}`);
+};

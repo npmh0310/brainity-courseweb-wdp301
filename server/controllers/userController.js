@@ -3,11 +3,22 @@ const Course = require("../models/course");
 const UserChapterProgress = require("../models/UserChapterProgress");
 const { getAvgRatingByCourseId } = require("./ratingController");
 const { getProgress } = require("./userChapterProgressController");
+const { createNotification } = require("./notificationController");
 
 const enrollCourse = async (req, res) => {
   const userId = req.user.id;
   const courseId = req.params.id;
-
+  const rooms = [`room_profile_${req.user.id}`];
+  const notification = {
+    title: "system",
+    sender: userId,
+    name: " a new course",
+    message: "You enrolled in ",
+    type: "course",
+    link: "/mylearningcourse",
+    image: "https://img.upanh.tv/2024/07/21/logo11.jpg",
+  };
+  createNotification(req.user.id, res.io, notification, rooms);
   try {
     const user = await User.findById(userId);
 

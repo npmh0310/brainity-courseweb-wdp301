@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../../assets/css/payment-success.css";
-import Header from "../../common/Header/Header";
 import Typewriter from "typewriter-effect";
-import Footer from "../../common/Footer/Footer";
 import Confetti from "./Confetti";
 
 const TypewriterEffect = () => {
@@ -59,9 +57,9 @@ const PaymentSuccess = () => {
     };
   }, []);
   return (
-    <div>
+    <>
       <Confetti />
-      <section class="py-56">
+      <section class="pt-[22vh] overflow-x-hidden overflow-y-hidden">
         <div class="container px-4 mx-auto">
           <div class="max-w-3xl mx-auto text-center">
             <span class="inline-block mx-auto mb-6">
@@ -119,7 +117,7 @@ const PaymentSuccess = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 };
 

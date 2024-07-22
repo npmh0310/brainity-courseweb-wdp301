@@ -39,7 +39,8 @@ import { getCart } from "./redux/features/cartSlice";
 import ChatBoxAdmin from "./pages/Admin/ChatBoxAdmin";
 import PaymentResult from "./components/User/Payment";
 import ConfirmCourseLayout from "./components/Admin/confirmCourse/ConfirmCourseLayout";
-
+import ForgotPassWord from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -51,9 +52,9 @@ function App() {
 
   useEffect(() => {
     if (isLogin) {
-      dispatch(getCart())
+      dispatch(getCart());
     }
-  }, [dispatch, isLogin])
+  }, [dispatch, isLogin]);
 
   return (
     <>
@@ -78,6 +79,8 @@ function App() {
         <Routes>
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgotPassword" element={<ForgotPassWord />} />
+          <Route path="/reset_password/:token" element={<ResetPassword />} />
           <Route path="/teacher" element={<TeacherPage />}>
             {teacherRoutes.map((route, index) => (
               <Route key={index} path={route.path} element={route.element}>
@@ -149,10 +152,8 @@ function App() {
           </Route>
           {/* Route Admin*/}
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
-          <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
-       
+          <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} /> 
           <Route path="/admin/*" element={<AdminLayout />}>
-            <Route path="" element={<Navigate to="default" replace />} />
             <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
             <Route path="confirmCourse/*" element={<ConfirmCourseLayout />} >
              <Route path=":id" element={<ConfirmCourseDetail />} />
@@ -161,8 +162,7 @@ function App() {
             <Route path="default" element={<Dashboard />} />
           </Route>
           {/* Route Payment Success*/}
-          <Route path="/paymentSuccess" element={<PaymentSuccess />}>
-          </Route>
+          <Route path="/paymentSuccess" element={<PaymentSuccess />}></Route>
           <Route path="/payment" element={<PaymentResult />} />
         </Routes>
       </BrowserRouter>

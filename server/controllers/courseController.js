@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const { getAvgRatingByCourseId } = require("./ratingController");
 const { getProgress } = require("./userChapterProgressController");
+const { createNotification } = require("./notificationController");
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
@@ -143,7 +144,7 @@ const deleteCourseById = async (req, res) => {
 
 const getCourseInHomePage = async (req, res) => {
   try {
-    const courses = await Course.find({})
+    const courses = await Course.find({isConfirm : true, isRejected : false})
       .limit(9)
       .populate("instructor", "username");
 
@@ -344,7 +345,7 @@ const getCourseNumOfEnrolled = async (courseId) => {
 const enrollCourse = async (req, res) => {
   const userId = req.user.id;
   const courseId = req.body.courseId;
-
+  
   try {
     const user = await User.findById(userId);
 
@@ -514,6 +515,55 @@ const rejectCourse = async (req, res) => {
     });
   }
 };
+const getCourseByPagination = async (req, res) => {
+  const page = parseInt(req.query.page) || 0;
+  const pageSize = 9;
+
+  try {
+    const totalCourses = await Course.countDocuments();
+    const totalPages = Math.ceil(totalCourses / pageSize);
+    const getAllCourseOfPagination = await Course.find({isConfirm : true, isRejected: false})
+      .skip(page * pageSize)
+      .limit(pageSize);
+
+    res.status(200).json({
+      success: true,
+      count: getAllCourseOfPagination.length,
+      message: "Successfully get all of page",
+      data: getAllCourseOfPagination,
+      totalPages: totalPages,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get all course of page. Try again",
+    });
+  }
+};
+const getAllCourseNoLimit = async (req, res) => {
+
+  try {
+    const courses = await Course.find({isConfirm : true, isRejected : false})
+    const promises = courses.map(async (course) => {
+      const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
+      const ratingInfo = await getAvgRatingByCourseId(course._id);
+      return { ...course.toObject(), numOfEnrolledUsers, ratingInfo };
+    });
+    const coursesWithEnrolledNumbers = await Promise.all(promises);
+
+    res.status(200).json({
+      success: true,
+      count: coursesWithEnrolledNumbers.length,
+      message: "Successfully get all",
+      data: coursesWithEnrolledNumbers,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get all. Try again. Details: " + err.message,
+    });
+  }
+};
 
 // const getAllCourseEnrolled = async (req, res) => {
 //   try {
@@ -565,4 +615,6 @@ module.exports = {
   getAllCourseForConfirm,
   confirmCourse,
   rejectCourse,
+  getCourseByPagination,
+  getAllCourseNoLimit
 };

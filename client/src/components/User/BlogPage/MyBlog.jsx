@@ -4,16 +4,18 @@ import { Share2, Trash2 } from "lucide-react";
 import { CgProfile } from "react-icons/cg";
 import { Link, useNavigate } from "react-router-dom";
 import BlogBg from "../../../assets/images/Categories/bg3.jpg";
-import { getBlogUser } from "../../../fetchData/Blog";
+import { deleteBlog, getBlogUser } from "../../../fetchData/Blog";
 import { formatDate2 } from "../../../function/function";
 import toast from "react-hot-toast";
+import Modal from "@mui/material/Modal";
 import EmptyBlog from "../../../assets/images/Blog/empty.jpg";
-import { Button } from "flowbite-react";
-
 const MyBlog = () => {
-  const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
+  const [blogrm, setBlogRm] = useState();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const navigate = useNavigate();
 
+  const handleDeleteClose = () => setDeleteOpen(false);
   const fetchData = async () => {
     const res = await getBlogUser();
     if (res.status === 200) {
@@ -21,12 +23,18 @@ const MyBlog = () => {
     }
   };
 
-  const deleteBlog = async (blogId) => {
-    const res = await deleteBlog(blogId);
+  const hanleDleteBlog = async (blogrm) => {
+    const res = await deleteBlog(blogrm);
     if (res.status === 200) {
       toast.success("Delete blog success");
+      setDeleteOpen(false);
       fetchData();
     }
+  };
+
+  const handleTrash = (idBlog) => {
+    setDeleteOpen(true);
+    setBlogRm(idBlog);
   };
 
   useEffect(() => {
@@ -35,6 +43,37 @@ const MyBlog = () => {
 
   return (
     <div className="mx-auto block text-third">
+      <Modal
+        open={deleteOpen}
+        onClose={handleDeleteClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div className="flex items-center justify-center h-full ">
+          <div className="bg-white py-6  rounded shadow-lg">
+            <h2 className="text-lg text-center uppercase font-medium text-third  border-b-[1px]  pb-5">
+              Blog Deletion
+            </h2>
+            <p className="my-5 px-4">
+              Are you sure you want to delete this blog?
+            </p>
+            <div className="mt-6 flex justify-around">
+              <button
+                className="bg-gray-300 hover:bg-gray-400 text-sm text-gray-800 font-semibold py-2 px-8 rounded-3xl mr-2"
+                onClick={handleDeleteClose}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-sm text-white font-semibold py-2 px-8 rounded-3xl"
+                onClick={() => hanleDleteBlog(blogrm)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <div className="flex text-black justify-center gap-3 text-4xl py-8">
         <p className="font-semibold">My blog</p>
       </div>
@@ -44,7 +83,6 @@ const MyBlog = () => {
           <p className="font-normal pb-2 mb-6 text-base">
             You haven't wrote any blogs
           </p>
-
           <div className="flex  justify-center items-center">
             <button
               className="cta flex flex-row  items-center"
@@ -92,7 +130,12 @@ const MyBlog = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="self-start lg:self-center mr-4 cursor-pointer hover:text-primary">
+                    <div
+                      className="self-start lg:self-center mr-4 cursor-pointer hover:text-primary"
+                      onClick={() => {
+                        handleTrash(blog._id);
+                      }}
+                    >
                       <Trash2 size="20px" className="lg:size-20px" />
                     </div>
                   </div>
@@ -108,8 +151,7 @@ const MyBlog = () => {
                   {/* Footer Blog */}
                   <div className="flex pt-2 justify-between">
                     <ul className="flex gap-2 lg:gap-4 text-xs lg:text-base">
-                      <li>0 views</li>
-                      <li>0 comments</li>
+                      <li>{blog.comments.length} comments</li>
                     </ul>
                   </div>
                 </div>
