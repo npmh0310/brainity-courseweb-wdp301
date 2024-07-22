@@ -97,21 +97,26 @@ const deleteBlogById = async (req, res) => {
 };
 
 const getAllBlog = async (req, res) => {
-  try {
-    const blogs = await Blog.find().populate({
-      path: "author",
-      select: "name avatar",
-    });
-    res.status(200).json({
-      blogs: blogs,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to get all. Try again",
-    });
-  }
-};
+
+    try {
+        const blogs = await Blog.find().populate(
+            {
+                path: "author",
+                select: "name avatar"
+            }
+        );
+        blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        res.status(200).json({
+            blogs: blogs
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to get all. Try again"
+        })
+    }
+}
+
 
 const getBlogByUser = async (req, res) => {
   const userId = req.user.id;

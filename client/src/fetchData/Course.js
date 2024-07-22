@@ -87,6 +87,14 @@ const updateStatusTeacherRequest = (requestId, status) => {
   }); 
 }
 
+const getCourseByPagination = async (page) => {
+  return axios.get(`/course/page/getCoursePage?page=${page}`
+  );
+};
+const getAllCourseNoLimit = () => {
+  return axios.get("/course/getCourse/noLimit");
+}
+
 export {
   getAllCourse,
   getCourseInHomePage,
@@ -106,4 +114,7 @@ export {
   getCourseBySearch,
   getTeacherRequest,
   updateStatusTeacherRequest,
+  getCourseByPagination,
+  getAllCourseNoLimit,
+
 };

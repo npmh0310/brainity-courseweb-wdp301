@@ -9,6 +9,7 @@ import Select from "react-select";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { createBlog } from "../../../fetchData/Blog";
+import { useNavigate } from "react-router-dom";
 function CreateBlog() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -18,6 +19,7 @@ function CreateBlog() {
   const [categories, setCategories] = useState([]);
   const [cate, setCate] = useState([]);
   const [imgUrl, setImgUrl] = useState();
+  const navigate = useNavigate()
   const handleDropdownChange = (selectedOption) => {
     setSelectedOption(selectedOption);
 
@@ -57,6 +59,7 @@ function CreateBlog() {
     const res = await createBlog(newBlog);
     if (res.status === 200) {
       toast.success("Create blog successfull");
+      navigate('/myBlog')
     } else {
       toast.error("Faild to create blog");
     }
