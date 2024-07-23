@@ -14,7 +14,6 @@ const EditCourse = ({ label, value, inputId, idCourse, setStatus }) => {
     categories: undefined,
     price: undefined,
   });
-  // console.log(inputValue)
   const inputRef = useRef(null);
   const toggleEdit = () => {
     setIsEditing(!isEditing);
@@ -29,7 +28,6 @@ const EditCourse = ({ label, value, inputId, idCourse, setStatus }) => {
 
   const handleInputChange = (e) => {
     setInputValue((prev) => ({ ...prev, [e.target.id]: e.target.value }));
-    console.log(inputValue);
   };
 
   const handleSave = async () => {

@@ -1,30 +1,42 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Item from "../../common/Item";
 import { useInView } from "react-intersection-observer";
 import CategoriesBg from "../../../assets/images/Categories/bg1.jpg";
-import { useLocation, useNavigate } from "react-router-dom";
 
-export const Right = ({ filteredCourses, currentPage,handlePageClick, totalPages }) => {
+export const Right = ({ filteredCourses }) => {
+  const [courseList, setCourseList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 9;
   const { ref: courseRef, inView: courseView } = useInView({
     triggerOnce: true,
   });
   const [loading, setLoading] = useState(false);
-  const [courseList, setCourseList] = useState([]);
+
   useEffect(() => {
     if (courseView) {
       setLoading(true);
       setCourseList(filteredCourses);
-      console.log("dit me", filteredCourses);
+      setCurrentPage(1); // Reset to page 1 whenever filteredCourses changes
       setTimeout(() => {
         setLoading(false);
       }, 500);
     }
-  }, [courseView,filteredCourses,totalPages]);
+  }, [courseView, filteredCourses]);
+
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = courseList.slice(indexOfFirstCourse, indexOfLastCourse);
+  
+  const totalPages = Math.ceil(courseList.length / coursesPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div ref={courseRef} className="col-span-5 block">
       <div
-        className="relative w-full h-56 rounded-3xl mb-8 hover:-translate-y-2 transition-all duration-500"
+        className="relative w-full h-56 rounded-3xl mb-8 hover:-translate-y-2 transition-all duration-500 "
         style={{
           backgroundImage: `url(${CategoriesBg})`,
           backgroundSize: "cover",
@@ -38,29 +50,20 @@ export const Right = ({ filteredCourses, currentPage,handlePageClick, totalPages
       ) : (
         <>
           <div className="grid justify-items-center grid-cols-1 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {courseList.map((data) => (
+            {currentCourses.map((data) => (
               <Item key={data.id} data={data} loading={loading} />
             ))}
           </div>
           <div className="flex justify-center mt-8">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (pageNumber) => (
-                // Phân trang vẫn còn lỗi khi filter nên tạm thời set totalPages nhỏ hơn 1 thì hidden
-                // (totalPages > 1 &&
-                <button
-                  key={pageNumber}
-                  onClick={() => handlePageClick(pageNumber - 1)}
-                  className={`mx-1 px-4 py-2 rounded-full ${
-                    pageNumber === currentPage + 1
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 text-primary"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-                // )
-              )
-            )}
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                className={`w-11 h-11 mx-1 rounded-full ${pageNumber === currentPage ? "bg-primary text-black" : "bg-white text-black"}`}
+              >
+                {pageNumber}
+              </button>
+            ))}
           </div>
         </>
       )}

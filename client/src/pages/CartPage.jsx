@@ -28,7 +28,6 @@ function CartPage() {
   const handleCheckout = async () => {
     const res = await createPayment(total, "cartne", "hongcocourseIddau");
     if (res) {
-      console.log(res.data);
       window.open(res.data.url, "_self");
     }
   };

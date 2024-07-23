@@ -120,43 +120,42 @@ function LearningPage() {
 
   //Data
   const { id: courseId } = useParams();
-  useEffect(() => {
-    const fetchCourse = async (courseId) => {
-      dispatch(setGlobalLoading(true));
-      try {
-        const response_Course = await getCourseById(courseId);
-        const response_LessonProgress = await getLessonProgressUser(courseId);
+  const fetchCourse = async (courseId) => {
+    dispatch(setGlobalLoading(true));
+    try {
+      const response_Course = await getCourseById(courseId);
+      const response_LessonProgress = await getLessonProgressUser(courseId);
 
-        if (
-          response_Course.data.success &&
-          response_LessonProgress.data.success
-        ) {
-          const sectionsWithProgress = response_Course.data.data.sections.map(
-            (section) => ({
-              ...section,
-              lessons: section.lessons.map((lesson) => ({
-                ...lesson,
-                isCompleted:
-                  response_LessonProgress.data.data.lessonsProgress.find(
-                    (p) => p.lesson === lesson._id
-                  )?.isCompleted || false,
-              })),
-            })
-          );
+      if (
+        response_Course.data.success &&
+        response_LessonProgress.data.success
+      ) {
+        const sectionsWithProgress = response_Course.data.data.sections.map(
+          (section) => ({
+            ...section,
+            lessons: section.lessons.map((lesson) => ({
+              ...lesson,
+              isCompleted:
+                response_LessonProgress.data.data.lessonsProgress.find(
+                  (p) => p.lesson === lesson._id
+                )?.isCompleted || false,
+            })),
+          })
+        );
 
-          setCourse(response_Course.data.data);
-          setCourseProgress(response_LessonProgress.data.data);
-          dispatch(insertLessonProgress(sectionsWithProgress));
-          // setInitialLessonsProgress(sectionsWithProgress);
-          // setSectionsWithProgress(sectionsWithProgress)
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(setGlobalLoading(false));
+        setCourse(response_Course.data.data);
+        setCourseProgress(response_LessonProgress.data.data);
+        dispatch(insertLessonProgress(sectionsWithProgress));
+        // setInitialLessonsProgress(sectionsWithProgress);
+        // setSectionsWithProgress(sectionsWithProgress)
       }
-    };
-
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setGlobalLoading(false));
+    }
+  };
+  useEffect(() => {
     fetchCourse(courseId);
   }, []);
 
@@ -166,6 +165,8 @@ function LearningPage() {
       setOverralCompletionPercent(overralCompletionPercent);
       if(overralCompletionPercent.overal == 100.00) {
         const res = completeCourse(courseId)
+        openModal()
+
       }
     }
   }, [lessonsProgress , courseId]);
@@ -358,7 +359,7 @@ function LearningPage() {
                     Exercise
                   </NavLink> */}
                   {/* <NavLink to='learning tool' className={section === 'search' ? 'py-4 px-1 text-center font-semibold text-lg border-b-2 border-black cursor-pointer' : "py-4 px-1 text-center font-semibold text-lg cursor-pointer"}>Learning tool</NavLink> */}
-                  <NavLink
+                  {/* <NavLink
                     to={`#notes`}
                     className={
                       section === "notes"
@@ -367,7 +368,7 @@ function LearningPage() {
                     }
                   >
                     Notes
-                  </NavLink>
+                  </NavLink> */}
                 </div>
                 <div className=" mt-4">
                   {section === "courseContent" && (
@@ -406,18 +407,18 @@ function LearningPage() {
                     ))}
                 </div>
                 <div>
-                  <button
+                  {(overralCompletionPercent.overal == 100.00 || courseProgress?.isCompleted) &&<button
                     onClick={openModal}
                     className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   >
                     Write a Review
-                  </button>
+                  </button>}
+                  
                   {showModal && (
                     <CourseReviewDialog
                       course={course}
                       courseId={course._id}
                       onSubmit={(data) => {
-                        console.log("Submit data:", data);
                         closeModal(); // Close modal after successful submit
                       }}
                       onClose={closeModal}

@@ -9,11 +9,7 @@ const ConfirmCourseDetail = ({ courses, onConfirm, onReject }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  console.log("Courses:", courses);
-
   const course = courses?.find((c) => c._id === id);
-
-  console.log("Course:", course);
 
   if (!course) {
     return <div>Course not found</div>;
@@ -22,16 +18,12 @@ const ConfirmCourseDetail = ({ courses, onConfirm, onReject }) => {
   const handleConfirm = () => {
     onConfirm(course._id);
     toast.success("This course has been confirmed");
-    console.log("Confirm", course.isConfirm);
-    console.log("Reject:", course.isRejected);
     navigate(-1); // Go back to the previous page
   };
 
   const handleReject = () => {
     onReject(course._id);
     toast.error("This course has been rejected");
-    console.log("Confirm", course.isConfirm);
-    console.log("Reject:", course.isRejected);
     navigate(-1); // Go back to the previous page
   };
 
@@ -126,7 +118,7 @@ const ConfirmCourseDetail = ({ courses, onConfirm, onReject }) => {
                                   src={lesson.videoUrl}
                                   title={lesson.title}
                                   frameBorder="0"
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                   allowFullScreen
                                 ></iframe>
                               </div>

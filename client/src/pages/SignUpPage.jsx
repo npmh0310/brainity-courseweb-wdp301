@@ -74,15 +74,12 @@ const SignUpPage = () => {
   const handleClick = async (e) => {
     if(valid){
 
-      e.preventDefault();
-  
-      let res = await onRegister(credentials);
-      console.log(res && res.status === 200);
-      if (res) {
-        navigate("/signin");
-      }
+    let res = await onRegister(credentials);
+    if (res) {
+      navigate("/signin");
     }
-  };
+  }
+}
 
   const handleLoginGoogle = () => {
     window.open("http://localhost:4000/auth/google/", "_self");

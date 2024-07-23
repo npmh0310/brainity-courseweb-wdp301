@@ -20,7 +20,6 @@ const NotificationsComponent = () => {
     getAllNotification().then((response) => {
       const data = response.data.data.map((item) => item.notification);
       setNotification(data);
-      console.log(data);
     });
     // setNotification(["All message"]);
     socket.on("passwordChangeNotification", (data) => {

@@ -47,42 +47,6 @@ export const SearchPage = () => {
     fetchSearchResults();
   }, [debouncedSearchTerm]);
 
-  // useEffect(() => {
-  //   const fetchCourses = async () => {
-  //     try {
-  //       // Function to parse the query string and extract the 'q' parameter
-  //       const searchParams = new URLSearchParams(location.search);
-  //       const searchQuery = searchParams.get("q");
-
-  //       // Fetch all courses if component is in view
-  //       if (courseView) {
-  //         const response = await getAllCourse();
-  //         const courses = response.data.data;
-
-  //         setCourseList(courses);
-
-  //         // Filter courses based on search query if available
-  //         if (searchQuery) {
-  //           const filtered = courses.filter(
-  //             (course) =>
-  //               course.courseName &&
-  //               course.courseName
-  //                 .toLowerCase()
-  //                 .includes(searchQuery.toLowerCase())
-  //           );
-  //           setFilteredCourses(filtered);
-  //         } else {
-  //           setFilteredCourses(courses); // Set all courses initially
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching courses:", error);
-  //     }
-  //   };
-
-  //   fetchCourses();
-  // }, [location.search, courseView]);
-
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -119,10 +83,7 @@ export const SearchPage = () => {
     setFilteredCourses(sortedCourses);
   };
 
-  // Xử lý khi filter ở Left thay đổi
   const handleFilteredCourses = (filteredCourses) => {
-    // Lỗi xử lý cái chỗ Dropdown, nếu chọn Sort by New release, chọn filter,
-    // sau đó hủy filter đi thì nó không sort theo New release nữa
     setFilteredCourses(filteredCourses);
   };
 
@@ -200,6 +161,7 @@ export const SearchPage = () => {
       </div>
       <div className="grid grid-cols-6 gap-10">
         {/* Left component */}
+
         <Left onFilteredCourses={handleFilteredCourses} />
 
         {/* Right component */}
