@@ -8,23 +8,28 @@ const ConfirmTeacherTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState(false);
   const [teachers, setTeachers] = useState([
     // Add more teachers if needed
   ]);
   // const [selectedTeacher, setSelectedTeacher] = useState({})
   
   useEffect(() => {
-    getTeacherRequest()
-    .then((res) => {setTeachers(res.data.data) 
-      // console.log(res);
-    })
-    .catch((err) => console.log(err))
-  }, []);
+    if(status){
+      getTeacherRequest()
+      .then((res) => {setTeachers(res.data.data) 
+        // console.log(res);
+        setStatus(false)
+      })
+      .catch((err) => console.log(err))
+    }
+  }, [status]);
 
   const handleConfirm = async(id) => {
     const res = await updateStatusTeacherRequest(id, "Confirmed")
     if(res && res.status === 200){
       toast.success("You have accepted")
+      setStatus(true)
     }
     setOpen(false);
   };
@@ -33,6 +38,7 @@ const ConfirmTeacherTable = () => {
     const res = await updateStatusTeacherRequest(id, "Rejected")
     if(res && res.status === 200){
       toast.success("You have rejected")
+      setStatus(true)
     }
     setOpen(false);
   };
