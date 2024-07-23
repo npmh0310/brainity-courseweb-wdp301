@@ -15,6 +15,9 @@ export const getBlogById = (id) => {
 export const getBlogUser = () => {
     return axios.get(baseUrl + "/blogUser")
 }
+export const updateBlogStatus = (blogId, status) => {
+    return axios.put(`${baseUrl}/${blogId}`, { status });
+  };
 export const deleteBlog = (id) => {
     return axios.delete(baseUrl + '/' + id)
 }
@@ -27,6 +30,7 @@ export const getComments = (blogId) => {
 export const updateComment = (blogId, commentId, updatedComment) => {
     return axios.put(`${baseUrl}/${blogId}/comments/${commentId}`, updatedComment);
 };
+
 export const deleteComment = (blogId, commentId) => {
     return axios.delete(`${baseUrl}/${blogId}/comments/${commentId}`);
 };
