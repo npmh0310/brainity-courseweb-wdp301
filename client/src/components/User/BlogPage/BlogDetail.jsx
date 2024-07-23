@@ -93,7 +93,7 @@ function BlogDetail() {
     window.scrollTo(0, 0); // Scroll to top on mount
     console.log("user", user);
   }, [id]);
-  
+
   const fetchComments = async (id) => {
     try {
       const res = await getComments(id);
@@ -389,7 +389,7 @@ function BlogDetail() {
               ></textarea>
               <button
                 type="submit"
-                className="bg-primary text-white px-4 py-1 rounded mt-2"
+                className="bg-primary text-white px-4 py-1 mb-4 rounded mt-2"
               >
                 Submit
               </button>
