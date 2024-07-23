@@ -67,7 +67,7 @@ const ForgotPassWord = () => {
                     <div>
                         <div className="mb-10">
                             <h1
-                                className="text-5xl text-primary text-center  font-logoTitle"
+                                className="text-5xl text-primary font-semibold text-center  font-third"
                                 id="typing-animation"
                             >
                                 Forgot Password
@@ -117,7 +117,7 @@ const ForgotPassWord = () => {
                             <div className="button-login text-center ">
                                 <button
                                     onClick={() => navigate('/signin')}
-                                    className="btnLogin border hover:bg-opacity-90 text-gray bg-gray-50 transition  transform hover:scale-105 ]"
+                                    className="btnLogin border hover:bg-opacity-90 text-gray bg-gray-50 transition  transform hover:scale-105 hover:bg-gray-100 ]"
                                 >
                                     Back to sign in
                                 </button>

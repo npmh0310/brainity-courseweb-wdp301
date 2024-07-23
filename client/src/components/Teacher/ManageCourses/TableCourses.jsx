@@ -13,7 +13,8 @@ import {
 } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
 import { formatCurrencyVND } from "../../../function/function";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEarthAsia, faLock } from '@fortawesome/free-solid-svg-icons';
 const TableCourses = () => {
   const navigate = useNavigate();
   const headers = [
@@ -81,24 +82,25 @@ const TableCourses = () => {
   const handlePageClick = (page) => {
     setPage(page);
   };
+  console.log(courses);
 
   const getCourseStatus = (course) => {
-    if (course.isReject === false || course.isConfirm === false) {
-      return "Pending";
-    } else if (course.isReject === true) {
+    if (course.isRejected) {
       return "Rejected";
-    } else if (course.isConfirm === true) {
+    } else if (course.isConfirm) {
       return "Confirmed";
+    } else {
+      return "Pending";
     }
   };
 
-  const getStatusColor = (course) => {
-    if (course.isReject === false || course.isConfirm === false) {
-      return "bg-gray-200";
-    } else if (course.isReject === true) {
-      return "bg-yellow-400";
-    } else if (course.isConfirm === true) {
+  const getCourseBgColor = (course) => {
+    if (course.isRejected) {
+      return "bg-red-400";
+    } else if (course.isConfirm) {
       return "bg-green-400";
+    } else {
+      return "bg-gray-200";
     }
   };
   console.log(courses);
@@ -173,15 +175,15 @@ const TableCourses = () => {
                   <td className=" py-5 border-b border-gray-200 text-sm">
                     <h1
                       className={`${
-                        course.isPublic ? "bg-green-400" : "bg-red-400"
-                      }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
+                        course.isPublic ? "text-green-500" : "text-red-500"
+                      }  relative w-24 text-xl text-center  font-medium px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >
-                      {course.isPublic ? "Public" : "Private"}
+                      {course.isPublic ? (<FontAwesomeIcon icon={faEarthAsia} />) : (<FontAwesomeIcon icon={faLock} />)}
                     </h1>
                   </td>
                   <td className="pr-2 py-5 border-b border-gray-200 text-sm">
                     <h1
-                      className={`${getStatusColor(
+                      className={`${getCourseBgColor(
                         course
                       )} relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >

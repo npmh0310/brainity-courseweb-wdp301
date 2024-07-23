@@ -22,7 +22,8 @@ import {
 } from "../../../fetchData/Blog";
 import { useEffect, useState, useRef } from "react";
 import { formatDate2 } from "../../../function/function";
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert } from "@mui/material";
+import toast from "react-hot-toast";
 function BlogDetail() {
   const [blog, setBlog] = useState();
   const [comments, setComments] = useState([]);
@@ -116,13 +117,12 @@ function BlogDetail() {
         console.log(newComment);
         // Fetch lại bình luận sau khi thêm mới thành công
         fetchComments(id);
-        setToastMessage("Comment added successfully!");
-        setToastSeverity("success");
-        setOpenToast(true);
+        toast.success("Comment added successfully!");
         setCommentText("");
       }
     } catch (error) {
       console.error("Error posting comment:", error);
+      toast.error("Fail to post comment");
     }
   };
 
@@ -136,12 +136,11 @@ function BlogDetail() {
         fetchComments(id);
         setIsEditing(false);
         setCommentText("");
-        setToastMessage("Comment updated successfully!");
-        setToastSeverity("success");
-        setOpenToast(true);
+        toast.success("Comment updated successfully!");
         setCommentId(null); // Clear the commentId after editing
       }
     } catch (error) {
+      toast.error("Fail to post comment");
       console.error("Error updating comment:", error);
     }
   };
@@ -289,128 +288,132 @@ function BlogDetail() {
                 Comments
               </p>
               <div className="max-h-96 overflow-y-auto">
-              {comments.length > 0 ? (
-                comments.map((comment) => (
-                  <div key={comment._id} className="text-third mb-4">
-                    <article className="p-6 text-base bg-white rounded-lg">
-                      <footer className="relative flex justify-between items-center mb-2">
-                        <div className="flex items-center">
-                          <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                            <img
-                              className="mr-2 w-6 h-6 rounded-full"
-                              src={
-                                comment.user.avatar ||
-                                "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                              }
-                              alt={comment.user.username}
-                            />
-                            {comment.user.username}
-                          </p>
-                          <p className="text-sm text-third">
-                            {formatDate2(comment.createdAt)}
-                          </p>
-                        </div>
+                {comments.length > 0 ? (
+                  comments.map((comment) => (
+                    <div key={comment._id} className="text-third mb-4">
+                      <article className="p-6 text-base bg-white rounded-lg">
+                        <footer className="relative flex justify-between items-center mb-2">
+                          <div className="flex items-center">
+                            <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                              <img
+                                className="mr-2 w-6 h-6 rounded-full"
+                                src={
+                                  comment.user.avatar ||
+                                  "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                }
+                                alt={comment.user.username}
+                              />
+                              {comment.user.username}
+                            </p>
+                            <p className="text-sm text-third">
+                              {formatDate2(comment.createdAt)}
+                            </p>
+                          </div>
 
-                        {comment.user._id === user._id && (
-                          <div className="relative">
-                            <button
-                              id={`dropdownComment${comment._id}Button`}
-                              className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
-                              type="button"
-                              onClick={() =>
-                                toggleDropdown(`dropdownComment${comment._id}`)
-                              }
-                            >
-                              <svg
-                                className="w-4 h-4"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 16 3"
+                          {comment.user._id === user._id && (
+                            <div className="relative">
+                              <button
+                                id={`dropdownComment${comment._id}Button`}
+                                className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                type="button"
+                                onClick={() =>
+                                  toggleDropdown(
+                                    `dropdownComment${comment._id}`
+                                  )
+                                }
                               >
-                                <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                              </svg>
-                              <span className="sr-only">Comment settings</span>
-                            </button>
-                            <div
-                              id={`dropdownComment${comment._id}`}
-                              className={`${
-                                openDropdown === `dropdownComment${comment._id}`
-                                  ? "block"
-                                  : "hidden"
-                              } absolute right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow`}
-                            >
-                              <ul
-                                className="py-1 text-sm text-gray-700"
-                                aria-labelledby="dropdownMenuIconHorizontalButton"
+                                <svg
+                                  className="w-4 h-4"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="0 0 16 3"
+                                >
+                                  <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                                </svg>
+                                <span className="sr-only">
+                                  Comment settings
+                                </span>
+                              </button>
+                              <div
+                                id={`dropdownComment${comment._id}`}
+                                className={`${
+                                  openDropdown ===
+                                  `dropdownComment${comment._id}`
+                                    ? "block"
+                                    : "hidden"
+                                } absolute right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow`}
                               >
-                                <li>
-                                  <button
-                                    onClick={() => {
-                                      setIsEditing(true);
-                                      setOpenDropdown(null);
-                                      setCommentText(comment.content);
-                                      setCommentId(comment._id);
-                                    }}
-                                    className="block py-2 px-4 hover:bg-gray-100 w-full text-left"
-                                  >
-                                    Edit
-                                  </button>
-                                </li>
-                                <li>
-                                  <button
-                                    onClick={() =>
-                                      handleDeleteComment(comment._id)
-                                    }
-                                    className="block py-2 px-4 w-full text-left text-red-500 hover:bg-gray-100"
-                                  >
-                                    Remove
-                                  </button>
-                                </li>
-                              </ul>
+                                <ul
+                                  className="py-1 text-sm text-gray-700"
+                                  aria-labelledby="dropdownMenuIconHorizontalButton"
+                                >
+                                  <li>
+                                    <button
+                                      onClick={() => {
+                                        setIsEditing(true);
+                                        setOpenDropdown(null);
+                                        setCommentText(comment.content);
+                                        setCommentId(comment._id);
+                                      }}
+                                      className="block py-2 px-4 hover:bg-gray-100 w-full text-left"
+                                    >
+                                      Edit
+                                    </button>
+                                  </li>
+                                  <li>
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteComment(comment._id)
+                                      }
+                                      className="block py-2 px-4 w-full text-left text-red-500 hover:bg-gray-100"
+                                    >
+                                      Remove
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          )}
+                        </footer>
+                        {isEditing && commentId === comment._id ? (
+                          <div className="flex flex-col relative">
+                            <textarea
+                              ref={textareaRef}
+                              type="text"
+                              value={commentText}
+                              onChange={handleInputChange}
+                              onKeyPress={handleInputKeyPress}
+                              className="w-full h-20 p-2 border border-gray-300 rounded text-base"
+                              autoFocus
+                            />
+                            <div className="self-end items-center flex gap-2 mt-2">
+                              <button
+                                onClick={handleCancelEdit}
+                                className="w-fit text-center h-fit bg-red-400 hover:bg-red-300 text-white px-3 py-1 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={handleSaveEdit}
+                                className="w-fit h-fit bg-primary hover:bg-[#03ecbe] text-white px-4 py-2 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex"
+                              >
+                                <SendHorizontal size="16px" />
+                              </button>
                             </div>
                           </div>
+                        ) : (
+                          <p className="text-third text-base">
+                            {comment.content}
+                          </p>
                         )}
-                      </footer>
-                      {isEditing && commentId === comment._id ? (
-                        <div className="flex flex-col relative">
-                          <textarea
-                            ref={textareaRef}
-                            type="text"
-                            value={commentText}
-                            onChange={handleInputChange}
-                            onKeyPress={handleInputKeyPress}
-                            className="w-full h-20 p-2 border border-gray-300 rounded text-base"
-                            autoFocus
-                          />
-                          <div className="self-end items-center flex gap-2 mt-2">
-                            <button
-                              onClick={handleCancelEdit}
-                              className="w-fit text-center h-fit bg-red-400 hover:bg-red-300 text-white px-3 py-1 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={handleSaveEdit}
-                              className="w-fit h-fit bg-primary hover:bg-[#03ecbe] text-white px-4 py-2 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex"
-                            >
-                              <SendHorizontal size="16px" />
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-third text-base">
-                          {comment.content}
-                        </p>
-                      )}
-                    </article>
-                  </div>
-                ))
-              ) : (
-                <p className="text-third text-base">No comments yet.</p>
-              )}
+                      </article>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-third text-base">No comments yet.</p>
+                )}
               </div>
-              
 
               {/* Post Comment */}
               <div className="w-full pt-4 lg:pt-8 pb-10 lg:pb-20 px-2">
@@ -441,13 +444,13 @@ function BlogDetail() {
           </div>
         </div>
       </div>
-       {/* Toast Notification */}
-       <Snackbar
+      {/* Toast Notification */}
+      <Snackbar
         open={openToast}
         autoHideDuration={6000}
         onClose={handleCloseToast}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        TransitionProps={{ timeout: 500, easing: 'ease-in-out' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        TransitionProps={{ timeout: 500, easing: "ease-in-out" }}
       >
         <Alert onClose={handleCloseToast} severity={toastSeverity}>
           {toastMessage}
