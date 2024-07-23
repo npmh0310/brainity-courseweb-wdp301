@@ -70,7 +70,8 @@ function HeaderUser() {
   const handleLogout = () => {
     onLogout();
     dispatch(logout());
-    redirect("/");
+    navigate("/");
+    window.location.reload();
   };
 
   useEffect(() => {

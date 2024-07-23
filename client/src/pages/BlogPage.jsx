@@ -64,7 +64,7 @@ function BlogPage() {
               <div className="py-8" key={index}>
                 <div className="flex flex-col lg:flex-row flex-1">
                   <div className="w-full lg:w-1/2 pr-0 lg:pr-8 mb-4 lg:mb-0">
-                    <Link to={`/blogdetail/${blog.id}/`}>
+                    <Link to={`/blogdetail/${blog.id}`}>
                       <img
                         src={blog.imgUrl}
                         alt="img"
@@ -92,7 +92,7 @@ function BlogPage() {
                     </div>
                     {/* Content Blog */}
                     <div className="border-b-2 pt-2 pb-2">
-                      <Link to={`/blogdetail/${blog._id}/`}>
+                      <Link to={`/blogdetail/${blog._id}`}>
                         <p className="font-extrabold  text-xl lg:text-3xl hover:text-primary pb-4 text-left">
                           {blog.title}
                         </p>
