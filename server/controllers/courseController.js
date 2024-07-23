@@ -144,7 +144,7 @@ const deleteCourseById = async (req, res) => {
 
 const getCourseInHomePage = async (req, res) => {
   try {
-    const courses = await Course.find({isConfirm : true, isRejected : false})
+    const courses = await Course.find({ isConfirm: true, isRejected: false })
       .limit(9)
       .populate("instructor", "username");
 
@@ -345,7 +345,7 @@ const getCourseNumOfEnrolled = async (courseId) => {
 const enrollCourse = async (req, res) => {
   const userId = req.user.id;
   const courseId = req.body.courseId;
-  
+
   try {
     const user = await User.findById(userId);
 
@@ -522,7 +522,10 @@ const getCourseByPagination = async (req, res) => {
   try {
     const totalCourses = await Course.countDocuments();
     const totalPages = Math.ceil(totalCourses / pageSize);
-    const getAllCourseOfPagination = await Course.find({isConfirm : true, isRejected: false})
+    const getAllCourseOfPagination = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+    })
       .skip(page * pageSize)
       .limit(pageSize);
 
@@ -541,9 +544,8 @@ const getCourseByPagination = async (req, res) => {
   }
 };
 const getAllCourseNoLimit = async (req, res) => {
-
   try {
-    const courses = await Course.find({isConfirm : true, isRejected : false})
+    const courses = await Course.find({ isConfirm: true, isRejected: false });
     const promises = courses.map(async (course) => {
       const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
       const ratingInfo = await getAvgRatingByCourseId(course._id);
@@ -616,5 +618,5 @@ module.exports = {
   confirmCourse,
   rejectCourse,
   getCourseByPagination,
-  getAllCourseNoLimit
+  getAllCourseNoLimit,
 };

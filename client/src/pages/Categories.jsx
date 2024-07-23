@@ -1,64 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import {
-  getCourseByPagination,
-  getAllCourse,
-  getAllCourseNoLimit,
-} from "../fetchData/Course";
+import { getAllCourseNoLimit } from "../fetchData/Course";
 import { Left } from "../components/User/Categories/Left";
 import { Right } from "../components/User/Categories/Right";
 
 export const Categories = () => {
   const [courseList, setCourseList] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
-  const [maxPage, setMaxPage] = useState(0);
   const [sortBy, setSortBy] = useState("Best Seller");
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [isFilterActive, setIsFilterActive] = useState(false); // Trạng thái bộ lọc
   const { ref: courseRef, inView: courseView } = useInView({
     triggerOnce: true,
   });
 
-  // gọi api get all course => ceil / lấy page
-  useEffect(() => {
-    const dataCourse = async () => {
-      try {
-        let res = await getAllCourseNoLimit();
-        // setMaxPage(data.data.length);
-        const totalCourse = res.data.data.length;
-        setMaxPage(Math.ceil(totalCourse / 9));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    dataCourse();
-  }, []);
-console.log("max page",maxPage);
-  // getallcourse = length couser / => page => gán maxpage
-  // gọi api lấy tổng course => page => gán maxPage
-  // gán MaxPage sau khi lấy tổng courrse
-  // let maxPage = res.data.totalPages;
-
-  const fetchCourses = (page) => {
-    getCourseByPagination(page).then((res) => {
-      setCourseList(res.data.data);
-      setTotalPages(res.data.totalPages);
-      console.log(res.data.totalPages);
-      console.log(res.data);
-      if (!isFilterActive) {
-        setFilteredCourses(res.data.data);
-        setTotalPages(res.data.totalPages);
-        console.log(res.data.totalPages);
-      }
-    });
-  };
-  console.log(totalPages);
   useEffect(() => {
     if (courseView) {
-      fetchCourses(currentPage);
+      getAllCourseNoLimit().then((res) => {
+        setCourseList(res.data.data);
+      });
     }
-  }, [courseView, currentPage]);
+  }, [courseView]);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,45 +35,41 @@ console.log("max page",maxPage);
 
   // Hàm lọc khoá học dựa trên Sort By
   const filterCourses = (option) => {
-    let sortedCourses = [...courseList];
     if (option === "Best Seller") {
-      sortedCourses = sortedCourses.sort(
-        (a, b) => b.numOfEnrolledUsers - a.numOfEnrolledUsers
-      );
+      handleSortByBestSeller();
     } else if (option === "New release") {
-      sortedCourses = sortedCourses.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
+      handleSortByNewest();
     }
+  };
+
+  const handleSortByBestSeller = () => {
+    const sortedCourses = [...courseList].sort(
+      (a, b) => b.numOfEnrolledUsers - a.numOfEnrolledUsers
+    );
     setFilteredCourses(sortedCourses);
-    // Cập nhật totalPages dựa trên số lượng khóa học sau khi lọc
-    setTotalPages(Math.ceil(sortedCourses.length / 9));
-    console.log(Math.ceil(sortedCourses.length / 9));
-    setIsFilterActive(true);
-    setCurrentPage(0);
+  };
+
+  const handleSortByNewest = () => {
+    const sortedCourses = [...courseList].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    setFilteredCourses(sortedCourses);
   };
 
   // Xử lý khi filter ở Left thay đổi
   const handleFilteredCourses = (filteredCourses) => {
+    // Lỗi xử lý cái chỗ Dropdown, nếu chọn Sort by New release, chọn filter,
+    // sau đó hủy filter đi thì nó không sort theo New release nữa
     setFilteredCourses(filteredCourses);
-    setCurrentPage(0);
-  };
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-    // Fetch courses for the selected page
-    fetchCourses(page);
-    console.log("Filter course ne", filteredCourses);
-    console.log("course list", courseList);
   };
 
   return (
     <div ref={courseRef} className="container bg-white px-0 mx-auto pb-20">
-      <div className="flex justify-center  gap-3 text-5xl pt-12 pb-20 uppercase font-third font-semibold">
-        <p className="">E-learning Courses</p>
+      <div className="flex justify-center gap-3 text-4xl pt-8 pb-16">
+        <p className="font-semibold">E-learning Courses</p>
       </div>
       <div>
-        <div className="border-b-2 pb-4 text-3xl ">
+        <div className="border-b-2 pb-4 text-3xl font-semibold">
           <p>All E-learning courses</p>
         </div>
         <div className="flex justify-between mt-4 mb-8 items-center">
@@ -181,19 +137,10 @@ console.log("max page",maxPage);
       </div>
       <div className="grid grid-cols-6 gap-10">
         {/* Left component */}
-        <Left
-          onFilteredCourses={handleFilteredCourses}
-          setTotalPages={setTotalPages}
-          totalPages={maxPage}
-        />
+        <Left onFilteredCourses={handleFilteredCourses} />
 
         {/* Right component */}
-        <Right
-          filteredCourses={filteredCourses}
-          handlePageClick={handlePageClick}
-          currentPage={currentPage}
-          totalPages={totalPages}
-        />
+        <Right filteredCourses={filteredCourses} />
       </div>
     </div>
   );
