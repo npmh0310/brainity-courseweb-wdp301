@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { postRating } from "../../../../fetchData/Rating";
 import { Rating } from "@mui/material";
+import toast from "react-hot-toast";
 
 const CourseReviewDialog = ({
   course,
@@ -22,11 +23,7 @@ const CourseReviewDialog = ({
   const handleSubmit = async () => {
     if (rating < 1 || rating > 5) {
       setToastOpen(false); // Close the toast before setting a new message
-      setTimeout(() => {
-        setToastMessage("Please select a rating between 1 and 5.");
-        setToastSeverity("error");
-        setToastOpen(true);
-      }, 100); // Small delay to ensure state change
+      toast.success("Please select a rating between 1 and 5.");
       return;
     }
     try {
@@ -36,18 +33,9 @@ const CourseReviewDialog = ({
       setComment("");
       onClose();
       setToastOpen(false); // Close the toast before setting a new message
-      setTimeout(() => {
-        setToastMessage("Review submitted successfully.");
-        setToastSeverity("success");
-        setToastOpen(true);
-      }, 100); // Small delay to ensure state change
+      toast.success("Review submitted successfully");
     } catch (error) {
-      setToastOpen(false); // Close the toast before setting a new message
-      setTimeout(() => {
-        setToastMessage("Error submitting review.");
-        setToastSeverity("error");
-        setToastOpen(true);
-      }, 100); // Small delay to ensure state change
+      toast.success("Error submitting review");
     }
   };
 

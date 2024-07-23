@@ -75,6 +75,18 @@ const createPayment = (amount, type, courseId) => {
 const updatePayment = (param) => {
   return axios.get(`/vnpay/vnpay_ipn${param}`);
 };
+
+const getTeacherRequest = () => {
+  return axios.get(`/teacherRequest/`); 
+}
+
+const updateStatusTeacherRequest = (requestId, status) => {
+  return axios.put(`/teacherRequest/approveRequest`, {
+    requestId: requestId,
+    status: status
+  }); 
+}
+
 const getCourseByPagination = async (page) => {
   return axios.get(`/course/page/getCoursePage?page=${page}`
   );
@@ -82,6 +94,7 @@ const getCourseByPagination = async (page) => {
 const getAllCourseNoLimit = () => {
   return axios.get("/course/getCourse/noLimit");
 }
+
 export {
   getAllCourse,
   getCourseInHomePage,
@@ -99,6 +112,9 @@ export {
   createPayment,
   updatePayment,
   getCourseBySearch,
+  getTeacherRequest,
+  updateStatusTeacherRequest,
   getCourseByPagination,
   getAllCourseNoLimit,
+
 };

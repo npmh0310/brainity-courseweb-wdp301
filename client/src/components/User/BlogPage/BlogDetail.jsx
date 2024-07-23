@@ -1,6 +1,6 @@
 import { CgProfile } from "react-icons/cg";
 import parse from "html-react-parser";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Eye,
@@ -22,7 +22,9 @@ import {
 } from "../../../fetchData/Blog";
 import { useEffect, useState, useRef } from "react";
 import { formatDate2 } from "../../../function/function";
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert } from "@mui/material";
+import toast from "react-hot-toast";
+import { getIsLogin } from "../../../redux/features/authSlice";
 function BlogDetail() {
   const [blog, setBlog] = useState();
   const [comments, setComments] = useState([]);
@@ -36,7 +38,8 @@ function BlogDetail() {
   const [toastMessage, setToastMessage] = useState(""); // State for toast message
   const [toastSeverity, setToastSeverity] = useState("success"); // Severity of toast
   const textareaRef = useRef(null);
-
+  const isLogin = useSelector(getIsLogin);
+  const navigate = useNavigate();
   const toggleDropdown = (dropdownId) => {
     setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
   };
@@ -85,6 +88,7 @@ function BlogDetail() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchData(id);
   }, [id]);
 
@@ -106,24 +110,27 @@ function BlogDetail() {
   // Thêm comment
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (commentText.trim() === '') {
-      setToastMessage('Comment cannot be empty.');
-      setToastSeverity("error");
-      setOpenToast(true);
-      return;
-    }
-    try {
-      const newComment = { content: commentText, user: user }; // Thay đổi tùy thuộc vào cấu trúc comment
-      const res = await createComment(id, newComment);
-      if (res.status === 201) {
-        // Fetch lại bình luận sau khi thêm mới thành công        fetchComments(id);
-        setToastMessage("Comment added successfully!");
-        setToastSeverity("success");
-        setOpenToast(true);
-        setCommentText("");
+    if (isLogin) {
+      if (!commentText.trim()) {
+        toast.error("Write something to comment!");
+        return;
       }
-    } catch (error) {
-      console.error("Error posting comment:", error);
+      try {
+        const newComment = { content: commentText, user: user }; // Thay đổi tùy thuộc vào cấu trúc comment
+        const res = await createComment(id, newComment);
+        if (res.status === 201) {
+          console.log(newComment);
+          // Fetch lại bình luận sau khi thêm mới thành công
+          fetchComments(id);
+          toast.success("Comment added successfully!");
+          setCommentText("");
+        }
+      } catch (error) {
+        console.error("Error posting comment:", error);
+        toast.error("Fail to post comment");
+      }
+    } else {
+      navigate("/signin");
     }
   };
 
@@ -136,12 +143,11 @@ function BlogDetail() {
         fetchComments(id);
         setIsEditing(false);
         setCommentText("");
-        setToastMessage("Comment updated successfully!");
-        setToastSeverity("success");
-        setOpenToast(true);
+        toast.success("Comment updated successfully!");
         setCommentId(null); // Clear the commentId after editing
       }
     } catch (error) {
+      toast.error("Fail to post comment");
       console.error("Error updating comment:", error);
     }
   };
@@ -246,209 +252,160 @@ function BlogDetail() {
                       {parse(blog.content)}
                     </p>
                     {/* <h3 className="font-bold text-xl lg:text-3xl text-left italic pb-4 lg:pb-8">
-                      Next content
-                    </h3>
-                    <p className="pb-4 lg:pb-8 text-sm lg:text-base">
-                      Lorem ipsum dolor sit amet consectetur, adipisicing
-                      elit. Temporibus, optio dolor eligendi perferendis
-                      eveniet unde in? Blanditiis, porro sequi eaque illum
-                      quod aut impedit explicabo dolorum, tenetur nulla cumque
-                      odit.Lorem ipsum, dolor sit amet consectetur adipisicing
-                      elit. Alias ad provident laborum quod ducimus eligendi
-                      consequatur aperiam! Libero ratione ut quibusdam
-                      voluptatum.
-                    </p> */}
+                      {parse(blog.content)}
+                    </h3> */}
                   </div>
-                  {/* blogFooter */}
-                  <div className="flex  justify-between border-b-2 mt-4 pb-4">
-                    <div className="flex gap-4 mb-4 lg:mb-0">
-                      <Facebook size="20px" fill="blue" stroke="0" />
-                      <Twitter size="20px" strokeWidth={2} />
-                      <Link2 size="20px" strokeWidth={2} />
-                    </div>
-                    <div className="flex gap-2 lg:gap-4 text-xs lg:text-base">
-                      <li className="list-none">Feature</li>
-                      <li>Feature</li>
-                    </div>
+                </div>
+
+                <div className="flex justify-between items-center border-b-2 pb-4 lg:pb-8 pt-4 lg:pt-8">
+                  <div className="flex gap-4">
+                    <Eye size="16px" />
+                    <span>{blog.views}</span>
                   </div>
-                  {/* blogShare */}
-                  <div className="flex py-4 justify-between">
-                    <ul className="flex gap-2 lg:gap-4 text-xs lg:text-base">
-                      <li>0 views</li>
-                      <li>{comments.length} comments</li>
-                    </ul>
+                  <div className="flex gap-4">
+                    <MessageCircleMore size="16px" />
+                    <span>{comments.length}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <Heart size="16px" />
+                    <span>{blog.likes}</span>
                   </div>
                 </div>
               </div>
             )}
+          </div>
 
-            {/* Comment */}
-            <div>
-              <p className="font-bold text-lg lg:text-xl text-left text-pretty italic border-b-2 pb-2">
-                Comments
-              </p>
-              <div className="max-h-96 overflow-y-auto">
+          <div>
+            <h2 className="font-bold text-lg lg:text-2xl pt-4 lg:pt-8 pb-4 lg:pb-8">
+              Comments
+            </h2>
+            <div className="pb-4 lg:pb-8 border-b-2">
               {comments.length > 0 ? (
                 comments.map((comment) => (
-                  <div key={comment._id} className="text-third mb-4">
-                    <article className="p-6 text-base bg-white rounded-lg">
-                      <footer className="relative flex justify-between items-center mb-2">
-                        <div className="flex items-center">
-                          <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                            <img
-                              className="mr-2 w-6 h-6 rounded-full"
-                              src={
-                                comment.user.avatar ||
-                                "https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                              }
-                              alt={comment.user.username}
-                            />
-                            {comment.user.username}
-                          </p>
-                          <p className="text-sm text-third">
+                  <div key={comment._id} className="mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={comment.user.avatar}
+                          className=" w-8 h-8 object-cover rounded-full"
+                          alt=""
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-sm">
+                            {comment.user.name}
+                          </span>
+                          <span className="text-xs text-gray-500">
                             {formatDate2(comment.createdAt)}
-                          </p>
+                          </span>
                         </div>
-
-                        {comment.user._id === user._id && (
-                          <div className="relative">
-                            <button
-                              id={`dropdownComment${comment._id}Button`}
-                              className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
-                              type="button"
-                              onClick={() =>
-                                toggleDropdown(`dropdownComment${comment._id}`)
-                              }
-                            >
-                              <svg
-                                className="w-4 h-4"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 16 3"
-                              >
-                                <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                              </svg>
-                              <span className="sr-only">Comment settings</span>
-                            </button>
-                            <div
-                              id={`dropdownComment${comment._id}`}
-                              className={`${
-                                openDropdown === `dropdownComment${comment._id}`
-                                  ? "block"
-                                  : "hidden"
-                              } absolute right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow`}
-                            >
-                              <ul
-                                className="py-1 text-sm text-gray-700"
-                                aria-labelledby="dropdownMenuIconHorizontalButton"
-                              >
+                      </div>
+                      {user && user._id === comment.user._id && (
+                        <div className="relative">
+                          <button
+                            className="text-gray-500 hover:text-gray-700"
+                            onClick={() => toggleDropdown(comment._id)}
+                          >
+                            &#8226;&#8226;&#8226;
+                          </button>
+                          {openDropdown === comment._id && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-50">
+                              <ul className="py-1">
                                 <li>
                                   <button
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                     onClick={() => {
-                                      setIsEditing(true);
-                                      setOpenDropdown(null);
                                       setCommentText(comment.content);
-                                      setCommentId(comment._id);
+                                      setCommentId(comment._id); // Set the commentId for editing
+                                      handleEditClick();
                                     }}
-                                    className="block py-2 px-4 hover:bg-gray-100 w-full text-left"
                                   >
                                     Edit
                                   </button>
                                 </li>
                                 <li>
                                   <button
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                     onClick={() =>
                                       handleDeleteComment(comment._id)
                                     }
-                                    className="block py-2 px-4 w-full text-left text-red-500 hover:bg-gray-100"
                                   >
-                                    Remove
+                                    Delete
                                   </button>
                                 </li>
                               </ul>
                             </div>
-                          </div>
-                        )}
-                      </footer>
-                      {isEditing && commentId === comment._id ? (
-                        <div className="flex flex-col relative">
-                          <textarea
-                            ref={textareaRef}
-                            type="text"
-                            value={commentText}
-                            onChange={handleInputChange}
-                            onKeyPress={handleInputKeyPress}
-                            className="w-full h-20 p-2 border border-gray-300 rounded text-base"
-                            autoFocus
-                          />
-                          <div className="self-end items-center flex gap-2 mt-2">
-                            <button
-                              onClick={handleCancelEdit}
-                              className="w-fit text-center h-fit bg-red-400 hover:bg-red-300 text-white px-3 py-1 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={handleSaveEdit}
-                              className="w-fit h-fit bg-primary hover:bg-[#03ecbe] text-white px-4 py-2 my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex"
-                            >
-                              <SendHorizontal size="16px" />
-                            </button>
-                          </div>
+                          )}
                         </div>
-                      ) : (
-                        <p className="text-third text-base">
-                          {comment.content}
-                        </p>
                       )}
-                    </article>
+                    </div>
+                    <div className="ml-11">
+                      {isEditing && commentId === comment._id ? (
+                        <textarea
+                          ref={textareaRef}
+                          value={commentText}
+                          onChange={handleInputChange}
+                          onKeyPress={handleInputKeyPress}
+                          className="w-full border border-gray-300 rounded p-2"
+                          rows="4"
+                        />
+                      ) : (
+                        <p className="text-sm">{comment.content}</p>
+                      )}
+                      {isEditing && commentId === comment._id && (
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            onClick={handleSaveEdit}
+                            className="bg-primary text-white px-4 py-1 rounded"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="bg-gray-300 px-4 py-1 rounded"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))
               ) : (
-                <p className="text-third text-base">No comments yet.</p>
+                <p className="text-sm">No comments yet.</p>
               )}
-              </div>
-              
-
-              {/* Post Comment */}
-              <div className="w-full pt-4 lg:pt-8 pb-10 lg:pb-20 px-2">
-                <form onSubmit={handleSubmit} className="mb-6">
-                  <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border-2">
-                    <label htmlFor="comment" className="sr-only">
-                      Your comment
-                    </label>
-                    <textarea
-                      id="comment"
-                      rows="6"
-                      value={commentText}
-                      onChange={handleInputChange}
-                      className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-                      placeholder="Write a comment..."
-                      required
-                    ></textarea>
-                  </div>
-                  <button
-                    type="submit"
-                    className="bg-primary hover:bg-[#03ecbe] text-white px-4 lg:px-[40px] py-2 lg:py-[9px] my-1 lg:my-1 transition-transform duration-200 ease-in-out transform hover:scale-105 rounded-full hidden md:flex text-sm font-semibold"
-                  >
-                    Post comment
-                  </button>
-                </form>
-              </div>
             </div>
+
+            <form onSubmit={handleSubmit} className="mt-4">
+              <textarea
+                value={commentText}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 rounded p-2"
+                rows="4"
+                placeholder="Add your comment..."
+              ></textarea>
+              <button
+                type="submit"
+                className="bg-primary text-white px-4 py-1 mb-4 rounded mt-2"
+              >
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>
-       {/* Toast Notification */}
-       <Snackbar
+      {/* Toast Notification */}
+      <Snackbar
         open={openToast}
         autoHideDuration={6000}
         onClose={handleCloseToast}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        TransitionProps={{ timeout: 500, easing: 'ease-in-out' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        TransitionProps={{ timeout: 500, easing: "ease-in-out" }}
       >
-        <Alert onClose={handleCloseToast} severity={toastSeverity}>
+        <Alert
+          onClose={handleCloseToast}
+          severity={toastSeverity}
+          sx={{ width: "100%" }}
+        >
           {toastMessage}
         </Alert>
       </Snackbar>

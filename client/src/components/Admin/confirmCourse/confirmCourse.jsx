@@ -109,7 +109,7 @@ const ConfirmCourseTable = ({ courses }) => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                      {formatDate2(course.createdAt)}
+                        {formatDate2(course.createdAt)}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">

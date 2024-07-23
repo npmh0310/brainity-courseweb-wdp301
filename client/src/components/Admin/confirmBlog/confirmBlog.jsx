@@ -1,87 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import BlogDialog from "./BlogDialog";
+import { getAllBlog } from "../../../fetchData/Blog";
+import { formatDate } from "date-fns";
+import { formatDate2 } from "../../../function/function";
 
 const ConfirmBlogTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredBlogs, setFilteredBlogs] = useState([]);
+
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [open, setOpen] = useState(false);
-  const [blogs, setBlogs] = useState([
-    {
-      id: 1,
-      title: "Understanding React Hooks",
-      content: `This blog post explains the concept of React Hooks. Hooks are a new addition in React 16.8 that let you use state and other React features without writing a class.
 
-      Motivation:
-      Classes confuse both people and machines. You can use more of the React features without needing classes. It helps you to reuse stateful logic without changing your component hierarchy.
+  const [blogs, setBlogs] = useState([]);
 
-      Basic Hooks:
-      - useState is the Hook that lets you add React state to function components.
-      - useEffect is a Hook that lets you perform side effects in function components.
-      
-      Other Hooks:
-      There are more Hooks like useContext, useReducer, useCallback, useMemo, useRef, useImperativeHandle, useLayoutEffect, useDebugValue.
-      
-      Conclusion:
-      Hooks solve a wide variety of seemingly unconnected problems in React that we've encountered over five years of writing and maintaining tens of thousands of components. Whether you’re learning React, use it daily, or even prefer a different library with a similar component model, you might recognize some of these problems.`,
-      status: "Pending",
-      uploadBy: "John Doe",
-    },
-    {
-      id: 2,
-      title: "CSS Grid vs Flexbox",
-      content: `In this blog post, we compare CSS Grid and Flexbox. Both are CSS layout models that can create complex web page designs without much effort.
-
-      Flexbox:
-      Flexbox is designed for one-dimensional layouts. It excels at taking a bunch of items which have different sizes, and returning the best layout for those items.
-
-      CSS Grid:
-      Grid is designed for two-dimensional layouts. It excels at dividing a page into major regions or defining the relationship in terms of size, position, and layer, between parts of a control built from HTML primitives.
-
-      Use Cases:
-      - Use Flexbox for a more linear structure.
-      - Use Grid for more complex, asymmetrical layouts.
-      
-      Conclusion:
-      Both Flexbox and Grid have their uses and understanding both will help you to build robust layouts.`,
-      status: "Pending",
-      uploadBy: "Jane Smith",
-    },
-    // Add more blogs if needed
-  ]);
-
-  useEffect(() => {
-    setFilteredBlogs(blogs);
-  }, [blogs]);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setFilteredBlogs(
-        blogs.filter((blog) =>
-          blog.title.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, blogs]);
-
-  const handleConfirm = (id) => {
-    const updatedBlogs = blogs.map((blog) =>
-      blog.id === id ? { ...blog, status: "Confirmed" } : blog
-    );
-    setBlogs(updatedBlogs);
-    setOpen(false);
+  const fetchData = async () => {
+    const res = await getAllBlog();
+    if (res.status === 200) {
+      setBlogs(res.data.blogs);
+    }
   };
 
-  const handleReject = (id) => {
-    const updatedBlogs = blogs.map((blog) =>
-      blog.id === id ? { ...blog, status: "Rejected" } : blog
-    );
-    setBlogs(updatedBlogs);
-    setOpen(false);
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleRowClick = (blog) => {
     setSelectedBlog(blog);
@@ -133,7 +74,7 @@ const ConfirmBlogTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredBlogs.map((blog, index) => (
+                {blogs.map((blog, index) => (
                   <tr
                     key={blog.id}
                     className={`hover:bg-gray-100 cursor-pointer ${
@@ -152,30 +93,31 @@ const ConfirmBlogTable = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {blog.uploadBy}
+                        {formatDate2(blog.createdAt)}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <span
                         className={`relative inline-block px-3 py-1 font-medium leading-tight ${
-                          blog.status === "Confirmed"
+                          blog.isApproved === "Confirmed"
                             ? "text-green-900"
-                            : blog.status === "Rejected"
+                            : blog.isApproved === "Rejected"
                             ? "text-black"
                             : "text-gray-900"
                         }`}
                       >
-                        <span
-                          aria-hidden
+                        <div
                           className={`absolute inset-0 ${
-                            blog.status === "Confirmed"
-                              ? "bg-primary"
-                              : blog.status === "Rejected"
+                            blog.isApproved === "Confirmed"
+                              ? "bg-green-600" // bg-primary
+                              : blog.isApproved === "Rejected"
                               ? "bg-red-600"
                               : "bg-gray-200"
                           } opacity-50 rounded-full`}
-                        ></span>
-                        <span className="relative">{blog.status}</span>
+                        >
+                          {/* Nội dung khác của bạn */}
+                        </div>
+                        <span className="relative">{blog.isApproved}</span>
                       </span>
                     </td>
                   </tr>
@@ -190,8 +132,7 @@ const ConfirmBlogTable = () => {
         open={open}
         blog={selectedBlog}
         onClose={() => setOpen(false)}
-        onConfirm={handleConfirm}
-        onReject={handleReject}
+        fetchData={fetchData}
       />
     </div>
   );

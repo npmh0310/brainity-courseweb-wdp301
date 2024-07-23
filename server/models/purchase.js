@@ -23,7 +23,8 @@ const purchaseSchema = new mongoose.Schema(
             },
             priceAtPaid: Number
         }]
-    }
+    },
+    {timestamps: true}
 );
 
 var Purchase = mongoose.model("Purchase", purchaseSchema);

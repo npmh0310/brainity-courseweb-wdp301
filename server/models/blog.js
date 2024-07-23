@@ -1,11 +1,11 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 // Define the comment schema with timestamps
 const commentSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
     content: String,
   },
@@ -17,7 +17,7 @@ const blogSchema = new mongoose.Schema(
   {
     author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       // required: true
     },
     title: {
@@ -30,13 +30,21 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    categories: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-    }],
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
     comments: [commentSchema], // Use the comment schema
     imgUrl: {
       type: String,
+    },
+    isApproved: {
+      type: String,
+      required: true,
+      enum: ["Pending", "Confirmed", "Rejected"],
+      default: "Pending",
     },
   },
   { timestamps: true }
