@@ -8,7 +8,7 @@ const ConfirmTeacherTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState(false);
+  const [status, setStatus] = useState(true);
   const [teachers, setTeachers] = useState([
     // Add more teachers if needed
   ]);
