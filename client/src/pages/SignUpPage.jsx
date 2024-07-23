@@ -73,7 +73,6 @@ const SignUpPage = () => {
     e.preventDefault();
 
     let res = await onRegister(credentials);
-    console.log(res && res.status === 200);
     if (res) {
       navigate("/signin");
     }

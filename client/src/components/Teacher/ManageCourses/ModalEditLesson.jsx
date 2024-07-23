@@ -70,7 +70,6 @@ const ModalEditLesson = (props) => {
   };
 
   const handleEditSave = async () => {
-    console.log("saved");
     const res = await updateLesson(lesson._id, dataInput);
     if (res && res.status === 200) {
       toast.success("Updated successfully");

@@ -20,17 +20,12 @@ const Course = () => {
       setLoading(true);
       getCourseInHomePage().then((res) => {
         setCourseList(res.data.data);
-        console.log("1", courseList);
         setTimeout(() => {
           setLoading(false);
         }, 1000);
       });
-      console.log("2", courseList);
-
     }
   }, [courseView]);
-
-  // console.log(courseList);
 
   useEffect(() => {
     AOS.init({ duration: 1400, once: true });

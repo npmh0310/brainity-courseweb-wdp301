@@ -63,7 +63,6 @@ function ResetPassword() {
         e.preventDefault();
         const { valid, errors } = validatePassword(newPassword, confirmPassword);
         if (valid) {
-            console.log('Password is valid');
             setErrorInput(errors);
             const form = {
                 token : token,
