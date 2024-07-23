@@ -126,7 +126,7 @@ const ConfirmCourseDetail = ({ courses, onConfirm, onReject }) => {
                                   src={lesson.videoUrl}
                                   title={lesson.title}
                                   frameBorder="0"
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                   allowFullScreen
                                 ></iframe>
                               </div>
