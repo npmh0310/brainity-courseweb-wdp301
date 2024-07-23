@@ -45,6 +45,7 @@ export const Right = ({ filteredCourses, currentPage,handlePageClick, totalPages
           <div className="flex justify-center mt-8">
             {Array.from({ length: totalPages }, (_, index) => index + 1).map(
               (pageNumber) => (
+                // Phân trang vẫn còn lỗi khi filter nên tạm thời set totalPages nhỏ hơn 1 thì hidden
                 (totalPages > 1 &&
                 <button
                   key={pageNumber}
