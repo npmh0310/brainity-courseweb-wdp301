@@ -42,8 +42,6 @@ function BlogDetail() {
   const navigate = useNavigate();
   const toggleDropdown = (dropdownId) => {
     setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
-    console.log("dropdown id", dropdownId);
-    console.log("cc j day", openDropdown);
   };
 
   const handleEditClick = () => {
@@ -94,7 +92,7 @@ function BlogDetail() {
     fetchData(id);
     console.log("user", user);
   }, [id]);
-
+  
   const fetchComments = async (id) => {
     try {
       const res = await getComments(id);
