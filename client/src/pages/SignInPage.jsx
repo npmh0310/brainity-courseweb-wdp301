@@ -73,6 +73,10 @@ function SignInPage() {
 
   const user = useSelector((state) => state.auth.isLogin);
 
+  if(user){
+    navigate("/")
+  }
+
  
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -248,12 +252,12 @@ function SignInPage() {
                         </label>
                       </div>
                     </div>
-                    <a
-                      href="/"
+                    <Link
+                      to="/forgotPassword"
                       className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                     >
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
                   <div className="button-login text-center ">
                     <button

@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const Course = require("../models/course");
 const UserChapterProgress = require("../models/UserChapterProgress");
+const { getAvgRatingByCourseId } = require("./ratingController");
+const { getProgress } = require("./userChapterProgressController");
 const { createNotification } = require("./notificationController");
 
 const enrollCourse = async (req, res) => {
@@ -73,7 +75,22 @@ const getAllCourseEnrolled = async (req, res) => {
     const user = await User.findById(userId)
       .select("coursesEnrolled")
       .populate("coursesEnrolled");
-    return res.status(200).json(user);
+
+    const coursesEnrolled = user.coursesEnrolled;
+
+    const coursesWithRatingInfo = await Promise.all(
+      coursesEnrolled.map(async (course) => {
+        const ratingInfo = await getAvgRatingByCourseId(course._id);
+        const progress = await getProgress(course._id, userId);
+        console.log("Progress: " + progress);
+        return { ...course.toObject(), ratingInfo, progress };
+      })
+    );
+
+    return res.status(200).json({
+      ...user.toObject(),
+      coursesEnrolled: coursesWithRatingInfo,
+    });
   } catch (error) {
     return res.status(500).json({
       message: error.message,

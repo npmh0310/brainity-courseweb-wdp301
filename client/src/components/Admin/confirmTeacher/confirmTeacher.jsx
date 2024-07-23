@@ -1,86 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import TeacherDialog from "./TeacherDialog";
+import { getTeacherRequest, updateStatusTeacherRequest } from "../../../fetchData/Course";
+import toast from "react-hot-toast";
 
 const ConfirmTeacherTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [open, setOpen] = useState(false);
   const [teachers, setTeachers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "123-456-7890",
-      status: "Pending",
-      avatar: "https://i.pravatar.cc/150?img=1",
-      bio: "John has a PhD in Mathematics and 10 years of teaching experience.",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      phone: "987-654-3210",
-      status: "Pending",
-      avatar: "https://i.pravatar.cc/150?img=2",
-      bio: "Jane is a certified Science teacher with a passion for research.",
-    },
-    {
-      id: 3,
-      name: "Samuel Green",
-      email: "samuel.green@example.com",
-      phone: "555-666-7777",
-      status: "Pending",
-      avatar: "https://i.pravatar.cc/150?img=3",
-      bio: "Samuel has written several books on ancient history.",
-    },
-    {
-      id: 4,
-      name: "Lisa White",
-      email: "lisa.white@example.com",
-      phone: "444-333-2222",
-      status: "Pending",
-      avatar: "https://i.pravatar.cc/150?img=4",
-      bio: "Lisa is an award-winning author and English teacher.",
-    },
     // Add more teachers if needed
   ]);
-
+  // const [selectedTeacher, setSelectedTeacher] = useState({})
+  
   useEffect(() => {
-    setFilteredTeachers(teachers);
-  }, [teachers]);
+    getTeacherRequest()
+    .then((res) => {setTeachers(res.data.data) 
+      // console.log(res);
+    })
+    .catch((err) => console.log(err))
+  }, []);
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setFilteredTeachers(
-        teachers.filter((teacher) =>
-          teacher.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, teachers]);
-
-  const handleConfirm = (id) => {
-    const updatedTeachers = teachers.map((teacher) =>
-      teacher.id === id ? { ...teacher, status: "Confirmed" } : teacher
-    );
-    setTeachers(updatedTeachers);
+  const handleConfirm = async(id) => {
+    const res = await updateStatusTeacherRequest(id, "Confirmed")
+    if(res && res.status === 200){
+      toast.success("You have accepted")
+    }
     setOpen(false);
   };
 
-  const handleReject = (id) => {
-    const updatedTeachers = teachers.map((teacher) =>
-      teacher.id === id ? { ...teacher, status: "Rejected" } : teacher
-    );
-    setTeachers(updatedTeachers);
+  const handleReject = async(id) => {
+    const res = await updateStatusTeacherRequest(id, "Rejected")
+    if(res && res.status === 200){
+      toast.success("You have rejected")
+    }
     setOpen(false);
   };
 
   const handleRowClick = (teacher) => {
     setSelectedTeacher(teacher);
+    // console.log(teacher);
     setOpen(true);
   };
 
@@ -135,9 +94,9 @@ const ConfirmTeacherTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredTeachers.map((teacher, index) => (
+                {teachers.map((teacher, index) => (
                   <tr
-                    key={teacher.id}
+                    key={teacher._id + 1}
                     className={`hover:bg-gray-100 cursor-pointer ${
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
@@ -146,25 +105,25 @@ const ConfirmTeacherTable = () => {
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <div className="flex items-center">
                         <img
-                          src={teacher.avatar}
-                          alt={teacher.name}
+                          src={teacher.user?.avatar}
+                          alt={teacher.user.name}
                           className="w-10 h-10 rounded-full mr-3"
                         />
                         <div className="ml-3">
                           <p className="text-gray-900 whitespace-no-wrap">
-                            {teacher.name}
+                            {teacher.user?.name}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {teacher.email}
+                        {teacher.user?.email}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {teacher.phone}
+                        {teacher.user?.phoneNumber}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -180,14 +139,14 @@ const ConfirmTeacherTable = () => {
                         <span
                           aria-hidden
                           className={`absolute inset-0 ${
-                            teacher.status === "Confirmed"
+                            teacher.isApproved === "Confirmed"
                               ? "bg-primary"
-                              : teacher.status === "Rejected"
+                              : teacher.isApproved === "Rejected"
                               ? "bg-red-600"
                               : "bg-gray-200"
                           } opacity-50 rounded-full`}
                         ></span>
-                        <span className="relative">{teacher.status}</span>
+                        <span className="relative">{teacher.isApproved}</span>
                       </span>
                     </td>
                   </tr>
