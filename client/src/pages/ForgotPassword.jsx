@@ -33,7 +33,6 @@ const ForgotPassWord = () => {
         }
         setEmailError('');
      
-        console.log(email);
         const res = await forgotPassword(email)
         if(res.status === 200) {
             setShow(true);

@@ -524,7 +524,10 @@ const getCourseByPagination = async (req, res) => {
   const pageSize = 9;
 
   try {
-    const totalCourses = await Course.countDocuments();
+    const totalCourses = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+    }).countDocuments();
     const totalPages = Math.ceil(totalCourses / pageSize);
     const getAllCourseOfPagination = await Course.find({
       isConfirm: true,

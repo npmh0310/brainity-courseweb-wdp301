@@ -275,7 +275,6 @@ function CourseDetail() {
   const handleBuyNow = async () => {
     const res = await createPayment(course.price, "buynowne", courseId);
     if (res) {
-      console.log(res.data);
       window.open(res.data.url, "_self");
     }
   };

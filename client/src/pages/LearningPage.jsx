@@ -419,7 +419,6 @@ function LearningPage() {
                       course={course}
                       courseId={course._id}
                       onSubmit={(data) => {
-                        console.log("Submit data:", data);
                         closeModal(); // Close modal after successful submit
                       }}
                       onClose={closeModal}

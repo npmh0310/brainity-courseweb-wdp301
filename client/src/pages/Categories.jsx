@@ -43,25 +43,22 @@ export const Categories = () => {
   };
 
   const handleSortByBestSeller = () => {
-    const sortedCourses = [...courseList].sort(
-      (a, b) => b.numOfEnrolledUsers - a.numOfEnrolledUsers
-    );
+    const sortedCourses = [...courseList].sort((a, b) => b.numOfEnrolledUsers - a.numOfEnrolledUsers);
     setFilteredCourses(sortedCourses);
   };
 
   const handleSortByNewest = () => {
-    const sortedCourses = [...courseList].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
+    const sortedCourses = [...courseList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     setFilteredCourses(sortedCourses);
   };
 
   // Xử lý khi filter ở Left thay đổi
   const handleFilteredCourses = (filteredCourses) => {
-    // Lỗi xử lý cái chỗ Dropdown, nếu chọn Sort by New release, chọn filter,
-    // sau đó hủy filter đi thì nó không sort theo New release nữa
-    setFilteredCourses(filteredCourses);
+      // Lỗi xử lý cái chỗ Dropdown, nếu chọn Sort by New release, chọn filter, 
+      // sau đó hủy filter đi thì nó không sort theo New release nữa
+      setFilteredCourses(filteredCourses);
   };
+  
 
   return (
     <div ref={courseRef} className="container bg-white px-0 mx-auto pb-20">
@@ -88,9 +85,7 @@ export const Categories = () => {
                   <p className="text-lg font-semibold">{sortBy}</p>
                 </div>
                 <svg
-                  className={`-mr-1 ml-2 h-5 w-5 ${
-                    isOpen ? "transform rotate-180" : ""
-                  }`}
+                  className={`-mr-1 ml-2 h-5 w-5 ${isOpen ? "transform rotate-180" : ""}`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"

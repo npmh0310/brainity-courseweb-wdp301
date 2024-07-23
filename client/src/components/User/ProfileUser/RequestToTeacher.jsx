@@ -25,7 +25,6 @@ const RequestToTeacher = () => {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        console.log('success');
       } else {
         alert("File not available on the server.");
       }

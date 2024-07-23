@@ -14,7 +14,6 @@ export const Left = ({ onFilteredCourses }) => {
       try {
         const response = await getAllCourseNoLimit();
         setCourseData(response.data.data);
-        console.log("hihihaha", response.data.data);
       } catch (error) {
         console.error(error);
       }
@@ -51,14 +50,12 @@ export const Left = ({ onFilteredCourses }) => {
       // Sort by Best Seller
       if (checked === 1) {
         filteredCourses = filteredCourses.filter((course) => course.numOfEnrolledUsers >= 2);
-        console.log(filteredCourses);
       }
       // Sort by Rating
       if (checked === 2) {
         filteredCourses.sort(
           (a, b) => b.ratingInfo.avgRating - a.ratingInfo.avgRating
         );
-        console.log(filteredCourses);
       }
 
       // Filter by Categories
@@ -72,7 +69,6 @@ export const Left = ({ onFilteredCourses }) => {
               !course.courseName.toLowerCase().includes("newbie") &&
               !course.courseName.toLowerCase().includes("basic")
         );
-        console.log(filteredCourses);
       }
 
       // Filter by Rating Range

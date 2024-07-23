@@ -25,11 +25,8 @@ export const Right = ({ filteredCourses }) => {
 
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-  const currentCourses = courseList.slice(
-    indexOfFirstCourse,
-    indexOfLastCourse
-  );
-
+  const currentCourses = courseList.slice(indexOfFirstCourse, indexOfLastCourse);
+  
   const totalPages = Math.ceil(courseList.length / coursesPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -58,21 +55,15 @@ export const Right = ({ filteredCourses }) => {
             ))}
           </div>
           <div className="flex justify-center mt-8">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (pageNumber) => (
-                <button
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  className={`mx-1 px-4 py-2 rounded-full ${
-                    pageNumber === currentPage
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 text-primary"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              )
-            )}
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                className={`w-11 h-11 mx-1 rounded-full ${pageNumber === currentPage ? "bg-primary text-black" : "bg-white text-black"}`}
+              >
+                {pageNumber}
+              </button>
+            ))}
           </div>
         </>
       )}

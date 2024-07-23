@@ -90,8 +90,6 @@ function BlogDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchData(id);
-    window.scrollTo(0, 0); // Scroll to top on mount
-    console.log("user", user);
   }, [id]);
 
   const fetchComments = async (id) => {
@@ -141,7 +139,6 @@ function BlogDetail() {
       const updatedComment = { content: commentText };
       const res = await updateComment(id, commentId, updatedComment);
       if (res.status === 200) {
-        console.log(updatedComment);
         // Fetch lại bình luận sau khi cập nhật thành công
         fetchComments(id);
         setIsEditing(false);
@@ -160,7 +157,6 @@ function BlogDetail() {
       const res = await deleteComment(id, commentId);
       if (res.status === 200) {
         // Fetch lại bình luận sau khi xóa thành công
-        console.log("Deleted comment:", res);
         fetchComments(id);
         setOpenDropdown(null);
         setToastMessage("Comment deleted successfully!");

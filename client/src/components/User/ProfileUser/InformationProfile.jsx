@@ -40,7 +40,6 @@ const InformationProfile = () => {
    
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(formData)
     const res = await updateProfile(formData)
     if(res.status === 200) {
       dispatch(validateToken());

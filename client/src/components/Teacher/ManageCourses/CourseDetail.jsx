@@ -105,7 +105,6 @@ const CourseDetail = () => {
 
   const handleDeleteClose = () => setDeleteOpen(false);
   const handleDelete = async () => {
-    console.log("Deleting section id:", selectedSectionId);
     const res = await deleteSection(selectedSectionId);
     if (res.status === 200) {
       toast.success("Deleted successfully");

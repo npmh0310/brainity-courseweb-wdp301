@@ -25,7 +25,7 @@ const ConfirmCourseLayout = () => {
 
   useEffect(() => {
     fetchCourse();
-  }, []);
+  }, [courses]);
 
   const handleConfirm = async (id) => {
     try {
