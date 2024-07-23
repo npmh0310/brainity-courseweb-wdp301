@@ -7,7 +7,7 @@ import { onLogout } from "../../../fetchData/User";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/authSlice";
 import ModalNotification from "./ModalNotification";
-import useNotifications from "../Notification/useNotifications";
+import { useNotifications } from "../Notification/useNotifications";
 import ModalCart from "./ModalCart";
 import { getQuantityInCart } from "../../../redux/features/cartSlice";
 
@@ -17,7 +17,8 @@ function HeaderUser() {
   const num = useSelector(getQuantityInCart);
 
   // goi. userNotification
-  const { notifications } = useNotifications(user._id);
+  const { notifications, unreadCount, setNotifications, setUnreadCount } =
+    useNotifications(user._id);
 
   const [showUserItem, setShowUserItem] = useState(false);
   const [userAnchorEl, setUserAnchorEl] = useState(null);
@@ -69,7 +70,7 @@ function HeaderUser() {
   const handleLogout = () => {
     onLogout();
     dispatch(logout());
-    redirect('/');
+    redirect("/");
   };
 
   useEffect(() => {
@@ -104,9 +105,9 @@ function HeaderUser() {
               className="cursor-pointer w-12 h-12 flex justify-center items-center relative "
               onClick={handleBellClick}
             >
-              {notifications.length > 0 && (
+              {unreadCount > 0 && (
                 <div className="w-[20px] h-[20px] rounded-full absolute  top-0 right-0 flex justify-center items-center text-xs font-semibold bg-primary">
-                  {notifications.length}
+                  {unreadCount}
                 </div>
               )}
               <Bell
@@ -136,7 +137,7 @@ function HeaderUser() {
             >
               {/* Content for the bell icon popover */}
               <>
-                <ModalNotification notifications={notifications} />
+                <ModalNotification />
               </>
             </Popover>
             <div
@@ -278,9 +279,9 @@ function HeaderUser() {
                 <hr className="my-2" />
                 <ul className="text-sm">
                   <li className="hover:text-black mb-2">
-                    <div className="block py-2 cursor-pointer" onClick={handleLogout}>
+                    <Link to='/' className="block py-2 cursor-pointer" onClick={handleLogout}>
                       Log Out
-                    </div>
+                    </Link>
                   </li>
                 </ul>
               </div>

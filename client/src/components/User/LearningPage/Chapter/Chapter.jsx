@@ -15,11 +15,13 @@ function Chapter(props) {
     const lesson_id  = url.pathname.split('/lesson/')[1]
 
     const handleCompleted = async () => {
-        const newCompletedState = !completed;
-        setCompleted(!completed)
-        const completedLessonProgress = await completedLesson({courseId: courseId, lessonId:chapter._id, isCompleted: !completed })
-        if(completedLessonProgress.status === 200) {
-            dispatch(updateLessonProgress({ lessonId: chapter._id, isCompleted: newCompletedState }));
+        if(!chapter.isCompleted){
+            const newCompletedState = !completed;
+            setCompleted(!completed)
+            const completedLessonProgress = await completedLesson({courseId: courseId, lessonId:chapter._id, isCompleted: !completed })
+            if(completedLessonProgress.status === 200) {
+                dispatch(updateLessonProgress({ lessonId: chapter._id, isCompleted: newCompletedState }));
+            }
         }
 
     }
