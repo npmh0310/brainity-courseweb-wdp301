@@ -58,7 +58,7 @@ function App() {
 
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="bottom-left" reverseOrder={false} />
       <GlobalStyles
         styles={{
           body: { paddingRight: "0 !important", overflow: "auto !important" },

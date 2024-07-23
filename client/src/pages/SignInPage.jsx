@@ -18,25 +18,7 @@ import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 import { getCart } from "../redux/features/cartSlice";
 
 function SignInPage() {
-  // const [displayText, setDisplayText] = useState("");
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     let i = 0;
-  //     const typingEffect = setInterval(() => {
-  //       if (i < name.length) {
-  //         i++;
-  //         setDisplayText((prevText) => prevText + name.charAt(i - 1));
-  //       } else {
-  //         clearInterval(typingEffect);
-  //       }
-  //     }, 100);
-
-  //     return () => clearInterval(typingEffect);
-  //   }, 900); // Chờ 3 giây trước khi bắt đầu hiệu ứng ghi ra từng chữ
-
-  //   return () => clearTimeout(timer); // Xóa timer nếu component unmount
-  // }, [name]);
 
   const signInData = {
     name: "Sign In",
@@ -73,7 +55,6 @@ function SignInPage() {
 
   const user = useSelector((state) => state.auth.isLogin);
 
- 
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
@@ -89,16 +70,17 @@ function SignInPage() {
           isLogin: true,
         })
       );
-      dispatch(getCart())
+      dispatch(getCart());
       dispatch(setGlobalLoading(false));
       toast.success("Login successfully");
-
+      console.log(res.data.role);
       if (res.data.role === "teacher") {
         navigate("/teacher/managecourses");
       } else if (res.data.role === "admin") {
         navigate("/admin/default");
       } else {
         navigate("/");
+        console.log("vl");
       }
     } else if (res.status === 401) {
       toast.error("Username or password is wrong");
@@ -107,9 +89,9 @@ function SignInPage() {
     }
   };
   const handleLoginGoogle = () => {
-    dispatch(setGlobalLoading(true))
-    window.open("http://localhost:4000/auth/google/", "_self")
-  }
+    dispatch(setGlobalLoading(true));
+    window.open("http://localhost:4000/auth/google/", "_self");
+  };
   return (
     <>
       {!user && (

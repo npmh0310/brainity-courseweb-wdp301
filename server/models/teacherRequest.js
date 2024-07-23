@@ -8,10 +8,14 @@ const teacherRequestSchema = new mongoose.Schema(
             // required: true
         },
         isApproved: {
-            type: Boolean,
-            default: false
-        }
-    }
+            type: String,
+            required: true,
+            enum: ['Pending', 'Confirmed', 'Rejected'],
+            default: 'Pending'
+        },
+        fileUrl: String,
+    },
+    { timestamps: true }
 );
 
 var TeacherRequest = mongoose.model("TeacherRequest", teacherRequestSchema);
