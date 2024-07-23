@@ -1,6 +1,6 @@
 import { CgProfile } from "react-icons/cg";
 import parse from "html-react-parser";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Eye,
@@ -24,6 +24,7 @@ import { useEffect, useState, useRef } from "react";
 import { formatDate2 } from "../../../function/function";
 import { Snackbar, Alert } from "@mui/material";
 import toast from "react-hot-toast";
+import { getIsLogin } from "../../../redux/features/authSlice";
 function BlogDetail() {
   const [blog, setBlog] = useState();
   const [comments, setComments] = useState([]);
@@ -37,7 +38,8 @@ function BlogDetail() {
   const [toastMessage, setToastMessage] = useState(""); // State for toast message
   const [toastSeverity, setToastSeverity] = useState("success"); // Severity of toast
   const textareaRef = useRef(null);
-
+  const isLogin = useSelector(getIsLogin);
+  const navigate = useNavigate();
   const toggleDropdown = (dropdownId) => {
     setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
     console.log("dropdown id", dropdownId);
@@ -88,6 +90,7 @@ function BlogDetail() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchData(id);
     console.log("user", user);
   }, [id]);
@@ -110,19 +113,23 @@ function BlogDetail() {
   // Thêm comment
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const newComment = { content: commentText, user: user }; // Thay đổi tùy thuộc vào cấu trúc comment
-      const res = await createComment(id, newComment);
-      if (res.status === 201) {
-        console.log(newComment);
-        // Fetch lại bình luận sau khi thêm mới thành công
-        fetchComments(id);
-        toast.success("Comment added successfully!");
-        setCommentText("");
+    if (isLogin) {
+      try {
+        const newComment = { content: commentText, user: user }; // Thay đổi tùy thuộc vào cấu trúc comment
+        const res = await createComment(id, newComment);
+        if (res.status === 201) {
+          console.log(newComment);
+          // Fetch lại bình luận sau khi thêm mới thành công
+          fetchComments(id);
+          toast.success("Comment added successfully!");
+          setCommentText("");
+        }
+      } catch (error) {
+        console.error("Error posting comment:", error);
+        toast.error("Fail to post comment");
       }
-    } catch (error) {
-      console.error("Error posting comment:", error);
-      toast.error("Fail to post comment");
+    } else {
+      navigate("/signin");
     }
   };
 
