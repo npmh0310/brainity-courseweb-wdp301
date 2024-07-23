@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { onRegister } from "../fetchData/User";
 import { useSelector } from "react-redux";
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 const SignUpPage = () => {
   const signUpData = {
@@ -53,9 +54,9 @@ const SignUpPage = () => {
   const [show, setShow] = useState(false);
 
   const [credentials, setCredentials] = useState({
-    username: undefined,
-    email: undefined,
-    password: undefined,
+    username: '',
+    email: '',
+    password: '',
   });
 
   const navigate = useNavigate();
@@ -65,24 +66,85 @@ const SignUpPage = () => {
   if (user) {
     navigate("/");
   }
-  
+
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   const handleClick = async (e) => {
-    e.preventDefault();
+    if(valid){
 
-    let res = await onRegister(credentials);
-    console.log(res && res.status === 200);
-    if (res) {
-      navigate("/signin");
+      e.preventDefault();
+  
+      let res = await onRegister(credentials);
+      console.log(res && res.status === 200);
+      if (res) {
+        navigate("/signin");
+      }
     }
   };
 
   const handleLoginGoogle = () => {
     window.open("http://localhost:4000/auth/google/", "_self");
   };
+
+  const [valid , setValid] = useState(false)
+  const [conditions, setConditions] = useState({
+    lowercase: false,
+    uppercase: false,
+    number: false,
+    specialChar: false,
+    minLength: false,
+    email: false,
+    username: false
+
+  });
+
+  const notes = [
+    "One lowercase character",
+    "One uppercase character",
+    "One number",
+    "One special character",
+    "8 characters minimum",
+    "Email",
+    "Username"
+  ];
+  const validatePassword = (credentials) => {
+    const errors = [];
+    const conditions = {
+      lowercase: /[a-z]/.test(credentials.password),
+      uppercase: /[A-Z]/.test(credentials.password),
+      number: /[0-9]/.test(credentials.password),
+      specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(credentials.password),
+      minLength: credentials.password.length >= 8,
+      email: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(credentials.email),
+      username: credentials.username.length >= 6
+    };
+
+    if (!conditions.lowercase) errors.push(notes[0]);
+    if (!conditions.uppercase) errors.push(notes[1]);
+    if (!conditions.number) errors.push(notes[2]);
+    if (!conditions.specialChar) errors.push(notes[3]);
+    if (!conditions.minLength) errors.push(notes[4]);
+    if (!conditions.email) errors.push(notes[5])
+    if (!conditions.username) errors.push(notes[6])
+
+
+    setConditions(conditions);
+
+    if (errors.length > 0) {
+      return { valid: false, errors: errors };
+    }
+
+    return { valid: true, errors: [] };
+  };
+  useEffect(() => {
+    const check = validatePassword(credentials);
+    if(check.valid) {
+      setValid(true)
+    }
+
+}, [credentials]);
 
   return (
     <>
@@ -128,6 +190,7 @@ const SignUpPage = () => {
                     type="text"
                     placeholder={signUpData.userName.placeholder}
                     id="username"
+                    required
                     onChange={handleChange}
                   />
                 </div>
@@ -160,7 +223,7 @@ const SignUpPage = () => {
                     </label>
                     <span
                       onClick={() => setShow(!show)}
-                      className="text-[13px]"
+                      className="text-[13px] cursor-pointer"
                     >
                       {show ? (
                         <FontAwesomeIcon icon={faEyeSlash} className="mr-1" />
@@ -182,8 +245,26 @@ const SignUpPage = () => {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {signUpData.notes.map((note, index) => (
-                  <li className="list-disc list-inside" key={index}>
+                {notes.map((note, index) => (
+                  <li className="list-disc list-inside flex items-center" key={index}>
+                    <FontAwesomeIcon
+                      icon={conditions[index === 0 ? 'lowercase' :
+                        index === 1 ? 'uppercase' :
+                          index === 2 ? 'number' :
+                            index === 3 ? 'specialChar' :
+                              index === 4 ? 'minLength' :
+                                index === 5 ? 'email' :
+                                  index === 6 ? 'username' :
+                                'match'] ? faCheckCircle : faTimesCircle}
+                      className={`mr-2 ${conditions[index === 0 ? 'lowercase' :
+                        index === 1 ? 'uppercase' :
+                          index === 2 ? 'number' :
+                            index === 3 ? 'specialChar' :
+                              index === 4 ? 'minLength' :
+                                index === 5 ? 'email' : 
+                                  index === 6 ? 'username' :
+                                'match'] ? 'text-green-500' : 'text-red-500'}`}
+                    />
                     <span>{note}</span>
                   </li>
                 ))}
@@ -193,6 +274,7 @@ const SignUpPage = () => {
                 <button
                   onClick={handleClick}
                   className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]"
+                  
                 >
                   {signUpData.buttonLogin}
                 </button>
