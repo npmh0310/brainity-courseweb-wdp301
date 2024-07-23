@@ -46,6 +46,10 @@ const resetPassword = (form) => {
   return axios.post("/auth/resetPassword", form);
 };
 
+const getTotalDashboard = () => {
+  return axios.get("/user/getTotalDashboard");
+}
+
 export {
   onLogin,
   onRegister,
@@ -58,4 +62,5 @@ export {
   forgotPassword,
   resetPassword,
   getAllCourseEnrolled,
+  getTotalDashboard,
 };

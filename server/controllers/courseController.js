@@ -144,7 +144,7 @@ const deleteCourseById = async (req, res) => {
 
 const getCourseInHomePage = async (req, res) => {
   try {
-    const courses = await Course.find({isConfirm : true, isRejected : false})
+    const courses = await Course.find({isConfirm : true, isRejected : false, isPublic: true})
       .limit(9)
       .populate("instructor", "username");
 
