@@ -552,7 +552,7 @@ const getCourseByPagination = async (req, res) => {
 };
 const getAllCourseNoLimit = async (req, res) => {
   try {
-    const courses = await Course.find({ isConfirm: true, isRejected: false });
+    const courses = await Course.find({ isConfirm: true, isRejected: false, isPublic : true });
     const promises = courses.map(async (course) => {
       const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
       const ratingInfo = await getAvgRatingByCourseId(course._id);
