@@ -7,7 +7,10 @@ import ButtonAdd from "../common/ButtonAdd";
 
 import Modal from "@mui/material/Modal";
 import ModalCourse from "./ModalCourse";
-import { deleteCourse, getCourseOfTeacher } from "../../../fetchData/TeacherCourse";
+import {
+  deleteCourse,
+  getCourseOfTeacher,
+} from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
 
 const TableCourses = () => {
@@ -46,13 +49,12 @@ const TableCourses = () => {
 
   const handleDelete = async () => {
     console.log("Deleting course id:", selectedCourseId);
-    const res = await deleteCourse(selectedCourseId)
+    const res = await deleteCourse(selectedCourseId);
     if (res.status === 200) {
-      toast.success('Deleted successfully')
-      setStatus(true)
-    }
-    else {
-      toast.error('Delete failed')
+      toast.success("Deleted successfully");
+      setStatus(true);
+    } else {
+      toast.error("Delete failed");
     }
     setDeleteOpen(false);
   };
@@ -114,8 +116,9 @@ const TableCourses = () => {
               {courses?.map((course, index) => (
                 <tr
                   key={index + 1}
-                  className={`hover:bg-gray-100 cursor-pointer text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    }`}
+                  className={`hover:bg-gray-100 cursor-pointer text-sm ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  }`}
                   onClick={() => handleRowClick(course)}
                 >
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -135,8 +138,9 @@ const TableCourses = () => {
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     <h1
-                      className={`${course.isPublic ? "bg-green-400" : "bg-red-400"
-                        }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
+                      className={`${
+                        course.isPublic ? "bg-green-400" : "bg-red-400"
+                      }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >
                       {course.isPublic ? "Public" : "Private"}
                     </h1>
@@ -165,8 +169,9 @@ const TableCourses = () => {
           return (
             <button
               key={index}
-              className={`px-4 py-2 mx-1 rounded-full ${page === index ? "bg-primary" : ""
-                }`}
+              className={`w-12 h-12 mx-1 rounded-full ${
+                page === index ? "bg-primary" : ""
+              }`}
               onClick={() => handlePageClick(index)}
             >
               {pageNumber}
