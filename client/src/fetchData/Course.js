@@ -100,5 +100,5 @@ export {
   updatePayment,
   getCourseBySearch,
   getCourseByPagination,
-  getAllCourseNoLimit
+  getAllCourseNoLimit,
 };

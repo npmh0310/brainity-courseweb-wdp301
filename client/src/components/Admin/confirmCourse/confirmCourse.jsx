@@ -25,7 +25,6 @@ const ConfirmCourseTable = ({ courses }) => {
   }, [searchTerm, courses]);
 
   const handleRowClick = (id) => {
-    console.log(id);
     navigate(`${id}`);
   };
 

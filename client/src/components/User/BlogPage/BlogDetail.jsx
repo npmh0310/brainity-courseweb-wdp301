@@ -39,8 +39,6 @@ function BlogDetail() {
 
   const toggleDropdown = (dropdownId) => {
     setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
-    console.log("dropdown id", dropdownId);
-    console.log("cc j day", openDropdown);
   };
 
   const handleEditClick = () => {
@@ -88,7 +86,6 @@ function BlogDetail() {
 
   useEffect(() => {
     fetchData(id);
-    console.log("user", user);
   }, [id]);
 
   const fetchComments = async (id) => {
@@ -109,13 +106,17 @@ function BlogDetail() {
   // Thêm comment
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (commentText.trim() === '') {
+      setToastMessage('Comment cannot be empty.');
+      setToastSeverity("error");
+      setOpenToast(true);
+      return;
+    }
     try {
       const newComment = { content: commentText, user: user }; // Thay đổi tùy thuộc vào cấu trúc comment
       const res = await createComment(id, newComment);
       if (res.status === 201) {
-        console.log(newComment);
-        // Fetch lại bình luận sau khi thêm mới thành công
-        fetchComments(id);
+        // Fetch lại bình luận sau khi thêm mới thành công        fetchComments(id);
         setToastMessage("Comment added successfully!");
         setToastSeverity("success");
         setOpenToast(true);
@@ -131,7 +132,6 @@ function BlogDetail() {
       const updatedComment = { content: commentText };
       const res = await updateComment(id, commentId, updatedComment);
       if (res.status === 200) {
-        console.log(updatedComment);
         // Fetch lại bình luận sau khi cập nhật thành công
         fetchComments(id);
         setIsEditing(false);
@@ -151,7 +151,6 @@ function BlogDetail() {
       const res = await deleteComment(id, commentId);
       if (res.status === 200) {
         // Fetch lại bình luận sau khi xóa thành công
-        console.log("Deleted comment:", res);
         fetchComments(id);
         setOpenDropdown(null);
         setToastMessage("Comment deleted successfully!");

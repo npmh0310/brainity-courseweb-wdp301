@@ -143,7 +143,7 @@ const deleteCourseById = async (req, res) => {
 
 const getCourseInHomePage = async (req, res) => {
   try {
-    const courses = await Course.find({isConfirm : true, isRejected : false})
+    const courses = await Course.find({ isConfirm: true, isRejected: false })
       .limit(9)
       .populate("instructor", "username");
 
@@ -344,7 +344,7 @@ const getCourseNumOfEnrolled = async (courseId) => {
 const enrollCourse = async (req, res) => {
   const userId = req.user.id;
   const courseId = req.body.courseId;
-  
+
   try {
     const user = await User.findById(userId);
 
@@ -425,24 +425,24 @@ const getStudents = async (req, res) => {
 const getAllCourseForConfirm = async (req, res) => {
   try {
     const courses = await Course.find({})
-      .populate('instructor') 
-      .populate('categories')
+      .populate("instructor")
+      .populate("categories")
       .populate({
-        path: 'sections',
+        path: "sections",
         populate: {
-          path: 'lessons'
-        }
+          path: "lessons",
+        },
       })
-      .sort({ createdAt: -1 });//Sort theo createdAt
+      .sort({ createdAt: -1 }); //Sort theo createdAt
     res.status(200).json({
       success: true,
       count: courses.length,
-      data: courses
+      data: courses,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error fetching courses: ' + error.message
+      message: "Error fetching courses: " + error.message,
     });
   }
 };
@@ -451,24 +451,32 @@ const getAllCourseForConfirm = async (req, res) => {
 const confirmCourse = async (req, res) => {
   const { courseId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
-    return res.status(400).json({ success: false, message: 'Invalid courseId' });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid courseId" });
   }
 
   try {
-    const course = await Course.findByIdAndUpdate(courseId, {
-      isConfirm: true,
-      isRejected: false
-    }, { new: true });
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        isConfirm: true,
+        isRejected: false,
+      },
+      { new: true }
+    );
 
     if (!course) {
-      return res.status(404).json({ success: false, message: 'Course not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
     }
 
     res.status(200).json({ success: true, data: course });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error confirming course: ' + error.message
+      message: "Error confirming course: " + error.message,
     });
   }
 };
@@ -477,24 +485,32 @@ const confirmCourse = async (req, res) => {
 const rejectCourse = async (req, res) => {
   const { courseId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
-    return res.status(400).json({ success: false, message: 'Invalid courseId' });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid courseId" });
   }
 
   try {
-    const course = await Course.findByIdAndUpdate(courseId, {
-      isConfirm: false,
-      isRejected: true
-    }, { new: true });
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        isConfirm: false,
+        isRejected: true,
+      },
+      { new: true }
+    );
 
     if (!course) {
-      return res.status(404).json({ success: false, message: 'Course not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
     }
 
     res.status(200).json({ success: true, data: course });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error rejecting course: ' + error.message
+      message: "Error rejecting course: " + error.message,
     });
   }
 };
@@ -503,9 +519,15 @@ const getCourseByPagination = async (req, res) => {
   const pageSize = 9;
 
   try {
-    const totalCourses = await Course.countDocuments();
+    const totalCourses = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+    }).countDocuments();
     const totalPages = Math.ceil(totalCourses / pageSize);
-    const getAllCourseOfPagination = await Course.find({isConfirm : true, isRejected: false})
+    const getAllCourseOfPagination = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+    })
       .skip(page * pageSize)
       .limit(pageSize);
 
@@ -524,9 +546,8 @@ const getCourseByPagination = async (req, res) => {
   }
 };
 const getAllCourseNoLimit = async (req, res) => {
-
   try {
-    const courses = await Course.find({isConfirm : true, isRejected : false})
+    const courses = await Course.find({ isConfirm: true, isRejected: false });
     const promises = courses.map(async (course) => {
       const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
       const ratingInfo = await getAvgRatingByCourseId(course._id);
@@ -547,7 +568,6 @@ const getAllCourseNoLimit = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   createCourse,
@@ -571,5 +591,5 @@ module.exports = {
   confirmCourse,
   rejectCourse,
   getCourseByPagination,
-  getAllCourseNoLimit
+  getAllCourseNoLimit,
 };
