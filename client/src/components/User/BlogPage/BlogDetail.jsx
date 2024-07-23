@@ -261,16 +261,16 @@ function BlogDetail() {
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center border-b-2 pb-4 lg:pb-8 pt-4 lg:pt-8">
-                  <div className="flex gap-4">
+                <div className="flex gap-3 items-center border-b-2 pb-4 lg:pb-8 pt-4 lg:pt-8">
+                  <div className="flex gap-2 items-center">
                     <Eye size="16px" />
                     <span>{blog.views}</span>
                   </div>
-                  <div className="flex gap-4">
+                  <div className="flex gap-2 items-center">
                     <MessageCircleMore size="16px" />
                     <span>{comments.length}</span>
                   </div>
-                  <div className="flex gap-4">
+                  <div className="flex gap-2 items-center">
                     <Heart size="16px" />
                     <span>{blog.likes}</span>
                   </div>
