@@ -108,7 +108,12 @@ const getLatestMessages = async (req, res) => {
 const getMessagesByRoomName = async (req, res) => {
     const { roomName } = req.params;
     const senderId = new mongoose.Types.ObjectId(req.user.id); // Convert senderId to ObjectId
-    const otherUserId = new mongoose.Types.ObjectId(roomName.split('_')[1]); 
+    const otherUserId = new mongoose.Types.ObjectId(roomName.split('_')[1]);
+
+    // Extract pagination parameters
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+    const size = parseInt(req.query.size) || 10; // Default to size 10 if not provided
+    const skip = (page - 1) * size;
 
     try {
         const latestMessages = await Message.aggregate([
@@ -119,7 +124,10 @@ const getMessagesByRoomName = async (req, res) => {
                 $sort: { createdAt: -1 } // Sort messages by creation date in descending order
             },
             {
-                $limit: 10 // Limit to 10 messages per room
+                $skip: skip // Skip messages for pagination
+            },
+            {
+                $limit: size // Limit to 10 messages per page
             },
             {
                 $lookup: {
@@ -176,20 +184,19 @@ const getMessagesByRoomName = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Successfully fetched 10 latest messages by room name',
+            message: 'Successfully fetched messages by room name',
             data: latestMessages
         });
     } catch (error) {
-        console.error('Error fetching latest messages by room name:', error);
+        console.error('Error fetching messages by room name:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
 
-
 const markRoomChatAtRead = async (req, res) => {
     const { roomName } = req.params;
-
     try {
+        // Kiểm tra có bao nhiêu tin nhắn trước khi update
         const result = await Message.updateMany(
             { 
                 chatRoom: roomName,
@@ -221,5 +228,6 @@ const markRoomChatAtRead = async (req, res) => {
 
 module.exports = {
     getLatestMessages,
-    getMessagesByRoomName
+    getMessagesByRoomName,
+    markRoomChatAtRead
 };

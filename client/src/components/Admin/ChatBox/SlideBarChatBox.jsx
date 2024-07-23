@@ -7,8 +7,9 @@ import moment from 'moment';
 import { Search, Settings } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { markAllFromRoomAsRead } from "../../../fetchData/Message";
 
-const SlideBarChatBox = ({previewMessages}) => {
+const SlideBarChatBox = ({previewMessages, renewPreviewMessage}) => {
   const socket = initializeWebSocket() || getWebSocket();
   const navigate = useNavigate();
   const [selectedRoomId, setSelectedRoomId] = useState(null);
@@ -18,9 +19,14 @@ const SlideBarChatBox = ({previewMessages}) => {
   
     // ? handle click load message by room, and set curr room.
   const handleRoomIdClick = (roomName) => {
-    navigate(`/admin/messageAdmin/${roomName}`);
+    markAllFromRoomAsRead(roomName).then((response) => {
+      renewPreviewMessage();
+      navigate(`/admin/messageAdmin/${roomName}`);
+      console.log("come")
+    });
+
   };
-  
+
   return (
     <div className="lg:w-1/4 w-24 h-full  pt-7 bg-gray-50 border-x-2 flex flex-col gap-y-6">
       <div className="flex flex-row items-center justify-center lg:justify-start gap-x-3 lg:px-6">

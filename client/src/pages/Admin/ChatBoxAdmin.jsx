@@ -34,33 +34,29 @@ const ChatBoxAdmin = () => {
 
     socket.on("receiveMessage", (message) => {
       console.log("come recieve: ", message)
-
-      // hàm set ni if ( curr room. contains message.senderId)
-      // current room , được set = cách bắn room khi sideBarChat được click, bắn thằng room qua (id của user tạo room nớ )
-      // setMessages((prevMessages) => [...prevMessages, 
-      //   {
-      //     type: user._id == message.senderId ? "my" : "their",
-      //     text: message.content,
-      //   },
-      // ]);
-      
       renewPreviewMessage();
 
     });
-    
-    const renewPreviewMessage = () => {
-      getAllPreviewMessages().then((response) => {
-        console.log("Has changed")
-        const data = Object.values(response.data.data);
-        setPreviewMessages(data);
-      });
-    }
+
   
     return () => {
+      socket.off("receiveMessage", (message) => {
+        console.log("come recieve: ", message)
+        renewPreviewMessage();
+  
+      });
+      
         disconnectWebSocket();
       };
     }, [rooms]);
-
+    
+const renewPreviewMessage = () => {
+  getAllPreviewMessages().then((response) => {
+    console.log("Has changed")
+    const data = Object.values(response.data.data);
+    setPreviewMessages(data);
+  });
+}
     // previewMessage update when recieve message.  
     
     // const sendMessage = (e) => {
@@ -99,7 +95,7 @@ const ChatBoxAdmin = () => {
         </div>
       </header>
       <div className="container mx-auto flex-grow flex flex-row  overflow-hidden ">
-      <SlideBarChatBox previewMessages = {previewMessages} />
+      <SlideBarChatBox previewMessages = {previewMessages} renewPreviewMessage = {renewPreviewMessage}  />
       <ContentChatBox/>
       </div>
     </div>

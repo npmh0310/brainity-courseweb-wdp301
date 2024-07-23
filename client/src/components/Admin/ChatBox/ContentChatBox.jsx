@@ -22,14 +22,12 @@ const ContentChatBox = () => {
           console.log(roomName)
           const data = Object.values(response.data.data);
           setMessages(data[0]);
-          console.log(messages.messages)
         });
 
         
     socket.on("receiveMessage", (message) => {
-      console.log("admin")
       console.log(user._id === message.senderId )
-      if(roomName.includes(message.senderId) || user._id === message.senderId) {
+      if(roomName.includes(message.senderId) || user._id === message.senderId || !user._id) {
         renewMessages(roomName)
       }
     });
