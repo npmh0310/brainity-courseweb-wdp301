@@ -111,8 +111,9 @@ const getMessagesByRoomName = async (req, res) => {
     const otherUserId = new mongoose.Types.ObjectId(roomName.split('_')[1]);
 
     // Extract pagination parameters
-    const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-    const size = parseInt(req.query.size) || 10; // Default to size 10 if not provided
+    const page = parseInt(req.query.page); // Default to page 1 if not provided
+    const size = parseInt(req.query.size); // Default to size 10 if not provided
+    console.log("page: ", page + "size: ", size)
     const skip = (page - 1) * size;
 
     try {
