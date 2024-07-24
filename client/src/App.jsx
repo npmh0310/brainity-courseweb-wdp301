@@ -161,7 +161,7 @@ function App() {
           {user && user.role === "admin" && (
             <>
               <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
-              <Route path="/admin/messageAdmin/:roomId" element={<ChatBoxAdmin />} />
+              <Route path="/admin/messageAdmin/:roomName" element={<ChatBoxAdmin />} />
               <Route path="/admin/*" element={<AdminLayout />}>
                 <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
                 <Route path="confirmCourse/*" element={<ConfirmCourseLayout />}>

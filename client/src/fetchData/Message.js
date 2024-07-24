@@ -11,8 +11,8 @@ export const getAllPreviewMessages = (options) => {
     return axios.get(baseUrl + "/previewMessages", params)  
 }
 
-export const getMessagesByRoomName = (roomName) => {
-    return axios.get(baseUrl + "/" + roomName)
+export const getMessagesByRoomName = (roomName, options) => {
+    return axios.get(baseUrl + "/" + roomName + "?page="+options.page+"&size="+options.size)
 }
 
 export const markAllFromRoomAsRead = (roomName) => {

@@ -7,37 +7,52 @@ import moment from 'moment';
 import { Search, Settings } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { markAllFromRoomAsRead } from "../../../fetchData/Message";
+import { getAllPreviewMessages, markAllFromRoomAsRead } from "../../../fetchData/Message";
 
-const SlideBarChatBox = ({previewMessages, renewPreviewMessage}) => {
+const SlideBarChatBox = () => {
   const socket = initializeWebSocket() || getWebSocket();
   const navigate = useNavigate();
+  const [previewMessages, setPreviewMessages] = useState([]);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
   const { roomId } = useParams();
   const user = useSelector((state) => state.auth.user);
 
-  
-    // ? handle click load message by room, and set curr room.
   const handleRoomIdClick = (roomName) => {
     markAllFromRoomAsRead(roomName).then((response) => {
       renewPreviewMessage();
       navigate(`/admin/messageAdmin/${roomName}`);
-      console.log("come")
     });
-
   };
 
+  useEffect(() => {
+    getAllPreviewMessages().then((response) => {
+      const data = Object.values(response.data.data);
+      setPreviewMessages(data);
+    });
+
+    socket.on("receiveMessage", (message) => {
+      renewPreviewMessage();
+    });
+  }, []);
+
+  const renewPreviewMessage = () => {
+    getAllPreviewMessages().then((response) => {
+      const data = Object.values(response.data.data);
+      setPreviewMessages(data);
+    });
+  };
+
+  useEffect(() => {
+    getAllPreviewMessages();
+  }, [roomId]);
+
   return (
-    <div className="lg:w-1/4 w-24 h-full  pt-7 bg-gray-50 border-x-2 flex flex-col gap-y-6">
+    <div className="lg:w-1/4 w-24 h-full pt-7 bg-gray-50 border-x-2 flex flex-col gap-y-6">
       <div className="flex flex-row items-center justify-center lg:justify-start gap-x-3 lg:px-6">
-        <img
-          className="w-11 h-11 rounded-full object-cover "
-          src={avatar}
-          alt=""
-        />
+        <img className="w-11 h-11 rounded-full object-cover" src={avatar} alt="" />
         <div className="hidden lg:flex flex-col truncate">
-          <h1 className="text-primary font-semibold ">{user.username}</h1>
-          <h4 className="text-xs text-gray-500 ">{user.email}</h4>
+          <h1 className="text-primary font-semibold">{user.username}</h1>
+          <h4 className="text-xs text-gray-500">{user.email}</h4>
         </div>
       </div>
       <div className="w-full flex justify-center items-center mt-2 relative px-3">
@@ -55,8 +70,8 @@ const SlideBarChatBox = ({previewMessages, renewPreviewMessage}) => {
             <Settings size={16} className="relative z-10 text-gray-600" />
           </button>
         </div>
-        <div className="flex flex-col  flex-grow  scrollbar-custom overflow-y-auto">
-          <div className=" flex flex-col  px-1  gap-y-1">
+        <div className="flex flex-col flex-grow scrollbar-custom overflow-y-auto">
+          <div className="flex flex-col px-1 gap-y-1">
             {previewMessages.map((message) => (
               <div
                 onClick={() => {
@@ -65,22 +80,14 @@ const SlideBarChatBox = ({previewMessages, renewPreviewMessage}) => {
                 }}
                 key={message.id}
                 className={`flex flex-row lg:justify-center px-3 py-3 gap-x-3 rounded-md cursor-pointer ${
-                  parseInt(roomId) === message.id
-                    ? "bg-gray-200 "
-                    : "hover:bg-primary/20 "
+                  parseInt(roomId) === message.id ? "bg-gray-200" : "hover:bg-primary/20"
                 }`}
               >
-                <img
-                  className="w-12 h-12 rounded-full object-cover"
-                  src={message.avatarSrc}
-                  alt=""
-                />
+                <img className="w-12 h-12 rounded-full object-cover" src={message.avatarSrc} alt="" />
                 <div className="w-4/5 hidden lg:flex flex-col flex-grow gap-y-[6px] pr-1">
                   <div className="flex flex-row justify-between items-center">
                     <h1 className="font-medium">{message.otherUserUsername}</h1>
-                    <h1 className="text-xs text-gray-400">
-                      {moment(message.createdAt).fromNow()}
-                    </h1>
+                    <h1 className="text-xs text-gray-400">{moment(message.createdAt).fromNow()}</h1>
                   </div>
                   <div className="flex flex-row justify-between items-center">
                     <h1
