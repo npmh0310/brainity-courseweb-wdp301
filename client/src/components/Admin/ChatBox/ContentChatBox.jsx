@@ -17,31 +17,34 @@ const ContentChatBox = () => {
   const user = useSelector((state) => state.auth.user);
   const chatBoxRef = useRef(null);
 
+  const fetchMessages = async (roomName) => {
+    const response = await getMessagesByRoomName(roomName, { page: 1, size: 20 });
+    const data = Object.values(response.data.data);
+    setMessages(data[0]);
+  };
+
+  useEffect(() => {
+    if (roomName) {
+      setMessages([]); // Xóa sạch dữ liệu cũ
+      fetchMessages(roomName);
+      socket.on("receiveMessage", handleReceiveMessage);
+
+      return () => {
+        socket.off("receiveMessage", handleReceiveMessage); // Unregister the event handler on cleanup
+      };
+    }
+  }, [roomName]);
+
   const handleReceiveMessage = (message) => {
-    if ( roomName.includes(message.senderId) || user._id === message.senderId || !user._id) {
-      console.log()
+    if (roomName.includes(message.senderId) || user._id === message.senderId || !user._id) {
       renewMessages(roomName);
     }
   };
 
-  useEffect(() => {
-    getMessagesByRoomName(roomName,{page:1, size:20}).then((response) => {
-      const data = Object.values(response.data.data);
-      setMessages(data[0]);
-    });
-
-    socket.on("receiveMessage", handleReceiveMessage);
-
-    return () => {
-      socket.off("receiveMessage", handleReceiveMessage); // Unregister the event handler on cleanup
-    };
-  }, [roomName]);
-
-  const renewMessages = (roomName) => {
-    getMessagesByRoomName(roomName, {page:1, size:20}).then((response) => {
-      const data = Object.values(response.data.data);
-      setMessages(data[0]);
-    });
+  const renewMessages = async (roomName) => {
+    const response = await getMessagesByRoomName(roomName, { page: 1, size: 20 });
+    const data = Object.values(response.data.data);
+    setMessages(data[0]);
   };
 
   const sendMessage = (e) => {
@@ -91,7 +94,7 @@ const ContentChatBox = () => {
   }
 
   return (
-    <div className="w-full lg:w-3/4 h-full border-r-2 flex flex-col ">
+    <div key={roomName} className="w-full lg:w-3/4 h-full border-r-2 flex flex-col ">
       <header className="flex flex-row justify-between items-center px-9 py-4 border-b-2">
         <div className="flex flex-row items-center gap-x-5">
           <img className="w-11 h-11 rounded-full" src={messages.avatarSrc} alt="" />
