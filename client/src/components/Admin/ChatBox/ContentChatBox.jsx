@@ -3,11 +3,17 @@ import avatar2 from "../../../assets/images/Avatar/CGakpo2023.jpg";
 import avatar from "../../../assets/images/Avatar/CGakpo2023.jpg";
 import { Info, Search } from "lucide-react";
 import Logo from "../../../assets/images/logo_noBg.png";
-import { getMessagesByRoomName, markAllFromRoomAsRead } from "../../../fetchData/Message";
+import {
+  getMessagesByRoomName,
+  markAllFromRoomAsRead,
+} from "../../../fetchData/Message";
 import { SendHorizontal, Paperclip, X } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getWebSocket, initializeWebSocket } from "../../../utils/websocketManager";
+import {
+  getWebSocket,
+  initializeWebSocket,
+} from "../../../utils/websocketManager";
 
 const ContentChatBox = () => {
   const socket = initializeWebSocket() || getWebSocket();
@@ -17,31 +23,44 @@ const ContentChatBox = () => {
   const user = useSelector((state) => state.auth.user);
   const chatBoxRef = useRef(null);
 
+  const fetchMessages = async (roomName) => {
+    const response = await getMessagesByRoomName(roomName, {
+      page: 1,
+      size: 20,
+    });
+    const data = Object.values(response.data.data);
+    setMessages(data[0]);
+  };
+
+  useEffect(() => {
+    if (roomName) {
+      setMessages([]); // Xóa sạch dữ liệu cũ
+      fetchMessages(roomName);
+      socket.on("receiveMessage", handleReceiveMessage);
+
+      return () => {
+        socket.off("receiveMessage", handleReceiveMessage); // Unregister the event handler on cleanup
+      };
+    }
+  }, [roomName]);
+
   const handleReceiveMessage = (message) => {
-    if ( roomName.includes(message.senderId) || user._id === message.senderId || !user._id) {
-      console.log()
+    if (
+      roomName.includes(message.senderId) ||
+      user._id === message.senderId ||
+      !user._id
+    ) {
       renewMessages(roomName);
     }
   };
 
-  useEffect(() => {
-    getMessagesByRoomName(roomName,{page:1, size:20}).then((response) => {
-      const data = Object.values(response.data.data);
-      setMessages(data[0]);
+  const renewMessages = async (roomName) => {
+    const response = await getMessagesByRoomName(roomName, {
+      page: 1,
+      size: 20,
     });
-
-    socket.on("receiveMessage", handleReceiveMessage);
-
-    return () => {
-      socket.off("receiveMessage", handleReceiveMessage); // Unregister the event handler on cleanup
-    };
-  }, [roomName]);
-
-  const renewMessages = (roomName) => {
-    getMessagesByRoomName(roomName, {page:1, size:20}).then((response) => {
-      const data = Object.values(response.data.data);
-      setMessages(data[0]);
-    });
+    const data = Object.values(response.data.data);
+    setMessages(data[0]);
   };
 
   const sendMessage = (e) => {
@@ -91,10 +110,17 @@ const ContentChatBox = () => {
   }
 
   return (
-    <div className="w-full lg:w-3/4 h-full border-r-2 flex flex-col ">
+    <div
+      key={roomName}
+      className="w-full lg:w-3/4 h-full border-r-2 flex flex-col "
+    >
       <header className="flex flex-row justify-between items-center px-9 py-4 border-b-2">
         <div className="flex flex-row items-center gap-x-5">
-          <img className="w-11 h-11 rounded-full" src={messages.avatarSrc} alt="" />
+          <img
+            className="w-11 h-11 rounded-full"
+            src={messages.avatarSrc}
+            alt=""
+          />
           <h1 className="font-medium">{messages.otherUsername}</h1>
         </div>
         <div className="flex flex-row items-center gap-x-8 text-gray-500">
@@ -104,19 +130,29 @@ const ContentChatBox = () => {
       </header>
       <div
         ref={chatBoxRef}
-        className="h-[78vh] flex-grow text-center flex flex-col-reverse overflow-y-auto scrollbar-custom "
+        className="h-[78vh] flex-grow text-center flex flex-col-reverse overflow-x-hidden overflow-y-auto scrollbar-custom "
       >
         <div className="flex flex-col px-3 py-5 space-y-8">
           {messages.messages?.map((message, index) => (
             <div
               key={index}
-              className={`flex items-end ${message.type === "my" ? "justify-end" : "justify-start"} gap-x-2`}
+              className={`flex items-end ${
+                message.type === "my" ? "justify-end" : "justify-start"
+              } gap-x-2`}
             >
               {message.type === "their" && (
-                <img src={messages.avatarSrc} className="w-9 h-9 rounded-full order-1" alt={messages.name} />
+                <img
+                  src={messages.avatarSrc}
+                  className="w-9 h-9 rounded-full order-1"
+                  alt={messages.name}
+                />
               )}
               <div
-                className={`flex flex-col space-y-2 text-xs ${message.type === "their" ? "max-w-xs order-2 items-start" : "items-end"}`}
+                className={`flex flex-col space-y-2 text-xs ${
+                  message.type === "their"
+                    ? "max-w-xs order-2 items-start"
+                    : "items-end"
+                }`}
               >
                 {message.type === "their" ? (
                   <div>
@@ -127,7 +163,7 @@ const ContentChatBox = () => {
                     </span>
                   </div>
                 ) : (
-                  <div className="w-2/3">
+                  <div className="">
                     <span
                       className={`px-4 py-2 rounded-lg inline-block bg-gray-200 text-gray-600 text-left break-words`}
                     >
@@ -142,7 +178,10 @@ const ContentChatBox = () => {
       </div>
       <form className="mx-4 my-3">
         <div className="flex items-center px-5 gap-x-2 h-12 border rounded-3xl">
-          <label htmlFor="file-upload" className="flex justify-center items-center hover:text-primary cursor-pointer">
+          <label
+            htmlFor="file-upload"
+            className="flex justify-center items-center hover:text-primary cursor-pointer"
+          >
             <Paperclip size={20} />
           </label>
           <input id="file-upload" type="file" className="hidden" />
@@ -153,7 +192,10 @@ const ContentChatBox = () => {
             value={message}
             placeholder="Ask a question..."
           />
-          <button onClick={sendMessage} className="flex justify-center items-center hover:text-primary cursor-pointer">
+          <button
+            onClick={sendMessage}
+            className="flex justify-center items-center hover:text-primary cursor-pointer"
+          >
             <SendHorizontal className=" " size={20} />
           </button>
         </div>

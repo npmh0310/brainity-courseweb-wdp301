@@ -1,11 +1,10 @@
-
 var User = require("../models/user");
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const Course = require("../models/course");
 const { addProgress } = require("./userChapterProgressController");
 const { createNotification } = require("./notificationController");
-var nodemailer = require('nodemailer');
+var nodemailer = require("nodemailer");
 
 const register = async (req, res) => {
   try {
@@ -19,7 +18,6 @@ const register = async (req, res) => {
       avatar: "https://img.upanh.tv/2024/06/18/user-avatar.png",
       ...otherFields,
     });
-
 
     const defaultNotificationRoom = "room_profile_" + newUser.id;
     newUser.notificationRooms = ["room_system", defaultNotificationRoom];
@@ -169,7 +167,6 @@ const getUserById = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-
   const id = req.user.id;
   const { email, password, ...rest } = req.body;
   const user = await User.findById(id);
@@ -228,6 +225,7 @@ const updateUser = async (req, res) => {
     //         data: updateUser
     //     })
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       success: false,
       message: "Failed to update. Try again",
@@ -340,7 +338,6 @@ const logout = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-
   const userId = req.user.id;
 
   const rooms = [`room_profile_${req.user.id}`];
@@ -401,40 +398,37 @@ const updateAvatar = async (req, res) => {
       message: "Avatar updated successfully",
       data: user,
     });
-
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: 'Failed to update avatar',
-            error: err.message
-        });
-    }
-
-}
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update avatar",
+      error: err.message,
+    });
+  }
+};
 
 const forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    console.log(email)
-    try {
-        const user = await User.findOne({ email: email })
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET_KEY,
-            { expiresIn: "1d" }
-        )
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'brainitycourseweb@gmail.com',
-                pass: 'tzuvnsosxdadntqt'
-            }
-
-        });
-        var mailOptions = {
-            from: 'brainitycourseweb@gmail.com',
-            to: user.email,
-            subject: 'Reset Password - Brainity Course',
-            html: `
+  const { email } = req.body;
+  console.log(email);
+  try {
+    const user = await User.findOne({ email: email });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "1d" }
+    );
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "brainitycourseweb@gmail.com",
+        pass: "tzuvnsosxdadntqt",
+      },
+    });
+    var mailOptions = {
+      from: "brainitycourseweb@gmail.com",
+      to: user.email,
+      subject: "Reset Password - Brainity Course",
+      html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <h2 style="color: #04ddb2;">Reset Your Password</h2>
                 <p>Dear ${user.name},</p>
@@ -443,65 +437,62 @@ const forgotPassword = async (req, res) => {
                 <p>If you didn't request a password reset, please ignore this email.</p>
                 <p>Thank you,<br>The Brainity Course Team</p>
             </div>
-        `
-        };
+        `,
+    };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                return res.status(200).json({
-                    message: "Success"
-                })
-            }
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        return res.status(200).json({
+          message: "Success",
         });
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message
-        })
-    }
-}
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 const resetPassword = async (req, res) => {
-    const userId = req.user.id
-    const { token , newPassword, confirmPassword  } = req.body;
-    
-    try {
-        if (newPassword == confirmPassword) {
-            const user = await User.findById(userId)
-            const salt = bcrypt.genSaltSync(10)
-            const hash = bcrypt.hashSync(newPassword, salt)
-            console.log('new mk ', hash)
-            user.password = hash;
-            await user.save();
+  const userId = req.user.id;
+  const { token, newPassword, confirmPassword } = req.body;
 
-            return res.status(200).json({
-                success: true,
-                message: 'Password updated successfully'
-            });
-        }
-    } catch (error) {
-        return res.status(500).json({
-            message: 'faild reset'
-        })
+  try {
+    if (newPassword == confirmPassword) {
+      const user = await User.findById(userId);
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(newPassword, salt);
+      console.log("new mk ", hash);
+      user.password = hash;
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Password updated successfully",
+      });
     }
-
-
-}
+  } catch (error) {
+    return res.status(500).json({
+      message: "faild reset",
+    });
+  }
+};
 
 module.exports = {
-    register,
-    login,
-    createUser,
-    deleteUserById,
-    getAllUser,
-    getUserById,
-    updateUserFreeCourse,
-    updateUser,
-    getProfile,
-    logout,
-    changePassword,
-    updateAvatar,
-    forgotPassword,
-    resetPassword
-}
-
+  register,
+  login,
+  createUser,
+  deleteUserById,
+  getAllUser,
+  getUserById,
+  updateUserFreeCourse,
+  updateUser,
+  getProfile,
+  logout,
+  changePassword,
+  updateAvatar,
+  forgotPassword,
+  resetPassword,
+};

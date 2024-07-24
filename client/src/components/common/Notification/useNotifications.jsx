@@ -5,11 +5,12 @@ import {
   useState,
   useCallback,
 } from "react";
-import io from "socket.io-client";
-import { getAllNotification, getRoom } from "../../../fetchData/Notification";
-import { initializeWebSocket, getWebSocket } from "../../../utils/websocketManager"; // Adjust the import path as per your project structure
 import { useSelector } from "react-redux";
-
+import { getAllNotification, getRoom } from "../../../fetchData/Notification";
+import {
+  initializeWebSocket,
+  getWebSocket,
+} from "../../../utils/websocketManager"; // Adjust the import path as per your project structure
 
 const NotificationsContext = createContext();
 
@@ -23,14 +24,15 @@ export const NotificationsProvider = ({ children, userId }) => {
   const [rooms, setRooms] = useState([]);
   const user = useSelector((state) => state.auth.user);
 
-  // dùng useCallback để component không bị tạo mới mỗi component re-render
+  initializeWebSocket(); // Initialize WebSocket when component mounts
+  const socket = getWebSocket(); // Get the WebSocket instance
+
   const fetchNotifications = useCallback(() => {
     getAllNotification()
       .then((response) => {
         if (response.data.success) {
           const { count, data } = response.data;
-          const notificationData = data.map((item) => item);
-          setNotifications(notificationData);
+          setNotifications(data);
           setUnreadCount(count.unread);
         } else {
           console.error(response.data.message);
@@ -42,11 +44,15 @@ export const NotificationsProvider = ({ children, userId }) => {
   }, []);
 
   useEffect(() => {
+    const handleNotification = (data) => {
+      setNotifications((prev) => [data.message, ...prev]);
+      fetchNotifications();
+    };
 
-    // const socket = io("http://localhost:4000");
-    initializeWebSocket(); // Initialize WebSocket when component mounts
-    const socket = getWebSocket(); // Get the WebSocket instance
-    
+    socket.on("passwordChangeNotification", handleNotification);
+    socket.on("system", handleNotification);
+    socket.on("newLessonNotification", handleNotification);
+
     getRoom().then((response) => {
       const data = Object.values(response.data.data);
       setRooms(data);
@@ -57,25 +63,13 @@ export const NotificationsProvider = ({ children, userId }) => {
 
     fetchNotifications();
 
-    socket.on("passwordChangeNotification", (data) => {
-      setNotifications((prev) => [data.message, ...prev]);
-      fetchNotifications();
-    });
-
-    socket.on("system", (data) => {
-      setNotifications((prev) => [data.message, ...prev]);
-      fetchNotifications();
-    });
-
-    socket.on("newLessonNotification", (data) => {
-      setNotifications((prev) => [data.message, ...prev]);
-      fetchNotifications();
-    });
-
     return () => {
+      socket.off("passwordChangeNotification", handleNotification);
+      socket.off("system", handleNotification);
+      socket.off("newLessonNotification", handleNotification);
       socket.disconnect();
     };
-  }, [userId, fetchNotifications]);
+  }, [userId, fetchNotifications, socket]);
 
   return (
     <NotificationsContext.Provider

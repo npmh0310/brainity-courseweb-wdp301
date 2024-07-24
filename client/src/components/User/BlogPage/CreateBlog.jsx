@@ -61,7 +61,7 @@ function CreateBlog() {
       toast.success("Create blog successfull");
       navigate('/myBlog')
     } else {
-      toast.error("Faild to create blog");
+      toast.error("Failed to create blog");
     }
   }
 

@@ -20,7 +20,7 @@ import { GlobalStyles } from "@mui/material";
 import Dashboard from "./components/Admin/default/Dashboard";
 import ConfirmTeacherTable from "./components/Admin/confirmTeacher/confirmTeacher";
 import ConfirmCourseTable from "./components/Admin/confirmCourse/confirmCourse";
-import ConfirmCourseDetail from "./components/Admin/confirmCourse/ConfirmCourseDetail"
+import ConfirmCourseDetail from "./components/Admin/confirmCourse/ConfirmCourseDetail";
 import ConfirmBlogTable from "./components/Admin/confirmBlog/confirmBlog";
 import ProfileUserPage from "./pages/ProfileUserPage";
 import TeacherPage from "./pages/Teacher/TeacherPage";
@@ -45,7 +45,6 @@ import ResetPassword from "./pages/ResetPassword";
 function App() {
   const dispatch = useDispatch();
   const isLogin = useSelector(getIsLogin);
-  const user = useSelector((state) => state.auth.user)
 
   useEffect(() => {
     dispatch(validateToken());
@@ -82,25 +81,21 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgotPassword" element={<ForgotPassWord />} />
           <Route path="/reset_password/:token" element={<ResetPassword />} />
-          {
-            user && user.role === "teacher" && 
-            (
-              <Route path="/teacher" element={<TeacherPage />}>
-                {teacherRoutes.map((route, index) => (
-                  <Route key={index} path={route.path} element={route.element}>
-                    {route.children &&
-                      route.children.map((child, childIndex) => (
-                        <Route
-                          key={childIndex}
-                          path={child.path}
-                          element={child.element}
-                        />
-                      ))}
-                  </Route>
-                ))}
+
+          <Route path="/teacher" element={<TeacherPage />}>
+            {teacherRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element}>
+                {route.children &&
+                  route.children.map((child, childIndex) => (
+                    <Route
+                      key={childIndex}
+                      path={child.path}
+                      element={child.element}
+                    />
+                  ))}
               </Route>
-            )
-          }
+            ))}
+          </Route>
           <Route path="/" element={<MainLayout />}>
             {routes.map((route, index) =>
               route.index ? (
@@ -158,20 +153,20 @@ function App() {
           </Route>
           {/* Route Admin*/}
 
-          {user && user.role === "admin" && (
-            <>
-              <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
-              <Route path="/admin/messageAdmin/:roomName" element={<ChatBoxAdmin />} />
-              <Route path="/admin/*" element={<AdminLayout />}>
-                <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
-                <Route path="confirmCourse/*" element={<ConfirmCourseLayout />}>
-                  <Route path=":id" element={<ConfirmCourseDetail />} />
-                </Route>
-                <Route path="confirmBlog" element={<ConfirmBlogTable />} />
-                <Route path="default" element={<Dashboard />} />
-              </Route>
-            </>
-          )}
+          <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
+          <Route
+            path="/admin/messageAdmin/:roomName"
+            element={<ChatBoxAdmin />}
+          />
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route path="confirmTeacher" element={<ConfirmTeacherTable />} />
+            <Route path="confirmCourse/*" element={<ConfirmCourseLayout />}>
+              <Route path=":id" element={<ConfirmCourseDetail />} />
+            </Route>
+            <Route path="confirmBlog" element={<ConfirmBlogTable />} />
+            <Route path="default" element={<Dashboard />} />
+          </Route>
+
           {/* Route Payment Success*/}
           <Route path="/paymentSuccess" element={<PaymentSuccess />}></Route>
           <Route path="/payment" element={<PaymentResult />} />
