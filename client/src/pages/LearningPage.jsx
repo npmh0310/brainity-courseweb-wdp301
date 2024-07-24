@@ -22,7 +22,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { getCourseById } from "../fetchData/Course";
+import { getCourseById, getStudents } from "../fetchData/Course";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getGlobalLoading,
@@ -31,7 +31,7 @@ import {
 import GlobalLoading from "../components/common/GlobalLoading/GlobalLoading";
 import CourseReviewDialog from "../components/User/LearningPage/SubmitReview/CourseReviewDialog";
 import Toast from "../components/User/LearningPage/Toast/Toast";
-import { getLessonProgressUser } from "../fetchData/UserChapterProgress";
+import { completeCourse, getLessonProgressUser } from "../fetchData/UserChapterProgress";
 import { insertLessonProgress } from "../redux/features/learningSlice";
 import { calculateOverallCompletionPercent } from "../function/function";
 import VideoChaper from "./../components/User/LearningPage/VideoChapter/VideoChaper";
@@ -51,6 +51,7 @@ function LearningPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastSeverity, setToastSeverity] = useState("success");
   const [courseProgress, setCourseProgress] = useState();
+
   const navigate = useNavigate();
   const [overralCompletionPercent, setOverralCompletionPercent] = useState(0);
   // const [sectionsWithProgress, setSectionsWithProgress] = useState()
@@ -101,7 +102,7 @@ function LearningPage() {
       } else {
         setShowCourse(true);
         setInnerWidth(true);
-        navigate("#overview");
+        // navigate("#overview");
       }
     };
 
@@ -119,51 +120,56 @@ function LearningPage() {
 
   //Data
   const { id: courseId } = useParams();
-  useEffect(() => {
-    const fetchCourse = async (courseId) => {
-      dispatch(setGlobalLoading(true));
-      try {
-        const response_Course = await getCourseById(courseId);
-        const response_LessonProgress = await getLessonProgressUser(courseId);
+  const fetchCourse = async (courseId) => {
+    dispatch(setGlobalLoading(true));
+    try {
+      const response_Course = await getCourseById(courseId);
+      const response_LessonProgress = await getLessonProgressUser(courseId);
 
-        if (
-          response_Course.data.success &&
-          response_LessonProgress.data.success
-        ) {
-          const sectionsWithProgress = response_Course.data.data.sections.map(
-            (section) => ({
-              ...section,
-              lessons: section.lessons.map((lesson) => ({
-                ...lesson,
-                isCompleted:
-                  response_LessonProgress.data.data.lessonsProgress.find(
-                    (p) => p.lesson === lesson._id
-                  )?.isCompleted || false,
-              })),
-            })
-          );
+      if (
+        response_Course.data.success &&
+        response_LessonProgress.data.success
+      ) {
+        const sectionsWithProgress = response_Course.data.data.sections.map(
+          (section) => ({
+            ...section,
+            lessons: section.lessons.map((lesson) => ({
+              ...lesson,
+              isCompleted:
+                response_LessonProgress.data.data.lessonsProgress.find(
+                  (p) => p.lesson === lesson._id
+                )?.isCompleted || false,
+            })),
+          })
+        );
 
-          setCourse(response_Course.data.data);
-          setCourseProgress(response_LessonProgress.data.data);
-          dispatch(insertLessonProgress(sectionsWithProgress));
-          // setInitialLessonsProgress(sectionsWithProgress);
-          // setSectionsWithProgress(sectionsWithProgress)
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(setGlobalLoading(false));
+        setCourse(response_Course.data.data);
+        setCourseProgress(response_LessonProgress.data.data);
+        dispatch(insertLessonProgress(sectionsWithProgress));
+        // setInitialLessonsProgress(sectionsWithProgress);
+        // setSectionsWithProgress(sectionsWithProgress)
       }
-    };
-
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setGlobalLoading(false));
+    }
+  };
+  useEffect(() => {
     fetchCourse(courseId);
   }, []);
 
   useEffect(() => {
-    setOverralCompletionPercent(
-      calculateOverallCompletionPercent(lessonsProgress)
-    );
-  }, [lessonsProgress]);
+    if(courseProgress && !courseProgress.isCompleted){
+      const overralCompletionPercent = calculateOverallCompletionPercent(lessonsProgress);
+      setOverralCompletionPercent(overralCompletionPercent);
+      if(overralCompletionPercent.overal == 100.00) {
+        const res = completeCourse(courseId)
+        openModal()
+
+      }
+    }
+  }, [lessonsProgress , courseId]);
 
   // hash section
   const [section, setSection] = useState("overview");
@@ -185,6 +191,10 @@ function LearningPage() {
     };
   });
 
+
+
+  
+
   return (
     <div className="bg-white">
       <GlobalLoading />
@@ -195,7 +205,7 @@ function LearningPage() {
               <Logo />
             </a>
             <div className="ml-4 flex justify-start items-center w-8/12 uppercase ">
-              <a href="#"> {course.courseName} </a>
+              <Link to={`/course/${courseId}`}> {course.courseName} </Link>
             </div>
             <Popover
               id={id}
@@ -211,13 +221,17 @@ function LearningPage() {
                 horizontal: "center",
               }}
             >
-              <div className="p-4 flex flex-col gap-y-2 justify-center items-start text-sm">
-                <span className="font-bold">
-                  {overralCompletionPercent.completedLessons} of{" "}
-                  {overralCompletionPercent.totallesson} complete
-                </span>
-                <span>Finish course to get your certificate</span>
-              </div>
+              {courseProgress && overralCompletionPercent.overal != 100.00 && !courseProgress.isCompleted  ?
+                <div className="p-4 flex flex-col gap-y-2 justify-center items-start text-sm">
+                  <span className="font-bold">
+                    {overralCompletionPercent.completedLessons} of{" "}
+                    {overralCompletionPercent.totallesson} complete
+                  </span>
+                  <span>Finish course to get your certificate</span>
+                </div> :
+                <div className="p-4 flex flex-col gap-y-2 justify-center items-start text-sm">
+                  <span className="font-bold">You have completed the course</span>
+                </div>}
             </Popover>
             <div
               aria-describedby={id}
@@ -236,7 +250,9 @@ function LearningPage() {
                 <CircularProgress
                   size="md"
                   determinate
-                  value={overralCompletionPercent.overal}
+                  value={courseProgress && !courseProgress.isCompleted ? overralCompletionPercent.overal : 100}
+                  color={ (courseProgress && !courseProgress.isCompleted) && overralCompletionPercent.overal != 100.00  ? "danger" : "success"}
+                  
                 >
                   <Sparkle />
                 </CircularProgress>
@@ -262,7 +278,7 @@ function LearningPage() {
             >
               <div className=" relative bg-black video w-full h-[600px]">
                 <Routes>
-                  {course.sections &&
+                  {/* {course.sections &&
                     course.sections.length > 0 &&
                     course.sections.map(
                       (section, sectionIndex) =>
@@ -281,8 +297,8 @@ function LearningPage() {
                             }
                           />
                         ))
-                    )}
-                  {/* <Route path='lesson/:lessonId' element={<VideoChaper />} /> */}
+                    )} */}
+                  <Route path='lesson/:lessonId' element={<VideoChaper courseProgress={courseProgress} courseId={courseId}/>} />
                 </Routes>
                 {!showCourse && innerWidth && (
                   <Link
@@ -296,9 +312,8 @@ function LearningPage() {
               </div>
 
               <div
-                className={`${
-                  !showCourse ? "lg:w-9/12" : "sm:w-full"
-                } px-4 mx-auto mb-6  flex flex-col`}
+                className={`${!showCourse ? "lg:w-9/12" : "sm:w-full"
+                  } px-4 mx-auto mb-6  flex flex-col`}
               >
                 <div className=" px-4 min-w-[880px]  flex border-b  justify-start items-center gap-4 ">
                   <NavLink
@@ -333,7 +348,7 @@ function LearningPage() {
                   >
                     Overview
                   </NavLink>
-                  <NavLink
+                  {/* <NavLink
                     to={`#exercise`}
                     className={
                       section === "exercise"
@@ -342,9 +357,9 @@ function LearningPage() {
                     }
                   >
                     Exercise
-                  </NavLink>
+                  </NavLink> */}
                   {/* <NavLink to='learning tool' className={section === 'search' ? 'py-4 px-1 text-center font-semibold text-lg border-b-2 border-black cursor-pointer' : "py-4 px-1 text-center font-semibold text-lg cursor-pointer"}>Learning tool</NavLink> */}
-                  <NavLink
+                  {/* <NavLink
                     to={`#notes`}
                     className={
                       section === "notes"
@@ -353,7 +368,7 @@ function LearningPage() {
                     }
                   >
                     Notes
-                  </NavLink>
+                  </NavLink> */}
                 </div>
                 <div className=" mt-4">
                   {section === "courseContent" && (
@@ -361,16 +376,15 @@ function LearningPage() {
                   )}
                   {section === "search" && <SearchContent course={course} />}
                   {section === "overview" && <OverView course={course} />}
-                  {section === "exercise" && <Exercise course={course} />}
+                  {/* {section === "exercise" && <Exercise course={course} />} */}
                 </div>
               </div>
               <Footer />
             </div>
             {showCourse && (
               <div
-                className={`px-2 flex  flex-col overflow-y-auto fixed right-0 ${
-                  isScrolled ? "top-0" : ""
-                } h-screen w-3/12 z-10 bg-white border-x animate-transCourse `}
+                className={`px-2 flex  flex-col overflow-y-auto fixed right-0 ${isScrolled ? "top-0" : ""
+                  } h-screen w-3/12 z-10 bg-white border-x animate-transCourse `}
               >
                 <div className="flex justify-between items-center sticky top-0 bg-white z-10">
                   <h2 className="p-2 text-lg font-semibold text-start">
@@ -393,18 +407,18 @@ function LearningPage() {
                     ))}
                 </div>
                 <div>
-                  <button
+                  {(overralCompletionPercent.overal == 100.00 || courseProgress?.isCompleted) &&<button
                     onClick={openModal}
                     className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   >
                     Write a Review
-                  </button>
+                  </button>}
+                  
                   {showModal && (
                     <CourseReviewDialog
                       course={course}
                       courseId={course._id}
                       onSubmit={(data) => {
-                        console.log("Submit data:", data);
                         closeModal(); // Close modal after successful submit
                       }}
                       onClose={closeModal}

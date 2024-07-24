@@ -53,7 +53,6 @@ const SectionDetail = () => {
 
   const handleInputChange = (e) => {
     setInputValue(prev => ({ ...prev, [e.target.id]: e.target.value }));
-    console.log(inputValue)
   };
 
   const handleCancel = () => {

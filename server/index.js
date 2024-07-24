@@ -3,6 +3,7 @@ var dotenv = require('dotenv');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');
+const path = require("path");
 
 const passport = require('passport');
 const cookieSession = require('cookie-session');
@@ -25,60 +26,63 @@ const cloudinaryRoute = require('./routes/configs/cloudinary');
 const userRouter = require('./routes/user')
 const messageRouter = require('./routes/message')
 const Message = require('./models/message');
-
+const blogRoute = require('./routes/blog')
+const checkout = require('./routes/checkout');
+// const zalopayRoute = require('./routes/zaloPay');
+const vnpayRoute = require("./routes/VNpay");
+const multerRoute = require('./routes/configs/multer');
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 const corsOptions = {
-    origin: true,
-    credentials: true
-}
+  origin: true,
+  credentials: true,
+};
 
 // DB connect
 mongoose.set("strictQuery", false);
 const connect = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI);
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
 
-        console.log('MongoDB connect successful.');
-    } catch (err) {
-        console.log('MongoDB connect fail');
-    }
+    console.log("MongoDB connect successful.");
+  } catch (err) {
+    console.log("MongoDB connect fail");
+  }
 };
 /// middleware
-app.use(express.json())
-app.use(cors(corsOptions))
-app.use(cookieParser())
+app.use(express.json());
+app.use(cors(corsOptions));
+app.use(cookieParser());
 
 // for testing
 app.get("/", (req, res) => {
-    res.send("api is working")
-})
+  res.send("api is working");
+});
 
 // Su dung middleware de bind io object
 app.use((req, res, next) => {
-    res.io = io;
-    next()
-})
-    
+  res.io = io;
+  next();
+});
+
 // Oauth cookie
 app.use(
-    cookieSession({
-        maxAge: 15 * 24 * 60 * 60 * 1000,
-        keys: [process.env.COOKIE_KEY]
-    })
+  cookieSession({
+    maxAge: 15 * 24 * 60 * 60 * 1000,
+    keys: [process.env.COOKIE_KEY],
+  })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get('/auth/google',
-    passport.authenticate('google',
-        {
-            scope: ['profile', 'email']
-        })
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
 );
 
 app.get('/auth/google/callback',
@@ -124,7 +128,6 @@ app.get('/auth/google/callback',
             })(req, res, next);
     });
 
-
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/category', categoryRoute)
 app.use('/api/v1/course', courseRoute)
@@ -136,19 +139,26 @@ app.use('/api/v1/cart', cartRoute)
 app.use('/api/v1/favourite', favouriteRoute)
 app.use('/api/v1/cloudinary', cloudinaryRoute)
 app.use('/api/v1/rating', ratingRoute)
+
+app.use('/api/v1/checkout', checkout)
+// app.use('/api/v1/payment', zalopayRoute)
+app.use('/api/v1/vnpay', vnpayRoute)
+
 app.use('/api/v1/user' , userRouter)
 app.use('/api/v1/notification', notificationRoute)
 app.use('/api/v1/message', messageRouter)
+app.use('/api/v1/blogs', blogRoute)
 
+app.use('/multer', multerRoute)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //Oauth2
-app.use('/auth', oauth2Route)
+app.use("/auth", oauth2Route);
 
 const server = app.listen(port, () => {
     connect()
     console.log('server listening on port ', port)
 })
-
 
 const io = require("socket.io")(server, {
     cors : {
@@ -226,5 +236,3 @@ io.on('connection', (socket) => {
     });
 
 });
-
-  

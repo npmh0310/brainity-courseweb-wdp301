@@ -1,21 +1,44 @@
-import { useEffect, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import io from "socket.io-client";
 import { getAllNotification, getRoom } from "../../../fetchData/Notification";
 import { initializeWebSocket, getWebSocket } from "../../../utils/websocketManager"; // Adjust the import path as per your project structure
 import { useSelector } from "react-redux";
 
 
-const useNotifications = (userId) => {
+const NotificationsContext = createContext();
+
+export const useNotifications = () => {
+  return useContext(NotificationsContext);
+};
+
+export const NotificationsProvider = ({ children, userId }) => {
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [rooms, setRooms] = useState([]);
   const user = useSelector((state) => state.auth.user);
 
   // dùng useCallback để component không bị tạo mới mỗi component re-render
   const fetchNotifications = useCallback(() => {
-    getAllNotification().then((response) => {
-      const data = response.data.data.map((item) => item.notification);
-      setNotifications(data);
-    });
+    getAllNotification()
+      .then((response) => {
+        if (response.data.success) {
+          const { count, data } = response.data;
+          const notificationData = data.map((item) => item);
+          setNotifications(notificationData);
+          setUnreadCount(count.unread);
+        } else {
+          console.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching notifications:", error);
+      });
   }, []);
 
   useEffect(() => {
@@ -54,7 +77,19 @@ const useNotifications = (userId) => {
     };
   }, [userId, fetchNotifications]);
 
-  return { notifications, rooms };
+  return (
+    <NotificationsContext.Provider
+      value={{
+        notifications,
+        rooms,
+        unreadCount,
+        setNotifications,
+        setUnreadCount,
+      }}
+    >
+      {children}
+    </NotificationsContext.Provider>
+  );
 };
 
 export default useNotifications;

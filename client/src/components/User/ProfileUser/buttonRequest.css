@@ -1,0 +1,157 @@
+.buttonDown {
+    --width: 100px;
+    --height: 35px;
+    --tooltip-height: 35px;
+    --tooltip-width: 90px;
+    --gap-between-tooltip-to-button: 18px;
+    --button-color: #04ddb2;
+    --tooltip-color: #fff;
+    width: var(--width);
+    height: var(--height);
+    background: var(--button-color);
+    position: relative;
+    text-align: center;
+    border-radius: 0.45em;
+    font-family: "Arial";
+    transition: background 0.3s;
+    cursor: pointer;
+}
+
+.buttonDown::before {
+    position: absolute;
+    content: attr(data-tooltip);
+    width: var(--tooltip-width);
+    height: var(--tooltip-height);
+    background-color: var(--tooltip-color);
+    font-size: 0.9rem;
+    color: #111;
+    border-radius: .25em;
+    line-height: var(--tooltip-height);
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) + 10px);
+    left: calc(50% - var(--tooltip-width) / 2);
+}
+
+.buttonDown::after {
+    position: absolute;
+    content: '';
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: var(--tooltip-color);
+    left: calc(50% - 10px);
+    bottom: calc(100% + var(--gap-between-tooltip-to-button) - 10px);
+}
+
+.buttonDown::after,
+.buttonDown::before {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s;
+}
+
+.text {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-wrapper,
+.text,
+.icon {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    color: #fff;
+}
+
+.text {
+    top: 0
+}
+
+.text,
+.icon {
+    transition: top 0.5s;
+}
+
+.icon {
+    color: #fff;
+    top: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.buttonDown:hover {
+    background: #7ad380;
+}
+
+.buttonDown:hover .text {
+    top: -100%;
+}
+
+.buttonDown:hover .icon {
+    top: 0;
+}
+
+.buttonDown:hover:before,
+.buttonDown:hover:after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.buttonDown:hover:after {
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) - 20px);
+}
+
+.buttonDown:hover:before {
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button));
+}
+
+
+.buttonSend {
+    height: 2.6em;
+
+    border-radius: 1em;
+    border: 0.1rem solid transparent;
+    background-color: #04ddb2;
+    transition: 0.3s;
+    font-size: 0.9em;
+}
+
+.buttonSend:hover {
+    cursor: pointer;
+    transform: scale(1.05) rotate(3deg);
+}
+
+.buttonSend:active {
+    animation: borderMove 0.5s forwards;
+    transform: scale(0.9) rotate(-3deg);
+    background-color: rgb(0, 0, 0);
+    color: rgb(64, 146, 239);
+    border: 0.1rem solid #04ddb2;
+}
+
+@keyframes borderMove {
+    0% {
+        border-width: 0.1rem;
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        border-width: 0.4rem;
+        transform: scale(0.9) rotate(-3deg);
+    }
+
+    100% {
+        border-width: 0.15rem;
+        transform: scale(1) rotate(0deg);
+    }
+}

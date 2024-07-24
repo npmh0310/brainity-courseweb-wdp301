@@ -4,33 +4,43 @@ const Course = require('../models/course')
 const User = require('../models/user')
 
 
-const createTeacherRequest = async (req, res) => {
+const createTeacherRequest = async (userId, fileUrl) => {
 
-    const newTeacherRequest = new TeacherRequest({
-        user: req.params.userId
-    })
     try {
-        
-        const user = await User.findById(req.params.userId);
-        if(user.role !== "user") {
-            return res.status(400).json({
-                success: false,
-                message: "Teacher request is already approved"
-            });
+        const user = await User.findById(userId);
+        if (user.role !== "user") {
+            return {
+                status: 400,
+                data: {
+                    success: false,
+                    message: "Teacher request is already approved"
+                }
+            };
         }
 
-        const savedTeacherRequest = await newTeacherRequest.save()
+        const newTeacherRequest = new TeacherRequest({
+            user: userId,
+            fileUrl: fileUrl,
+        });
 
-        res.status(200).json({
-            success: true,
-            message: "Successfully send teacher request",
-            data: savedTeacherRequest
-        })
+        const savedTeacherRequest = await newTeacherRequest.save();
+
+        return {
+            status: 200,
+            data: {
+                success: true,
+                message: "Successfully sent teacher request",
+                data: savedTeacherRequest
+            }
+        };
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to send request. Try again"
-        })
+        return {
+            status: 400,
+            data: {
+                success: false,
+                message: "Failed to send request. Try again"
+            }
+        };
     }
 }
 
@@ -92,25 +102,20 @@ const deleteTeacherRequestById = async (req, res) => {
 }
 
 const approveTeacherRequest = async (req, res) => {
-    const requestId = req.body.requestId; // Assuming requestId is passed in the request parameters
+    const requestId = req.body.requestId;
+    const status = req.body.status;
+    console.log(req.body);
     try {
         const existingRequest = await TeacherRequest.findById(requestId);
 
         if (!existingRequest) {
-            return res.status(404).json({
+            return res.status(400).json({
                 success: false,
                 message: "Teacher request not found by Id " + requestId
             });
         }
 
-        if (existingRequest.isApproved) {
-            return res.status(400).json({
-                success: false,
-                message: "Teacher request is already approved"
-            });
-        }
-
-        const updatedRequest = await TeacherRequest.findByIdAndUpdate(requestId, { isApproved: true }, { new: true });
+        const updatedRequest = await TeacherRequest.findByIdAndUpdate(requestId, { isApproved: status }, { new: true });
 
         if (!updatedRequest) {
             return res.status(404).json({
@@ -120,7 +125,7 @@ const approveTeacherRequest = async (req, res) => {
         }
 
         // Update the role of the user associated with the teacher request to 'teacher'
-        if (updatedRequest.user) {
+        if (updatedRequest.user && status === "Confirmed") {
             const newUser = await User.findByIdAndUpdate(updatedRequest.user._id, { role: 'teacher' }, { new: true });
         }
 
@@ -168,7 +173,9 @@ const getAllTeacherRequest = async (req, res) => {
     const page = parseInt(req.query.page)
     try {
         const teacherRequestList = await TeacherRequest.find({})
-            .populate('user')
+            .populate({
+                path: 'user',
+                select: 'phoneNumber name email avatar'})
             .skip((page-1) * 8)
             .limit(8);
 

@@ -12,10 +12,19 @@ import {
   getCourseOfTeacher,
 } from "../../../fetchData/TeacherCourse";
 import toast from "react-hot-toast";
-
+import { formatCurrencyVND } from "../../../function/function";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEarthAsia, faLock } from '@fortawesome/free-solid-svg-icons';
 const TableCourses = () => {
   const navigate = useNavigate();
-  const headers = ["Course name", "Price", "Created", "Published", ""];
+  const headers = [
+    "Course name",
+    "Price",
+    "Created",
+    "Published",
+    "Status",
+    "",
+  ];
   const [courses, setCourses] = useState([]);
   const [status, setStatus] = useState(false);
   const [page, setPage] = useState(0);
@@ -48,7 +57,7 @@ const TableCourses = () => {
   const handleDeleteClose = () => setDeleteOpen(false);
 
   const handleDelete = async () => {
-    console.log("Deleting course id:", selectedCourseId);
+
     const res = await deleteCourse(selectedCourseId);
     if (res.status === 200) {
       toast.success("Deleted successfully");
@@ -73,7 +82,28 @@ const TableCourses = () => {
   const handlePageClick = (page) => {
     setPage(page);
   };
+  console.log(courses);
 
+  const getCourseStatus = (course) => {
+    if (course.isRejected) {
+      return "Rejected";
+    } else if (course.isConfirm) {
+      return "Confirmed";
+    } else {
+      return "Pending";
+    }
+  };
+
+  const getCourseBgColor = (course) => {
+    if (course.isRejected) {
+      return "bg-red-400";
+    } else if (course.isConfirm) {
+      return "bg-green-400";
+    } else {
+      return "bg-gray-200";
+    }
+  };
+  console.log(courses);
   return (
     <div className=" mt-6 px-10">
       <div className="py-4 overflow-x-auto">
@@ -104,7 +134,7 @@ const TableCourses = () => {
                   <th
                     key={index}
                     scope="col"
-                    className="w-10 h-10 border-b-2 border-gray-200 bg-primary text-left  font-semibold text-white  "
+                    className="w-10 h-10 border-b-2 pl-2 border-gray-200 bg-primary text-left  font-semibold text-white  "
                   >
                     {item}
                   </th>
@@ -121,31 +151,46 @@ const TableCourses = () => {
                   }`}
                   onClick={() => handleRowClick(course)}
                 >
-                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                  <td className="pr-16 pl-3 py-5 border-b border-gray-200 text-sm">
                     <p className="text-gray-900 whitespace-no-wrap">
                       {course.courseName}
                     </p>
                   </td>
-                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      {course.price}
-                    </p>
+                  <td className=" py-5 border-b border-gray-200 text-sm">
+                    {course.price === 0 ? (
+                      <h1 className="px-2 py-[6px] text-xs w-20 text-center rounded-2xl bg-yellow-400">
+                        Free
+                      </h1>
+                    ) : (
+                      <p className="text-gray-900 px-2   whitespace-no-wrap">
+                        {formatCurrencyVND(course.price)}
+                      </p>
+                    )}
                   </td>
-                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                  <td className="py-5 border-b border-gray-200 text-sm">
                     <span className="relative">
                       {formatDate(course.createdAt)}
                     </span>
                   </td>
-                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                  <td className=" py-5 border-b border-gray-200 text-sm">
                     <h1
                       className={`${
-                        course.isPublic ? "bg-green-400" : "bg-red-400"
-                      }  relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
+                        course.isPublic ? "text-green-500" : "text-red-500"
+                      }  relative w-24 text-xl text-center  font-medium px-4 py-[6px] rounded-2xl ml-[-5px]`}
                     >
-                      {course.isPublic ? "Public" : "Private"}
+                      {course.isPublic ? (<FontAwesomeIcon icon={faEarthAsia} />) : (<FontAwesomeIcon icon={faLock} />)}
                     </h1>
                   </td>
-                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                  <td className="pr-2 py-5 border-b border-gray-200 text-sm">
+                    <h1
+                      className={`${getCourseBgColor(
+                        course
+                      )} relative text-xs w-24 text-center text-gray-800 font-medium border border-spacing-1 px-4 py-[6px] rounded-2xl ml-[-5px]`}
+                    >
+                      {getCourseStatus(course)}
+                    </h1>
+                  </td>
+                  <td className="py-5 border-b border-gray-200 text-sm">
                     <p
                       className="text-gray-900 whitespace-no-wrap w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-300
                        "
@@ -169,7 +214,7 @@ const TableCourses = () => {
           return (
             <button
               key={index}
-              className={`w-12 h-12 mx-1 rounded-full ${
+              className={`w-11 h-11 mx-1 rounded-full ${
                 page === index ? "bg-primary" : ""
               }`}
               onClick={() => handlePageClick(index)}

@@ -4,9 +4,13 @@ import { FiAlignJustify } from "react-icons/fi";
 import avatar from "../../assets/images/Avatar/0_Mikel-Arteta.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaFacebookMessenger } from "react-icons/fa";
+import { onLogout } from "../../fetchData/User";
+import { logout } from "../../redux/features/authSlice";
+import { useDispatch } from "react-redux";
 
 // Hàm hook để xử lý việc nhấn ra ngoài dropdown
 function useOutsideClick(ref, onClose) {
+
   useEffect(() => {
     // Hàm xử lý sự kiện nhấn chuột
     function handleClickOutside(event) {
@@ -24,8 +28,11 @@ function useOutsideClick(ref, onClose) {
   }, [ref, onClose]);
 }
 
+
+
 // Component Dropdown
 const Dropdown = ({ button, children, classNames, animation }) => {
+  
   // Tạo một ref để tham chiếu đến element của dropdown
   const wrapperRef = useRef(null);
 
@@ -44,10 +51,9 @@ const Dropdown = ({ button, children, classNames, animation }) => {
 
       {/* Nội dung dropdown */}
       <div
-        className={`${classNames} absolute z-10 ${
-          animation ||
+        className={`${classNames} absolute z-10 ${animation ||
           "origin-top-right transition-all duration-300 ease-in-out"
-        } ${isOpen ? "scale-100" : "scale-0"}`}
+          } ${isOpen ? "scale-100" : "scale-0"}`}
       >
         {children}
       </div>
@@ -56,10 +62,18 @@ const Dropdown = ({ button, children, classNames, animation }) => {
 };
 
 const Navbar = (props) => {
+
   const { onOpenSidenav, brandText } = props;
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const handleLogout = () => {
+    onLogout();
+    dispatch(logout());
+    navigate("/");
+    window.location.reload();
+  };
   return (
-    <nav className="sticky top-0 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 md:px-24 px-0 pt-8 mx-0 lg:mx-12 mt-5 backdrop-blur-xl">
+    <nav className="top-0 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 md:px-24 px-0 pt-8 mx-0 lg:mx-12 mt-5 backdrop-blur-xl">
       <div className="ml-[6px]">
         <div className="h-6 w-[224px] pt-1">
           <a
@@ -126,18 +140,18 @@ const Navbar = (props) => {
               <div className="h-px w-full bg-gray-200 " />
 
               <div className="flex flex-col p-4">
-                <a href=" " className="text-sm text-gray-800 ">
+                <Link to='/profile' className="text-sm text-gray-800 hover:font-semibold cursor-pointer ">
                   Profile Settings
-                </a>
-                <a href=" " className="mt-3 text-sm text-gray-800">
+                </Link>
+                {/* <a href=" " className="mt-3 text-sm text-gray-800">
                   Newsletter Settings
-                </a>
-                <a
-                  href=" "
-                  className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in"
+                </a> */}
+                <div
+                  onClick={handleLogout}
+                  className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 hover:font-semibold transition duration-150 ease-out hover:ease-in cursor-pointer"
                 >
                   Log Out
-                </a>
+                </div>
               </div>
             </div>
           }
