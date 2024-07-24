@@ -295,7 +295,7 @@ const getCourseBySearch = async (req, res) => {
   const search = new RegExp(req.query.courseName, "i");
 
   try {
-    const getCourses = await Course.find({ courseName: search })
+    const getCourses = await Course.find({ courseName: search, isConfirm: true, isRejected: false, isPublic : true })
       .populate("categories")
       .populate("instructor");
 
