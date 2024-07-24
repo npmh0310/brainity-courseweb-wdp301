@@ -18,7 +18,8 @@ const ContentChatBox = () => {
   const chatBoxRef = useRef(null);
 
   const handleReceiveMessage = (message) => {
-    if (user._id === message.senderId || !user._id) {
+    if ( roomName.includes(message.senderId) || user._id === message.senderId || !user._id) {
+      console.log()
       renewMessages(roomName);
     }
   };
