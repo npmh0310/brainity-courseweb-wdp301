@@ -159,13 +159,11 @@ function BlogDetail() {
         // Fetch lại bình luận sau khi xóa thành công
         fetchComments(id);
         setOpenDropdown(null);
-        setToastMessage("Comment deleted successfully!");
-        setToastSeverity("success");
-        setOpenToast(true);
+        toast.success("Successfully deleted a comment");
         setCommentId(null); // Clear the commentId after deleting
       }
     } catch (error) {
-      console.error("Error deleting comment:", error);
+      toast.error("Failed to delete a comment");
     }
   };
   const handleCloseToast = () => {
