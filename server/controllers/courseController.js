@@ -1,8 +1,11 @@
 var Course = require("../models/course");
+const UserChapterProgress = require("../models/UserChapterProgress");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const { getAvgRatingByCourseId } = require("./ratingController");
+const { getProgress } = require("./userChapterProgressController");
+const { createNotification } = require("./notificationController");
 
 /// teacher CRUD
 const createCourse = async (req, res) => {
@@ -121,7 +124,7 @@ const deleteCourseById = async (req, res) => {
 
   try {
     const deleteCourseById = await Course.findOneAndDelete({
-      _id: id
+      _id: id,
     });
 
     res.status(200).json({
@@ -141,7 +144,11 @@ const deleteCourseById = async (req, res) => {
 
 const getCourseInHomePage = async (req, res) => {
   try {
-    const courses = await Course.find({})
+    const courses = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+      isPublic: true,
+    })
       .limit(9)
       .populate("instructor", "username");
 
@@ -211,7 +218,7 @@ const getCourseById = async (req, res) => {
         },
       })
       .populate("categories")
-      .populate("instructor")
+      .populate("instructor");
 
     res.status(200).json({
       success: true,
@@ -285,14 +292,17 @@ const getProCourse = async (req, res) => {
 };
 
 const getCourseBySearch = async (req, res) => {
-  const search = new RegExp(req.query.city, "i");
+  const search = new RegExp(req.query.courseName, "i");
 
   try {
-    const getCourses = await Course.find({ search }).populate("categories");
+    const getCourses = await Course.find({ courseName: search })
+      .populate("categories")
+      .populate("instructor");
 
     res.status(200).json({
       success: true,
-      message: "Successfully",
+      message: "Successfully fetched courses",
+      count: getCourses.length,
       data: getCourses,
     });
   } catch (err) {
@@ -403,6 +413,196 @@ const checkCourseStatus = async (req, res) => {
   // get course enrolled number
 };
 
+const getStudents = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Use countDocuments to count the number of documents that match the query
+    const total = await UserChapterProgress.countDocuments({ course: id });
+
+    return res.status(200).json({ total });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Các hàm để admin confirm hay reject
+const getAllCourseForConfirm = async (req, res) => {
+  try {
+    const courses = await Course.find({})
+      .populate("instructor")
+      .populate("categories")
+      .populate({
+        path: "sections",
+        populate: {
+          path: "lessons",
+        },
+      })
+      .sort({ createdAt: -1 }); //Sort theo createdAt
+    res.status(200).json({
+      success: true,
+      count: courses.length,
+      data: courses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching courses: " + error.message,
+    });
+  }
+};
+
+// Xác nhận khóa học
+const confirmCourse = async (req, res) => {
+  const { courseId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid courseId" });
+  }
+
+  try {
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        isConfirm: true,
+        isRejected: false,
+      },
+      { new: true }
+    );
+
+    if (!course) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
+    }
+
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error confirming course: " + error.message,
+    });
+  }
+};
+
+// Từ chối khóa học
+const rejectCourse = async (req, res) => {
+  const { courseId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid courseId" });
+  }
+
+  try {
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        isConfirm: false,
+        isRejected: true,
+      },
+      { new: true }
+    );
+
+    if (!course) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
+    }
+
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error rejecting course: " + error.message,
+    });
+  }
+};
+const getCourseByPagination = async (req, res) => {
+  const page = parseInt(req.query.page) || 0;
+  const pageSize = 9;
+
+  try {
+    const totalCourses = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+    }).countDocuments();
+    const totalPages = Math.ceil(totalCourses / pageSize);
+    const getAllCourseOfPagination = await Course.find({
+      isConfirm: true,
+      isRejected: false,
+    })
+      .skip(page * pageSize)
+      .limit(pageSize);
+
+    res.status(200).json({
+      success: true,
+      count: getAllCourseOfPagination.length,
+      message: "Successfully get all of page",
+      data: getAllCourseOfPagination,
+      totalPages: totalPages,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get all course of page. Try again",
+    });
+  }
+};
+const getAllCourseNoLimit = async (req, res) => {
+  try {
+    const courses = await Course.find({ isConfirm: true, isRejected: false, isPublic : true });
+    const promises = courses.map(async (course) => {
+      const numOfEnrolledUsers = await getCourseNumOfEnrolled(course._id);
+      const ratingInfo = await getAvgRatingByCourseId(course._id);
+      return { ...course.toObject(), numOfEnrolledUsers, ratingInfo };
+    });
+    const coursesWithEnrolledNumbers = await Promise.all(promises);
+
+    res.status(200).json({
+      success: true,
+      count: coursesWithEnrolledNumbers.length,
+      message: "Successfully get all",
+      data: coursesWithEnrolledNumbers,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get all. Try again. Details: " + err.message,
+    });
+  }
+};
+
+// const getAllCourseEnrolled = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const user = await User.findById(userId)
+//       .select("coursesEnrolled")
+//       .populate("coursesEnrolled");
+
+//     const coursesEnrolled = user.coursesEnrolled;
+
+//     const coursesWithRatingInfo = await Promise.all(
+//       coursesEnrolled.map(async (course) => {
+//         const ratingInfo = await getAvgRatingByCourseId(course._id);
+//         const progress = await getProgress(course._id, userId);
+//         console.log(progress);
+//         return { ...course.toObject(), ratingInfo };
+//       })
+//     );
+
+//     return res.status(200).json({
+//       ...user.toObject(),
+//       coursesEnrolled: coursesWithRatingInfo,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
+
 module.exports = {
   createCourse,
   deleteCourseById,
@@ -420,4 +620,10 @@ module.exports = {
   getCourseOfTeacher,
   getCourseByName,
   getEnrolledCourses,
+  getStudents,
+  getAllCourseForConfirm,
+  confirmCourse,
+  rejectCourse,
+  getCourseByPagination,
+  getAllCourseNoLimit,
 };

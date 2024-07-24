@@ -8,8 +8,8 @@ const getRoom = () => {
   return axios.get("/notification/rooms");
 };
 
-export {
-    getAllNotification,
-    getRoom
-  };
-  
+const markOneNotiAsRead = (userNotificationId) => {
+  return axios.put(`/notification/markRead/${userNotificationId}`);
+};
+
+export { getAllNotification, getRoom, markOneNotiAsRead };

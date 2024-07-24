@@ -3,15 +3,17 @@ import { Logo } from "../../common/Logo";
 import { Menu, X } from "lucide-react";
 import avatarTeacher from "../../../assets/images/Avatar/0_Mikel-Arteta.jpg";
 import ImgLogin from "../../../assets/images/logo_noBg.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Popover from "@mui/material/Popover";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { onLogout } from "../../../fetchData/User";
+import { logout } from "../../../redux/features/authSlice";
 
 const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
-
+  const navigate  = useNavigate()
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const dispatch = useDispatch()
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -35,6 +37,13 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
     };
   }, []);
 
+  const handleLogout = () => {
+    onLogout()
+    dispatch(logout());
+    navigate("/");
+    window.location.reload();
+  };
+
   return (
     <div className="flex justify-around md:justify-between items-center border-b-[1px] h-[84px]">
       <div
@@ -43,9 +52,10 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
         } flex flex-row gap-x-3 items-center md:w-1/3 lg:w-1/5 h-full `}
       >
         <div
+          onClick={() => navigate('/')}
           className={`${
             hiddenSidebar ? "hidden" : "flex"
-          }   items-center transition-all `}
+          }   items-center transition-all cursor-pointer `}
         >
           <img
             src={ImgLogin}
@@ -79,7 +89,7 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
       </div>
       <div className="w-1/5 flex justify-center ">
         <img
-          className="w-10 rounded-full transition-all duration-200 ease-in-out transform hover:scale-110 hover:opacity-80"
+          className="w-10 h-10 rounded-full transition-all duration-200 ease-in-out transform hover:scale-110 hover:opacity-80"
           src={user.avatar}
           alt=""
           onClick={handleClick}
@@ -102,7 +112,7 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
           }}
           PaperProps={{
             style: {
-              width: "236px",
+              width: "450px",
               boxShadow:
                 "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
               border: "1px solid #e2e8f0",
@@ -133,17 +143,12 @@ const HeaderTeacher = ({ hiddenSidebar, handleSidebar }) => {
               </div>
               <div className="mx-3 my-2">
                 <ul className="font-secondary text-sm flex flex-col gap-y-2 ">
-                  <li className="hover:text-third hover:bg-primary/20 px-2 rounded-md">
-                    <Link className="block py-2">My course</Link>
-                  </li>
-                  <li className="hover:text-third hover:bg-primary/20 px-2 rounded-md">
-                    <Link className="block py-2">My profile</Link>
-                  </li>
+                  
                   <li className="hover:text-third hover:bg-primary/20 px-2 rounded-md">
                     <Link className="block py-2">Setting</Link>
                   </li>
-                  <li className="hover:text-third hover:bg-primary/20 px-2 rounded-md">
-                    <Link className="block py-2">Sign out</Link>
+                  <li className="hover:text-third hover:bg-primary/20 px-2 rounded-md cursor-pointer" onClick={handleLogout}>
+                    <div className="block py-2">Sign out</div>
                   </li>
                 </ul>
               </div>

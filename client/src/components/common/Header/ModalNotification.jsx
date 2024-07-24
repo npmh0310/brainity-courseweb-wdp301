@@ -1,41 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./scrollbar.css";
 import imgSystem from "../../../assets/images/logo11.jpg";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-const ModalNotification = ({ notifications }) => {
+import { markOneNotiAsRead } from "../../../fetchData/Notification";
+import {useNotifications} from "../Notification/useNotifications";
+
+const ModalNotification = () => {
+  const { notifications, setNotifications, setUnreadCount } =
+    useNotifications();
   const navigate = useNavigate();
 
-  // const notificationConfig = {
-  //   passwordChangeNotification: {
-  //     imgSrc:
-  //       "https://media.istockphoto.com/id/1416937202/vector/settings-or-gear-icon-cog-setting-vector-illustration.jpg?s=612x612&w=0&k=20&c=3vVNW4ssuNPwKUMT5HSMEbUlknZmp5FeEBF1eZTzJYA=",
-  //     getMessage: (message) => (
-  //       <h1 className="">
-  //         Your password <span className="font-medium">{message}</span>
-  //       </h1>
-  //     ),
-  //   },
-  //   system: {
-  //     imgSrc: imgSystem,
-  //     getMessage: (message) => (
-  //       <h1 className="">
-  //         <span className="font-semibold text-third">Brainity:</span>{" "}
-  //         <span className=" ">{message}</span>
-  //       </h1>
-  //     ),
-  //   },
-  //   lessonAdded: {
-  //     imgSrc: "https://example.com/lesson_added.png",
-  //     getMessage: (message) => (
-  //       <h1 className="">
-  //         New lesson <span className="font-medium">{message}</span> has been
-  //         added
-  //       </h1>
-  //     ),
-  //   },
-  // };
+  const handleRead = (notification) => {
+    if (!notification.read) {
+      markOneNotiAsRead(notification._id)
+        .then(() => {
+          setNotifications((prevNotifications) =>
+            prevNotifications.map((noti) =>
+              noti._id === notification._id ? { ...noti, read: true } : noti
+            )
+          );
+          setUnreadCount((prevUnreadCount) => prevUnreadCount - 1);
+        })
+        .catch((error) => {
+          console.error("Error marking notification as read:", error);
+        });
+    }
+
+    navigate(`${notification.notification.link}`);
+  };
 
   return (
     <div className=" mx-auto">
@@ -56,20 +50,42 @@ const ModalNotification = ({ notifications }) => {
             return (
               <div
                 key={notification._id}
-                className="flex flex-row px-2 py-4 gap-x-4 bg-primary/15 rounded-md cursor-pointer "
-                onClick={() => navigate(`/notification/${notification._id}`)}
+                className={`flex flex-row px-2 py-4 gap-x-4 ${
+                  notification.read ? "hover:bg-gray-200" : "bg-primary/15"
+                } rounded-md cursor-pointer relative`}
+                onClick={() => handleRead(notification)}
               >
                 <div className="w-[15%]">
                   <img
                     className="rounded-full w-[90%] object-cover"
-                    src={notification.image}
+                    src={notification.notification.image}
                     alt=""
                   />
                 </div>
                 <div className="w-4/5 text-sm flex flex-col gap-y-2">
-                  <span>{notification.message}</span>
+                  {(notification.notification.type === "profile" ||
+                    notification.notification.type === "system") && (
+                    <div>
+                      <span className="font-medium">
+                        {notification.notification.name}
+                      </span>{" "}
+                      <span>{notification.notification.message}</span>
+                    </div>
+                  )}
+                  {(notification.notification.type === "blog" ||
+                    notification.notification.type === "course") && (
+                    <div>
+                      <span>{notification.notification.message}</span>{" "}
+                      <span className="font-medium">
+                        {notification.notification.name}
+                      </span>
+                    </div>
+                  )}
                   <span className="text-third text-xs">{timeAgo}</span>
                 </div>
+                {!notification.read && (
+                  <div className="absolute w-2 h-2 rounded-full bg-primary right-3 top-1/2 transform -translate-y-1/2"></div>
+                )}
               </div>
             );
           })}

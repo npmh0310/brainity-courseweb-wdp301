@@ -26,7 +26,6 @@ const EditLesson = ({ label, value, inputId, lessonId, setStatus }) => {
 
     const handleInputChange = (e) => {
         setInputValue(prev => ({ ...prev, [e.target.id]: e.target.value }));
-        console.log(inputValue)
     };
 
     const handleSave = async () => {

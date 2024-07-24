@@ -32,20 +32,15 @@ export default function AdminLayout(props) {
     );
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full bg-gray-50 ">
       <Sidebar open={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="h-full w-full bg-lightPrimary dark:bg-navy-900">
+      <div className="h-full w-full">
         <main className="h-full flex-none transition-all md:pr-2 xl:ml-72">
           <Navbar
             onOpenSidenav={() => setSidebarOpen(true)}
-            logoText="Horizon UI Tailwind React"
             brandText={currentRoute}
-            secondary={
-              routes.find(route => location.pathname.startsWith(route.layout + route.path))?.secondary
-            }
-            {...rest}
           />
-          <div className="mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
+          <div className="mx-auto mb-auto h-[100vh] p-2 md:pr-2 bg-gray-50">
             <Outlet/>
           </div>
         </main>

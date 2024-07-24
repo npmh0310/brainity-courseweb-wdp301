@@ -1,5 +1,6 @@
 import { parseISO, format } from "date-fns";
 
+
 export function formatDate2(dateString) {
   return new Date(dateString).toLocaleDateString("en-us", {
     weekday: "long",
@@ -60,7 +61,7 @@ export function formatCurrencyVND(amount) {
   const p = formatter.format(amount)
 
   // Format the amount
-  return `${p} VND`
+  return `${p}`
 }
 
 export function calculateOverallCompletionPercent(sections) {
@@ -78,4 +79,16 @@ export function calculateOverallCompletionPercent(sections) {
       completedLessons: completedLessons,
       overal:completionPercent.toFixed(2)
   } // Định dạng thành hai chữ số thập phân
+}
+
+
+export function generateSlug(title) {
+  const slug = title
+    .toLowerCase() // Convert the title to lowercase
+    .replace(/\s+/g, "-") // Replace spaces with dashes
+    .replace(/[^\w\-]+/g, "") // Remove non-word characters except dashes
+    .replace(/\-\-+/g, "-") // Replace multiple consecutive dashes with a single dash
+    .replace(/^\-+/, "") // Remove dashes from the beginning
+    .replace(/\-+$/, ""); // Remove dashes from the end
+  return slug;
 }
