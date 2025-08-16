@@ -40,12 +40,16 @@ RUN chown -R nodejs:nodejs .
 # Switch to non-root user
 USER nodejs
 
-# Expose port
-EXPOSE 8000
+# Default environment variable for PORT (có thể override khi chạy container)
+ENV PORT=8000
+ENV NODE_ENV=production
+
+# Expose port (dùng giá trị từ ENV)
+EXPOSE ${PORT}
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:8000/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+    CMD node -e "require('http').get('http://localhost:${process.env.PORT}/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
 
 # Start the application
-CMD ["dumb-init", "node", "index.js"] 
+CMD ["dumb-init", "node", "index.js"]
