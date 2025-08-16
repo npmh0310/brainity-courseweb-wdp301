@@ -2,7 +2,7 @@
 const Section = require('../models/section')
 var Lesson = require('../models/lesson')
 const Course = require('../models/course')
-const UserChapterProgress = require('../models/UserChapterProgress');
+const UserChapterProgress = require('../models/userChapterProgress');
 
 
 

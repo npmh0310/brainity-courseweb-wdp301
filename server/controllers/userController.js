@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const Course = require("../models/course");
-const UserChapterProgress = require("../models/UserChapterProgress");
+const UserChapterProgress = require("../models/userChapterProgress");
 const { getAvgRatingByCourseId } = require("./ratingController");
 const { getProgress } = require("./userChapterProgressController");
 const { createNotification } = require("./notificationController");

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const UserChapterProgress = require('../models/UserChapterProgress');
+const UserChapterProgress = require('../models/userChapterProgress');
 
 const lessonSchema = new mongoose.Schema({
     videoUrl: {
