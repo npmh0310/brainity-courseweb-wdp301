@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production --legacy-peer-deps
+RUN npm i --only=production --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -26,7 +26,7 @@ RUN adduser -S nodejs -u 1001
 
 # Copy package files and install production dependencies
 COPY package*.json ./
-RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
+RUN npm i --only=production --legacy-peer-deps && npm cache clean --force
 
 # Copy built application
 COPY --from=build /app ./
