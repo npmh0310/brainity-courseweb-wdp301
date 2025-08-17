@@ -1,6 +1,5 @@
-# Docker Compose version 3.8
 services:
-  # Node.js Backend Server
+  # Node.js Backend
   server:
     build:
       context: ./server
@@ -9,36 +8,22 @@ services:
     restart: unless-stopped
     env_file:
       - ./server/.env
-    ports:
-      - "${PORT:-8000}:${PORT:-8000}"
-    volumes:
-      - ./server/uploads:/app/uploads
     networks:
       - brainity-network
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:${PORT}/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
-  # React Frontend Client
+  # React Client (build + serve static bằng nginx)
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
     container_name: brainity-client
     restart: unless-stopped
-    ports:
-      - "3000:80"
-    depends_on:
-      - server
     networks:
       - brainity-network
     env_file:
       - ./client/.env
 
-  # Nginx Reverse Proxy
+  # Nginx reverse proxy
   nginx:
     image: nginx:alpine
     container_name: brainity-nginx
@@ -48,12 +33,26 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/ssl:/etc/letsencrypt:ro
+      - ./nginx/www:/var/www/certbot
     depends_on:
       - client
       - server
     networks:
       - brainity-network
+
+  # Certbot (renew SSL định kỳ)
+  certbot:
+    image: certbot/certbot
+    container_name: brainity-certbot
+    volumes:
+      - ./nginx/ssl:/etc/letsencrypt
+      - ./nginx/www:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do
+      certbot renew --webroot -w /var/www/certbot;
+      sleep 12h & wait $${!};
+      done"
 
 networks:
   brainity-network:
