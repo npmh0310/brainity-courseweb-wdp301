@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   # Node.js Backend
   server:
@@ -11,19 +13,7 @@ services:
     networks:
       - brainity-network
 
-  # React Client (build + serve static bằng nginx)
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    container_name: brainity-client
-    restart: unless-stopped
-    networks:
-      - brainity-network
-    env_file:
-      - ./client/.env
-
-  # Nginx reverse proxy
+  # Nginx reverse proxy (serve React build + API)
   nginx:
     image: nginx:alpine
     container_name: brainity-nginx
@@ -32,11 +22,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./client/build:/usr/share/nginx/html        # 👈 serve FE build trực tiếp
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/letsencrypt:ro
       - ./nginx/www:/var/www/certbot
     depends_on:
-      - client
       - server
     networks:
       - brainity-network
@@ -53,6 +43,8 @@ services:
       certbot renew --webroot -w /var/www/certbot;
       sleep 12h & wait $${!};
       done"
+    networks:
+      - brainity-network
 
 networks:
   brainity-network:
