@@ -90,7 +90,7 @@ function SignInPage() {
   };
   const handleLoginGoogle = () => {
     dispatch(setGlobalLoading(true));
-    window.open("http://localhost:4000/auth/google/", "_self");
+    window.open(`${process.env.REACT_APP_URL_CLIENT}/auth/google/`, "_self");
   };
   return (
     <>

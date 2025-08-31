@@ -92,7 +92,7 @@ app.get('/auth/google/callback',
 
             'google',
 
-            { successRedirect: 'http://localhost:3000/', failureRedirect: '/login', failureMessage: true },
+            { successRedirect: 'https://brainity.duckdns.org/', failureRedirect: '/login', failureMessage: true },
 
             async (error, user, info) => {
                 if (error) {
@@ -119,7 +119,7 @@ app.get('/auth/google/callback',
                             //     user: user,
                             //     message: 'Login Successful'
                             // })
-                            .redirect("http://localhost:3000/")
+                            .redirect("https://brainity.duckdns.org/")
                             ;
                     } catch (error) {
                         // error msg 
@@ -162,7 +162,7 @@ const server = app.listen(port, () => {
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000", // Allow requests from this origin and my frontend port = 5173
+    origin: "https://brainity.duckdns.org/", // Allow requests from this origin and my frontend port = 5173
     methods: ["GET", "POST"], // Allow these HTTP methods
   },
 });

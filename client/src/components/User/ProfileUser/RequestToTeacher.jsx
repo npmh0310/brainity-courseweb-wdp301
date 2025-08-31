@@ -49,7 +49,7 @@ const RequestToTeacher = () => {
     formData.append('file', selectedFile);
 
     try {
-      const res = await axios.post('http://localhost:4000/multer/upload', formData, {
+      const res = await axios.post(`${process.env.REACT_APP_URL_CLIENT}/multer/upload`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data'

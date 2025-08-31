@@ -439,7 +439,7 @@ const forgotPassword = async (req, res) => {
                 <h2 style="color: #04ddb2;">Reset Your Password</h2>
                 <p>Dear ${user.name},</p>
                 <p>We received a request to reset your password. Click the button below to reset it:</p>
-                <a href="http://localhost:3000/reset_password/${token}" style="display: inline-block; padding: 10px 20px; margin: 10px 0; font-size: 16px; color: white; background-color: #04ddb2; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                <a href="https://brainity.duckdns.org/reset_password/${token}" style="display: inline-block; padding: 10px 20px; margin: 10px 0; font-size: 16px; color: white; background-color: #04ddb2; text-decoration: none; border-radius: 5px;">Reset Password</a>
                 <p>If you didn't request a password reset, please ignore this email.</p>
                 <p>Thank you,<br>The Brainity Course Team</p>
             </div>

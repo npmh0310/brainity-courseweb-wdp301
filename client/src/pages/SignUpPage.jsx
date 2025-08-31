@@ -82,7 +82,7 @@ const SignUpPage = () => {
 }
 
   const handleLoginGoogle = () => {
-    window.open("http://localhost:4000/auth/google/", "_self");
+    window.open(`${process.env.REACT_APP_URL_CLIENT}/auth/google/`, "_self");
   };
 
   const [valid , setValid] = useState(false)

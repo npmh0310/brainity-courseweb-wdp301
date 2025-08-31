@@ -9,7 +9,7 @@ const TeacherDialog = ({ open, teacher, onClose, onConfirm, onReject }) => {
     // e.preventDefault();
     // console.log(fileUrl);
 
-    window.open(`http://localhost:4000/uploads/${fileUrl}`, "_seft")
+    window.open(`${process.env.REACT_APP_URL_CLIENT}/uploads/${fileUrl}`, "_seft")
   }
 
   return (
