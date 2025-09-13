@@ -9,7 +9,7 @@ const TeacherDialog = ({ open, teacher, onClose, onConfirm, onReject }) => {
     // e.preventDefault();
     // console.log(fileUrl);
 
-    window.open(`http://localhost:4000/uploads/${fileUrl}`, "_seft")
+    window.open(`https://brainity-courseweb-wdp301.onrender.com/uploads/${fileUrl}`, "_seft")
   }
 
   return (
@@ -52,16 +52,16 @@ const TeacherDialog = ({ open, teacher, onClose, onConfirm, onReject }) => {
             {/* Buttons */}
             <div className="flex justify-between md:justify-end space-x-4">
               <button
-                className="bg-primary hover:bg-[#03ecbe] text-white   
-                                      px-[40px] py-[9px] my-1 text-sm font-semibold  
+                className="bg-primary hover:bg-[#03ecbe] text-white
+                                      px-[40px] py-[9px] my-1 text-sm font-semibold
                                       rounded-full backdrop-blur-md transition transform hover:scale-105"
                 onClick={() => onConfirm(teacher._id)}
               >
                 Confirm
               </button>
               <button
-                className="bg-red-500 hover:bg-red-600 text-white   
-                                      px-[40px] py-[9px] my-1 text-sm font-semibold  
+                className="bg-red-500 hover:bg-red-600 text-white
+                                      px-[40px] py-[9px] my-1 text-sm font-semibold
                                       rounded-full backdrop-blur-md transition transform hover:scale-105"
                 onClick={() => onReject(teacher._id)}
               >

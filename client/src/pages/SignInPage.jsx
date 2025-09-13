@@ -90,7 +90,7 @@ function SignInPage() {
   };
   const handleLoginGoogle = () => {
     dispatch(setGlobalLoading(true));
-    window.open("http://localhost:4000/auth/google/", "_self");
+    window.open("https://brainity-courseweb-wdp301.onrender.com/auth/google/", "_self");
   };
   return (
     <>

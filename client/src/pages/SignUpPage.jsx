@@ -82,7 +82,7 @@ const SignUpPage = () => {
 }
 
   const handleLoginGoogle = () => {
-    window.open("http://localhost:4000/auth/google/", "_self");
+    window.open("https://brainity-courseweb-wdp301.onrender.com/auth/google/", "_self");
   };
 
   const [valid , setValid] = useState(false)
@@ -258,7 +258,7 @@ const SignUpPage = () => {
                           index === 2 ? 'number' :
                             index === 3 ? 'specialChar' :
                               index === 4 ? 'minLength' :
-                                index === 5 ? 'email' : 
+                                index === 5 ? 'email' :
                                   index === 6 ? 'username' :
                                 'match'] ? 'text-green-500' : 'text-red-500'}`}
                     />
@@ -271,7 +271,7 @@ const SignUpPage = () => {
                 <button
                   onClick={handleClick}
                   className="btnLogin border hover:bg-[#03ecbe] text-white bg-primary transition  transform hover:scale-105 ]"
-                  
+
                 >
                   {signUpData.buttonLogin}
                 </button>

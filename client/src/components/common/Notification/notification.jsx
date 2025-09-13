@@ -8,7 +8,7 @@ const NotificationsComponent = () => {
   const [rooms, setRooms] = useState("");
   const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    const socket = io("http://localhost:4000");
+    const socket = io("https://brainity-courseweb-wdp301.onrender.com");
 
     getRoom().then((response) => {
       const data = Object.values(response.data.data);

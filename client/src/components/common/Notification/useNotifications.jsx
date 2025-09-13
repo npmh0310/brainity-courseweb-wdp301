@@ -38,7 +38,7 @@ export const NotificationsProvider = ({ children, userId }) => {
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:4000");
+    const socket = io("https://brainity-courseweb-wdp301.onrender.com");
 
     getRoom().then((response) => {
       const data = Object.values(response.data.data);

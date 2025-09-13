@@ -49,7 +49,7 @@ const RequestToTeacher = () => {
     formData.append('file', selectedFile);
 
     try {
-      const res = await axios.post('http://localhost:4000/multer/upload', formData, {
+      const res = await axios.post('https://brainity-courseweb-wdp301.onrender.com/multer/upload', formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -71,7 +71,7 @@ const RequestToTeacher = () => {
         Request To Teacher
       </h1>
       {
-        user && (user.role === "teacher" || user.role === "admin") 
+        user && (user.role === "teacher" || user.role === "admin")
         ? (
           <Link to={"/teacher"} className="w-1/5 btn bg-primary text-white">
             To Teacher Page

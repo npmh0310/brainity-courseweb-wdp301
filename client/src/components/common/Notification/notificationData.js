@@ -2,7 +2,7 @@ import io from "socket.io-client";
 import { getAllNotification, getRoom } from "../../../fetchData/Notification";
 import { EventEmitter } from "events";
 
-const socket = io("http://localhost:4000");
+const socket = io("https://brainity-courseweb-wdp301.onrender.com");
 const eventEmitter = new EventEmitter();
 
 let notifications = [];
