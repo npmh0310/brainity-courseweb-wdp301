@@ -2,7 +2,7 @@ const Cart = require("../models/cart");
 const Course = require("../models/course");
 const Purchase = require("../models/purchase");
 const User = require("../models/user");
-const UserChapterProgress = require("../models/UserChapterProgress");
+const UserChapterProgress = require("../models/userChapterProgress");
 
 const enrollCourse = async (userId, courseId) => {
   try {

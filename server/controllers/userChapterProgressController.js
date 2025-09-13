@@ -1,4 +1,4 @@
-const UserChapterProgress = require("../models/UserChapterProgress");
+const UserChapterProgress = require("../models/userChapterProgress");
 const Course = require("../models/course");
 
 const addProgress = async (req, res) => {

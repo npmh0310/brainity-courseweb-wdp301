@@ -1,7 +1,7 @@
 const Rating = require("../models/rating");
 const User = require("../models/user");
 const Course = require("../models/course");
-// const UserChapterProgress = require('../models/UserChapterProgress');
+// const UserChapterProgress = require('../models/userChapterProgress');
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 

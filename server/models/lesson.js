@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const UserChapterProgress = require('../models/UserChapterProgress');
+const UserChapterProgress = require('../models/userChapterProgress');
 
 const lessonSchema = new mongoose.Schema({
     videoUrl: {
@@ -35,11 +35,11 @@ const removeLessonFromAllProgress = async (lessonIdToRemove) => {
       console.error('Đã xảy ra lỗi:', error);
     }
   };
-  
+
 lessonSchema.post('findOneAndDelete', function (doc ) {
     console.log('Lesson to be removed:', doc._id);
     removeLessonFromAllProgress(doc._id)
-    
+
 });
 
 
