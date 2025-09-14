@@ -37,7 +37,7 @@ zalopayRoute.post("/", async (req, res) => {
     amount: 10000,
     description: "Brainity course payment",
     bankcode: "zalopayapp",
-    callbackurl: "localhost:4000/api/v1/payment/callback",
+    callbackurl: "https://brainity-learnify.vercel.app/api/v1/payment/callback",
   };
 
   // appid|apptransid|appuser|amount|apptime|embeddata|item

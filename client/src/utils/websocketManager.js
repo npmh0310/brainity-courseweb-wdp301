@@ -4,7 +4,7 @@ let socket = null;
 
 export const initializeWebSocket = () => {
   if (!socket) {
-    socket = io("http://localhost:4000");
+    socket = io("https://brainity-learnify.vercel.app");
     console.log("WebSocket initialized");
   }
 };
