@@ -86,49 +86,41 @@ app.get(
   })
 );
 
-app.get('/auth/google/callback',
-    (req, res, next) => {
-        passport.authenticate(
-
-            'google',
+app.get('/auth/google/callback', (req, res, next) => {
+  passport.authenticate(
+    'google',
 
             { successRedirect: 'https://brainity-learnify.vercel.app/', failureRedirect: '/login', failureMessage: true },
 
             async (error, user, info) => {
-                if (error) {
-                    return res.send({ message: error.message });
-                }
-                console.log(user)
-                if (user) {
-                    try {
-                        const token = jwt.sign(
-                            { id: user._id, role: user.role },
-                            process.env.JWT_SECRET_KEY,
-                            { expiresIn: "15d" }
-                        )
+      if (error) {
+        return res.send({ message: error.message });
+      }
+      if (user) {
+        try {
+          const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: "15d" }
+          );
 
-                        console.warn("hihi")
-                        // your success code
-                        return res
-                            .cookie('accessToken', token, {
-                                httpOnly: true,
-                                sameSite: "None",
-                                expires: token.expiresIn
-                            })
-                            .status(200)
-                            // .send({
-                            //     user: user,
-                            //     message: 'Login Successful'
-                            // })
-                            .redirect("https://brainity-learnify.vercel.app/")
-                            ;
-                    } catch (error) {
-                        // error msg
-                        return res.send({ message: error.message });
-                    }
-                }
+          console.log("hihi");
+
+          return res
+            .cookie("accessToken", token, {
+              httpOnly: true,
+              secure: true,              // cần khi SameSite=None
+              sameSite: "None",          // cho phép cross-site
+              maxAge: 15 * 24 * 60 * 60 * 1000, // 15 ngày
+            })
+            .status(200)
+            .redirect("https://brainity-learnify.vercel.app/");
+        } catch (error) {
+          return res.send({ message: error.message });
+      }
+    }
             })(req, res, next);
-    });
+});
 
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/category', categoryRoute)
