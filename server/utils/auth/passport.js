@@ -20,7 +20,7 @@ passport.use(
     {
       clientID: process.env.clientID,
       clientSecret: process.env.clientSecret,
-      callbackURL: "/auth/google/callback",
+      callbackURL: "https://brainity-courseweb-wdp301.onrender.com/auth/google/callback",
     },
     (accessToken, refreshToken, mailInfo, done) => {
       // console.log("accessToken: " + accessToken);
