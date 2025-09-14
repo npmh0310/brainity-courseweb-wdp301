@@ -6,3 +6,4 @@
 /client/yarn.lock
 /server/.env
 
+.vercel

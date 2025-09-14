@@ -92,7 +92,7 @@ app.get('/auth/google/callback',
 
             'google',
 
-            { successRedirect: 'http://localhost:3000/', failureRedirect: '/login', failureMessage: true },
+            { successRedirect: 'https://brainity-learnify.vercel.app/', failureRedirect: '/login', failureMessage: true },
 
             async (error, user, info) => {
                 if (error) {
@@ -119,10 +119,10 @@ app.get('/auth/google/callback',
                             //     user: user,
                             //     message: 'Login Successful'
                             // })
-                            .redirect("http://localhost:3000/")
+                            .redirect("https://brainity-learnify.vercel.app/")
                             ;
                     } catch (error) {
-                        // error msg 
+                        // error msg
                         return res.send({ message: error.message });
                     }
                 }
@@ -162,7 +162,7 @@ const server = app.listen(port, () => {
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000", // Allow requests from this origin and my frontend port = 5173
+    origin: "https://brainity-learnify.vercel.app", // Allow requests from this origin and my frontend port = 5173
     methods: ["GET", "POST"], // Allow these HTTP methods
   },
 });
