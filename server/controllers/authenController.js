@@ -88,6 +88,7 @@ const login = async (req, res) => {
     res
       .cookie("accessToken", token, {
         // httpOnly: true,
+        sameSite: "None",
         expires: token.expiresIn,
       })
       .status(200)

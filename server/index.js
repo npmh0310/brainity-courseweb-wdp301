@@ -112,6 +112,7 @@ app.get('/auth/google/callback',
                         return res
                             .cookie('accessToken', token, {
                                 httpOnly: true,
+                                sameSite: "None",
                                 expires: token.expiresIn
                             })
                             .status(200)
