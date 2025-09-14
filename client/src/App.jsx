@@ -155,7 +155,7 @@ function App() {
 
           <Route path="/admin/messageAdmin" element={<ChatBoxAdmin />} />
           <Route
-            path="/admin/messageAdmin/:roomId"
+            path="/admin/messageAdmin/:roomName"
             element={<ChatBoxAdmin />}
           />
           <Route path="/admin/*" element={<AdminLayout />}>

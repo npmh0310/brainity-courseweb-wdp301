@@ -57,6 +57,7 @@ const TableCourses = () => {
   const handleDeleteClose = () => setDeleteOpen(false);
 
   const handleDelete = async () => {
+
     const res = await deleteCourse(selectedCourseId);
     if (res.status === 200) {
       toast.success("Deleted successfully");

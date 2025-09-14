@@ -1,47 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../../assets/images/logo_noBg.png";
 import { SendHorizontal, Paperclip, X } from "lucide-react";
+import { initializeWebSocket, getWebSocket, disconnectWebSocket } from "../../../utils/websocketManager";
+
 import MessageContent from "./MessageContent";
+import { useSelector } from "react-redux";
 
-const ChatBoxOpen = ({ handleCloseBox }) => {
+const ChatBoxOpen = ({ handleCloseBox, room}) => {
   const [haveMessage, setHaveMessage] = useState(true);
-  const messages = [
-    {
-      type: "their",
-      text: "Xin chào! Bạn khỏe không? Mình có một số câu hỏi về sản phẩm của bạn.",
-      imgSrc: Logo, // Thay bằng đường dẫn thực tế nếu khác
-    },
-    {
-      type: "my",
-      text: "Chào bạn! Mình khỏe, cảm ơn bạn đã hỏi. Bạn cần hỏi về điều gì?",
-    },
-    {
-      type: "their",
-      text: "Mình muốn biết thêm về tính năng mới của sản phẩm. Bạn có thể giải thích chi tiết hơn không?",
-      imgSrc: Logo, // Thay bằng đường dẫn thực tế nếu khác
-    },
-    {
-      type: "my",
-      text: "Chắc chắn rồi! Tính năng mới cho phép bạn tùy chỉnh giao diện người dùng một cách dễ dàng hơn và tích hợp với nhiều dịch vụ khác nhau.",
-    },
-    {
-      type: "their",
-      text: "Nghe thú vị đấy! Vậy còn về giá cả thì sao? Có thay đổi gì không?",
-      imgSrc: Logo, // Thay bằng đường dẫn thực tế nếu khác
-    },
-    {
-      type: "my",
-      text: "Giá cả vẫn giữ nguyên, nhưng chúng tôi có thêm một số gói dịch vụ mới để bạn lựa chọn phù hợp với nhu cầu của mình.",
-    },
-    {
-      type: "their",
-      text: "Cảm ơn bạn rất nhiều! Mình sẽ xem xét các gói dịch vụ mới này.",
-      imgSrc: Logo, // Thay bằng đường dẫn thực tế nếu khác
-    },
-  ];
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const socket = initializeWebSocket() || getWebSocket();
+  const user = useSelector((state) => state.auth.user);
 
+  useEffect(() => {
+    socket.on("receiveMessage", (message) => {
+      console.log("come recieve: ", message)
+      setMessages((prevMessages) => [...prevMessages, 
+        {
+          type: user._id === message.senderId ? "my" : "their",
+          text: message.content,
+        },
+      ]);
+    });
+
+    return () => {
+        disconnectWebSocket();
+      };
+    }, []);
+
+    const sendMessage = (e) => {
+      console.log("room: ", room)
+      e.preventDefault();
+      if (message.trim()) {
+        const newMessage = {
+            senderId: user._id,
+            content: message,
+          };
+          socket.emit("sendMessage", {
+            room: room,
+            message: newMessage,
+          });
+        }
+      setMessage("");
+    };
+      
   return (
-    <div className="fixed bottom-7 right-6 w-[340px] h-[470px] rounded-2xl bg-white shadow-lg flex flex-col">
+        <div className="fixed bottom-7 right-6 w-[340px] h-[470px] rounded-2xl bg-white shadow-lg flex flex-col">
       <header className="flex flex-row bg-slate-100 px-5 rounded-t-2xl py-3 border-b border-gray-300 relative">
         <div className="flex flex-row gap-x-4 items-center w-5/6">
           <div className="w-2/6">
@@ -89,9 +94,13 @@ const ChatBoxOpen = ({ handleCloseBox }) => {
         <input
           className="w-full px-3 border-none outline-none text-sm "
           type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Ask a question..."
         />
-        <button className="flex justify-center items-center  hover:text-primary cursor-pointer ">
+        <button 
+          onClick={sendMessage}
+          className="flex justify-center items-center  hover:text-primary cursor-pointer ">
           <SendHorizontal className=" " size={20} />
         </button>
       </form>

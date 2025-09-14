@@ -1,62 +1,106 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import avatar2 from "../../../assets/images/Avatar/CGakpo2023.jpg";
 import avatar from "../../../assets/images/Avatar/CGakpo2023.jpg";
 import { Info, Search } from "lucide-react";
 import Logo from "../../../assets/images/logo_noBg.png";
+import {
+  getMessagesByRoomName,
+  markAllFromRoomAsRead,
+} from "../../../fetchData/Message";
 import { SendHorizontal, Paperclip, X } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  getWebSocket,
+  initializeWebSocket,
+} from "../../../utils/websocketManager";
+
 const ContentChatBox = () => {
-  const { roomId } = useParams();
+  const socket = initializeWebSocket() || getWebSocket();
+  const [message, setMessage] = useState("");
+  const { roomName } = useParams();
+  const [messages, setMessages] = useState([]);
+  const user = useSelector((state) => state.auth.user);
+  const chatBoxRef = useRef(null);
 
-  // XỬ LÝ API
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  useEffect(() => {}, [roomId]);
-  // XỬ LÝ API
+  const fetchMessages = async (roomName) => {
+    const response = await getMessagesByRoomName(roomName, {
+      page: 1,
+      size: 20,
+    });
+    const data = Object.values(response.data.data);
+    setMessages(data[0]);
+  };
 
-  const chatRooms = [
-    {
-      id: 1,
-      avatarSrc:
-        "https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/274961617_1031354217755700_9193705406630906752_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=1&ccb=1-7&_nc_sid=f4b9fd&_nc_ohc=UYqoziiUPaIQ7kNvgHAzk8W&_nc_ht=scontent.fdad3-6.fna&oh=00_AYAHun75S1iUv6auh-p1rAzPdUs5YCY8wYkwB6f2NT8QqQ&oe=668F258E",
-      name: "John Doe",
-      messages: [
-        {
-          type: "their",
-          text: "Xin chào! Bạn khỏe không? Mình có một số câu hỏi về sản phẩm của bạn.",
-          imgSrc: Logo,
-        },
-        {
-          type: "my",
-          text: "Chào bạn! Mình khỏe, cảm ơn bạn đã hỏi. Bạn cần hỏi về điều gì?",
-        },
-      ],
-    },
-    {
-      id: 2,
-      avatarSrc: avatar2,
-      name: "Minh Hieu",
-      messages: [
-        {
-          type: "their",
-          text: "Mình muốn biết thêm về tính năng mới của sản phẩm. Bạn có thể giải thích chi tiết hơn không?",
-          imgSrc: Logo,
-        },
-        {
-          type: "my",
-          text: "Chắc chắn rồi! Tính năng mới cho phép bạn tùy chỉnh giao diện người dùng một cách dễ dàng hơn và tích hợp với nhiều dịch vụ khác nhau.",
-        },
-        // Các tin nhắn khác
-      ],
-    },
-    // Các phòng chat khác
-  ];
-  const selectedFetchRoom = chatRooms.find(
-    (room) => room.id === parseInt(roomId)
-  );
+  useEffect(() => {
+    if (roomName) {
+      setMessages([]); // Xóa sạch dữ liệu cũ
+      fetchMessages(roomName);
+      socket.on("receiveMessage", handleReceiveMessage);
 
-  if (!selectedFetchRoom) {
+      return () => {
+        socket.off("receiveMessage", handleReceiveMessage); // Unregister the event handler on cleanup
+      };
+    }
+  }, [roomName]);
+
+  const handleReceiveMessage = (message) => {
+    if (
+      roomName.includes(message.senderId) ||
+      user._id === message.senderId ||
+      !user._id
+    ) {
+      renewMessages(roomName);
+    }
+  };
+
+  const renewMessages = async (roomName) => {
+    const response = await getMessagesByRoomName(roomName, {
+      page: 1,
+      size: 20,
+    });
+    const data = Object.values(response.data.data);
+    setMessages(data[0]);
+  };
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (message.trim()) {
+      const newMessage = {
+        senderId: user._id,
+        content: message,
+      };
+      socket.emit("sendMessage", {
+        room: roomName,
+        message: newMessage,
+      });
+    }
+    setMessage("");
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (chatBoxRef.current.scrollTop === 0) {
+        console.log("Scrolled to top");
+        // Add your logic here
+      }
+    };
+
+    const chatBoxElement = chatBoxRef.current;
+    if (chatBoxElement) {
+      chatBoxElement.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (chatBoxElement) {
+        chatBoxElement.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
+  if (!roomName) {
     return (
-      <div className="w-full lg:w-3/4 h-full border-r-2  flex flex-col ">
+      <div className="w-full lg:w-3/4 h-full border-r-2 flex flex-col ">
         <div className="flex-grow text-center flex items-center justify-center flex-col border-b-2 border-gray-200">
           <img src={Logo} className="w-32" alt="Logo" />
           <h1 className="text-sm">Send a message to start a conversation!</h1>
@@ -66,25 +110,30 @@ const ContentChatBox = () => {
   }
 
   return (
-    <div className="w-full lg:w-3/4 h-full border-r-2  flex flex-col ">
+    <div
+      key={roomName}
+      className="w-full lg:w-3/4 h-full border-r-2 flex flex-col "
+    >
       <header className="flex flex-row justify-between items-center px-9 py-4 border-b-2">
         <div className="flex flex-row items-center gap-x-5">
           <img
             className="w-11 h-11 rounded-full"
-            src={selectedFetchRoom.avatarSrc}
+            src={messages.avatarSrc}
             alt=""
           />
-          <h1 className="font-medium">{selectedFetchRoom.name}</h1>
+          <h1 className="font-medium">{messages.otherUsername}</h1>
         </div>
         <div className="flex flex-row items-center gap-x-8 text-gray-500">
           <Search className="hover:text-black" />
           <Info className="hover:text-black" />
         </div>
       </header>
-      {/* MESSAGE CONTENT */}
-      <div className="h-[78vh] flex-grow text-center flex flex-col-reverse overflow-y-auto scrollbar-custom ">
-        <div className=" flex flex-col px-3 py-5 space-y-8">
-          {selectedFetchRoom.messages?.map((message, index) => (
+      <div
+        ref={chatBoxRef}
+        className="h-[78vh] flex-grow text-center flex flex-col-reverse overflow-x-hidden overflow-y-auto scrollbar-custom "
+      >
+        <div className="flex flex-col px-3 py-5 space-y-8">
+          {messages.messages?.map((message, index) => (
             <div
               key={index}
               className={`flex items-end ${
@@ -93,9 +142,9 @@ const ContentChatBox = () => {
             >
               {message.type === "their" && (
                 <img
-                  src={message.imgSrc}
+                  src={messages.avatarSrc}
                   className="w-9 h-9 rounded-full order-1"
-                  alt={message.name}
+                  alt={messages.name}
                 />
               )}
               <div
@@ -110,15 +159,15 @@ const ContentChatBox = () => {
                     <span
                       className={`px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-200 text-gray-600 text-left break-words`}
                     >
-                      {message.text}
+                      {message.content}
                     </span>
                   </div>
                 ) : (
-                  <div className="w-2/3">
+                  <div className="">
                     <span
                       className={`px-4 py-2 rounded-lg inline-block bg-gray-200 text-gray-600 text-left break-words`}
                     >
-                      {message.text}
+                      {message.content}
                     </span>
                   </div>
                 )}
@@ -127,7 +176,6 @@ const ContentChatBox = () => {
           ))}
         </div>
       </div>
-
       <form className="mx-4 my-3">
         <div className="flex items-center px-5 gap-x-2 h-12 border rounded-3xl">
           <label
@@ -138,11 +186,16 @@ const ContentChatBox = () => {
           </label>
           <input id="file-upload" type="file" className="hidden" />
           <input
-            className="w-full px-3 border-none outline-none text-sm "
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full px-3 border-none outline-none text-sm"
             type="text"
+            value={message}
             placeholder="Ask a question..."
           />
-          <button className="flex justify-center items-center  hover:text-primary cursor-pointer ">
+          <button
+            onClick={sendMessage}
+            className="flex justify-center items-center hover:text-primary cursor-pointer"
+          >
             <SendHorizontal className=" " size={20} />
           </button>
         </div>

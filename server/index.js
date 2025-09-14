@@ -23,14 +23,13 @@ const favouriteRoute = require('./routes/favourite');
 const ratingRoute = require('./routes/rating');
 const notificationRoute = require('./routes/notification');
 const cloudinaryRoute = require('./routes/configs/cloudinary');
+const userRouter = require('./routes/user')
+const messageRouter = require('./routes/message')
+const Message = require('./models/message');
 const blogRoute = require('./routes/blog')
-
 const checkout = require('./routes/checkout');
-
 // const zalopayRoute = require('./routes/zaloPay');
 const vnpayRoute = require("./routes/VNpay");
-
-const userRouter = require("./routes/user");
 const multerRoute = require('./routes/configs/multer');
 
 dotenv.config();
@@ -140,6 +139,7 @@ app.use('/api/v1/vnpay', vnpayRoute)
 
 app.use('/api/v1/user' , userRouter)
 app.use('/api/v1/notification', notificationRoute)
+app.use('/api/v1/message', messageRouter)
 app.use('/api/v1/blogs', blogRoute)
 
 app.use('/multer', multerRoute)
@@ -149,9 +149,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/auth", oauth2Route);
 
 const server = app.listen(port, () => {
-  connect();
-  console.log("server listening on port ", port);
-});
+    connect()
+    console.log('server listening on port ', port)
+})
 
 const io = require("socket.io")(server, {
   cors: {
@@ -160,13 +160,72 @@ const io = require("socket.io")(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log(`⚡: ${socket.id} user just connected`);
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-  socket.on("joinRoom", (room) => {
-    socket.join(room); // Join the client to the specified room
-    console.log(`User joined room: ${room}`);
-  });
+let adminSockets = [];
+let roomsUsersOnline = [];
+
+io.on('connection', (socket) => {
+    console.log(`⚡: ${socket.id} user just connected`);
+    socket.on('disconnect', () => {
+        console.log('A user with socket' , socket.id, ' disconnected');
+        // Xóa socket của admin ra khỏi danh sách khi admin disconnect
+        adminSockets = adminSockets.filter(adminSocket => adminSocket !== socket);
+        // xóa room online nếu user disconnect
+    });
+
+    // Xử lý sự kiện admin kết nối
+    socket.on('adminJoin', () => {
+        console.log('Admin joined');
+        adminSockets.push(socket);
+
+        // Gửi lại danh sách các phòng đã có user join vào cho admin mới
+        // tối ưu lại sau ( đang bị n^n)
+        console.log("Existing room chat: " + roomsUsersOnline);
+        roomsUsersOnline.forEach(room => {
+            socket.emit('userRequestChatAdmin', room);
+        });
+
+    });
+
+
+    // Thông báo cho admin rằng user đã join vào room
+    socket.on('joinRoom', (room) => {
+        // specify socket join the room
+        // user + admin
+        socket.join(room); // Join the client to the specified room
+        if(!adminSockets.includes(socket) && !roomsUsersOnline.includes(room)) {
+            console.log("👤User login and join room success: ", room)
+        } else {
+            console.log("🅰️  Admin know room chat: ", room)
+        }
+
+        // while user first create and join room
+        if((room+"").includes("chatWithAdmin_") && !adminSockets.includes(socket)) {
+            // Lưu trạng thái phòng vào danh sách
+            if (!roomsUsersOnline.includes(room)) {
+                roomsUsersOnline.push(room);
+                console.log("New roomsUsersOnline: " + roomsUsersOnline)
+            } else {
+                console.log("Existing room from user: " + roomsUsersOnline)
+            }
+            /// có thể set điều kiện ở đây nếu adminsocket = 0, nghĩa là phân loại user waiiting and inprogress
+            // báo cho các admin khác biết
+            adminSockets.forEach((adminSocket) => {
+                adminSocket.emit('userRequestChatAdmin', room)
+            })
+        }
+    });
+
+    socket.on('sendMessage', ({ room, message }) => {
+        console.log("message: ", message, "from room ", room)
+        io.to(room).emit('receiveMessage', message);
+        // Lưu tin nhắn vào cơ sở dữ liệu
+        const newMessage = new Message({
+          sender: message.senderId,
+          content: message.content,
+          chatRoom: room
+        });
+        newMessage.save()
+
+    });
+
 });
